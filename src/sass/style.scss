@@ -1,0 +1,9 @@
+@use 'colors';
+
+* {
+  color: colors.$foreground-color;
+}
+
+body {
+  background-color: colors.$background-color;
+}

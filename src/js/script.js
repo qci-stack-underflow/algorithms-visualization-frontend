@@ -1,4 +1,5 @@
 import Hardcoded from "./harcode-class";
+import "@sass/style.scss"
 
 document.addEventListener("DOMContentLoaded", () => {
   const newClass = new Hardcoded();
