@@ -5,5 +5,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const newClass = new Hardcoded();
 
   console.log("The DOM is fully loaded and parsed");
-  alert(`${newClass.getMessage()}`);
+  console.log(`${newClass.getMessage()}`);
 });
