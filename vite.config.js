@@ -10,7 +10,7 @@ export default defineConfig((mode) => {
     port: env.VITE_PORT || 3030,
   },
   build: {
-    outDir: "./dist",
+    outDir: "../dist",
     sourcemap: true,
   },
   resolve: {
