@@ -63,6 +63,64 @@ let chartInstance = null;
 let metricasData = {};
 let motores = []; // un MotorAnimacion por algoritmo seleccionado
 
+// Vista previa animada de cada tarjeta del inicio (en lugar de un GIF):
+// se pide al backend la ordenación de un arreglo pequeño y se repite en bucle.
+const ARREGLO_VISTA_PREVIA = [5, 3, 6, 1, 4, 2];
+const VELOCIDAD_VISTA_PREVIA_MS = 150;
+const PAUSA_ENTRE_VUELTAS_MS = 1200;
+const pasosVistaPrevia = new Map(); // nombre del algoritmo → Promise de pasos
+let motoresTarjetas = [];
+let generacionTarjetas = 0; // invalida las vistas previas de un render anterior
+
+function detenerVistasPrevias() {
+  generacionTarjetas += 1;
+  motoresTarjetas.forEach((motor) => motor.detener());
+  motoresTarjetas = [];
+}
+
+function obtenerPasosVistaPrevia(nombre) {
+  if (!pasosVistaPrevia.has(nombre)) {
+    const pasos = ejecutarAlgoritmo(nombreAId(nombre), ARREGLO_VISTA_PREVIA)
+      .then(convertirPasos)
+      .catch((error) => {
+        pasosVistaPrevia.delete(nombre); // se reintenta en el siguiente render
+        throw error;
+      });
+    pasosVistaPrevia.set(nombre, pasos);
+  }
+  return pasosVistaPrevia.get(nombre);
+}
+
+function iniciarVistaPrevia(contenedor, nombre, generacion) {
+  obtenerPasosVistaPrevia(nombre)
+    .then((pasos) => {
+      if (generacion !== generacionTarjetas) return;
+
+      const motor = new MotorAnimacion(contenedor, {
+        altura: "136px",
+        mostrarValores: false,
+      });
+      motor.velocidadMs = VELOCIDAD_VISTA_PREVIA_MS;
+      motor.cargarPasos(pasos);
+      motoresTarjetas.push(motor);
+
+      const ultimo = pasos[pasos.length - 1];
+      const reproducirVuelta = () =>
+        motor.reproducir((paso) => {
+          if (paso !== ultimo) return;
+          setTimeout(() => {
+            if (generacion !== generacionTarjetas) return;
+            motor.detener();
+            reproducirVuelta();
+          }, PAUSA_ENTRE_VUELTAS_MS);
+        });
+      reproducirVuelta();
+    })
+    .catch(() => {
+      // Sin backend se queda el recuadro "GIF".
+    });
+}
+
 function resetMetricas() {
   metricasData = {};
   algoritmosSeleccionados.forEach((nombre) => {
@@ -80,7 +138,9 @@ function resetMetricas() {
 function renderizarTarjetas(lista) {
   const grid = document.getElementById("algorithmsGrid");
   if (!grid) return;
-  
+
+  detenerVistasPrevias();
+  const generacion = generacionTarjetas;
   grid.innerHTML = "";
 
   if (lista.length === 0) {
@@ -122,6 +182,7 @@ function renderizarTarjetas(lista) {
       placeholder.className = "card-gif-placeholder";
       placeholder.textContent = "GIF";
       gifContainer.appendChild(placeholder);
+      iniciarVistaPrevia(gifContainer, alg.nombre, generacion);
     }
 
     const cardInfo = document.createElement("div");
@@ -238,6 +299,7 @@ function actualizarSeleccionAlgoritmos(checkbox) {
 }
 
 function abrirVisualizador(nombreAlgoritmo) {
+  detenerVistasPrevias();
   document.getElementById("mainHeader").style.display = "none";
   document.getElementById("mainContent").style.display = "none";
   document.getElementById("visualizerScreen").style.display = "block";
@@ -258,6 +320,7 @@ function regresarAlInicio() {
   document.getElementById("visualizerScreen").style.display = "none";
   document.getElementById("mainHeader").style.display = "block";
   document.getElementById("mainContent").style.display = "block";
+  filtrarAlgoritmos(); // vuelve a dibujar las tarjetas y sus vistas previas
 }
 
 function dibujarBarras() {

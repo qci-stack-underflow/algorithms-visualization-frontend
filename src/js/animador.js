@@ -1,8 +1,11 @@
 // src/js/animador.js
 
 export class MotorAnimacion {
-  constructor(containerElement) {
+  // opciones (opcionales): altura del área de barras y si se muestran los valores.
+  constructor(containerElement, opciones = {}) {
     this.container = containerElement;
+    this.altura = opciones.altura ?? "200px";
+    this.mostrarValores = opciones.mostrarValores ?? true;
     this.intervalId = null;
     this.velocidadMs = 250;
     this.pasos = [];
@@ -79,7 +82,7 @@ export class MotorAnimacion {
     chartArea.style.display = "flex";
     chartArea.style.alignItems = "flex-end";
     chartArea.style.justifyContent = "center";
-    chartArea.style.height = "200px";
+    chartArea.style.height = this.altura;
     chartArea.style.padding = "10px 12px";
     chartArea.style.boxSizing = "border-box";
     chartArea.style.width = "100%";
@@ -130,7 +133,7 @@ export class MotorAnimacion {
       label.innerText = valor;
 
       barContainer.appendChild(bar);
-      barContainer.appendChild(label);
+      if (this.mostrarValores) barContainer.appendChild(label);
       chartArea.appendChild(barContainer);
     });
 
