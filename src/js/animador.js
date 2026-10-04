@@ -20,6 +20,7 @@ export class MotorAnimacion {
   reproducir(onPaso) {
     if (onPaso) this.onPasoCallback = onPaso;
     if (this.pasos.length === 0) return;
+    if (this.intervalId) clearInterval(this.intervalId);
 
     this.enEjecucion = true;
     this.intervalId = setInterval(() => {
@@ -45,6 +46,18 @@ export class MotorAnimacion {
   detener() {
     this.pausar();
     this.pasoActual = 0;
+  }
+
+  // Cambia la velocidad; si está reproduciendo, continúa con la nueva.
+  fijarVelocidad(ms) {
+    this.velocidadMs = Number(ms);
+    if (this.enEjecucion) this.reproducir();
+  }
+
+  // Detiene y vuelve a dibujar el estado inicial.
+  reiniciar() {
+    this.detener();
+    if (this.pasos.length > 0) this.renderizarBarraEstado(this.pasos[0]);
   }
 
   renderizarBarraEstado(paso) {
@@ -99,6 +112,8 @@ export class MotorAnimacion {
       if (indices && indices.includes(idx)) {
         if (tipo === 'comparacion') bar.style.backgroundColor = '#f1c40f'; // Amarillo
         else if (tipo === 'intercambio') bar.style.backgroundColor = '#e74c3c'; // Rojo
+        else if (tipo === 'escritura') bar.style.backgroundColor = '#9b59b6'; // Morado (Merge Sort)
+        else if (tipo === 'pivote') bar.style.backgroundColor = '#3498db'; // Azul (Quick Sort)
         else bar.style.backgroundColor = '#ffffff';
       } else if (tipo === 'completado') {
         bar.style.backgroundColor = '#2ecc71'; // Verde

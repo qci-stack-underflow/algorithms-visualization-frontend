@@ -1,5 +1,8 @@
 import "@sass/style.scss";
 import Chart from "chart.js/auto";
+import { MotorAnimacion } from "./animador.js";
+import { compararAlgoritmos, ejecutarAlgoritmo, nombreAId } from "./api.js";
+import { convertirPasos } from "./pasos.js";
 // Lista de algoritmos
 export const algoritmos = [
   {
@@ -58,6 +61,7 @@ let valoresActuales = [10, 4, 8, 3, 7];
 let algoritmosSeleccionados = ["Bubble Sort"];
 let chartInstance = null;
 let metricasData = {};
+let motores = []; // un MotorAnimacion por algoritmo seleccionado
 
 function resetMetricas() {
   metricasData = {};
@@ -259,49 +263,36 @@ function regresarAlInicio() {
 function dibujarBarras() {
   const container = document.getElementById("multiChartsContainer");
   if (!container) return;
-  
+
+  motores.forEach((motor) => motor.detener());
+  motores = [];
   container.innerHTML = "";
 
-  const maxVal = Math.max(...valoresActuales, 1);
+  const selectVelocidad = document.getElementById("selectVelocidad");
 
   algoritmosSeleccionados.forEach((nombreAlgo) => {
     const chartGroup = document.createElement("div");
     chartGroup.className = "single-chart-group";
 
-    const chartArea = document.createElement("div");
-    chartArea.className = "chart-area";
-    if (valoresActuales.length > 20) {
-      chartArea.classList.add("chart-area-compact");
-      chartArea.style.setProperty("--bar-count", valoresActuales.length);
-    }
-
-    valoresActuales.forEach((val, index) => {
-      const barContainer = document.createElement("div");
-      barContainer.className = "bar-container";
-      barContainer.title = `Elemento ${index + 1}: ${val}`;
-
-      const bar = document.createElement("div");
-      bar.className = "bar";
-
-      const alturaProporcional = (val / maxVal) * 130 + 15;
-      bar.style.height = `${alturaProporcional}px`;
-
-      const label = document.createElement("span");
-      label.className = "bar-label";
-      label.innerText = val;
-
-      barContainer.appendChild(bar);
-      barContainer.appendChild(label);
-      chartArea.appendChild(barContainer);
-    });
+    const displayContainer = document.createElement("div");
 
     const title = document.createElement("div");
     title.className = "algorithm-title";
     title.innerText = nombreAlgo;
 
-    chartGroup.appendChild(chartArea);
+    chartGroup.appendChild(displayContainer);
     chartGroup.appendChild(title);
     container.appendChild(chartGroup);
+
+    // El estado inicial se dibuja con el mismo motor que después anima.
+    const motor = new MotorAnimacion(displayContainer);
+    if (selectVelocidad) motor.velocidadMs = Number(selectVelocidad.value);
+    motor.renderizarBarraEstado({
+      tipo: "inicial",
+      indices: [],
+      arrayState: valoresActuales,
+    });
+    motores.push(motor);
   });
 }
 
@@ -451,159 +442,49 @@ function insertarElementosPersonalizados() {
   }
 }
 
-function ordenarYMedir(nombreAlgoritmo, valores) {
-  const arreglo = [...valores];
-  let comparaciones = 0;
-  let intercambios = 0;
-  const inicio = performance.now();
-
-  const comparar = (a, b) => {
-    comparaciones += 1;
-    return a - b;
-  };
-
-  const intercambiar = (i, j) => {
-    if (i === j) return;
-    [arreglo[i], arreglo[j]] = [arreglo[j], arreglo[i]];
-    intercambios += 1;
-  };
-
-  if (nombreAlgoritmo === "Bubble Sort") {
-    for (let fin = arreglo.length - 1; fin > 0; fin -= 1) {
-      let huboIntercambio = false;
-      for (let i = 0; i < fin; i += 1) {
-        if (comparar(arreglo[i], arreglo[i + 1]) > 0) {
-          intercambiar(i, i + 1);
-          huboIntercambio = true;
-        }
-      }
-      if (!huboIntercambio) break;
-    }
-  } else if (nombreAlgoritmo === "Selection Sort") {
-    for (let i = 0; i < arreglo.length - 1; i += 1) {
-      let menor = i;
-      for (let j = i + 1; j < arreglo.length; j += 1) {
-        if (comparar(arreglo[j], arreglo[menor]) < 0) menor = j;
-      }
-      intercambiar(i, menor);
-    }
-  } else if (nombreAlgoritmo === "Insertion Sort") {
-    for (let i = 1; i < arreglo.length; i += 1) {
-      const valor = arreglo[i];
-      let j = i - 1;
-      while (j >= 0 && comparar(arreglo[j], valor) > 0) {
-        arreglo[j + 1] = arreglo[j];
-        j -= 1;
-      }
-      arreglo[j + 1] = valor;
-    }
-  } else if (nombreAlgoritmo === "Stooge Sort") {
-    const ordenarStooge = (inicioIndice, finIndice) => {
-      if (comparar(arreglo[inicioIndice], arreglo[finIndice]) > 0) {
-        intercambiar(inicioIndice, finIndice);
-      }
-      if (finIndice - inicioIndice + 1 > 2) {
-        const tercio = Math.floor((finIndice - inicioIndice + 1) / 3);
-        ordenarStooge(inicioIndice, finIndice - tercio);
-        ordenarStooge(inicioIndice + tercio, finIndice);
-        ordenarStooge(inicioIndice, finIndice - tercio);
-      }
-    };
-    if (arreglo.length > 1) ordenarStooge(0, arreglo.length - 1);
-  } else if (nombreAlgoritmo === "Gnome Sort") {
-    let i = 1;
-    while (i < arreglo.length) {
-      if (i === 0 || comparar(arreglo[i - 1], arreglo[i]) <= 0) {
-        i += 1;
-      } else {
-        intercambiar(i - 1, i);
-        i -= 1;
-      }
-    }
-  } else if (nombreAlgoritmo === "Exchange Sort") {
-    for (let i = 0; i < arreglo.length - 1; i += 1) {
-      for (let j = i + 1; j < arreglo.length; j += 1) {
-        if (comparar(arreglo[i], arreglo[j]) > 0) intercambiar(i, j);
-      }
-    }
-  } else if (nombreAlgoritmo === "Merge Sort") {
-    const ordenarMerge = (lista) => {
-      if (lista.length < 2) return lista;
-      const medio = Math.floor(lista.length / 2);
-      const izquierda = ordenarMerge(lista.slice(0, medio));
-      const derecha = ordenarMerge(lista.slice(medio));
-      const resultado = [];
-      let i = 0;
-      let j = 0;
-      while (i < izquierda.length && j < derecha.length) {
-        if (comparar(izquierda[i], derecha[j]) <= 0) {
-          resultado.push(izquierda[i]);
-          i += 1;
-        } else {
-          resultado.push(derecha[j]);
-          j += 1;
-        }
-      }
-      return resultado.concat(izquierda.slice(i), derecha.slice(j));
-    };
-    arreglo.splice(0, arreglo.length, ...ordenarMerge(arreglo));
-  } else if (nombreAlgoritmo === "Quick Sort") {
-    const ordenarQuick = (inicioIndice, finIndice) => {
-      if (inicioIndice >= finIndice) return;
-      const pivote = arreglo[finIndice];
-      let posicion = inicioIndice;
-      for (let i = inicioIndice; i < finIndice; i += 1) {
-        if (comparar(arreglo[i], pivote) < 0) {
-          intercambiar(posicion, i);
-          posicion += 1;
-        }
-      }
-      intercambiar(posicion, finIndice);
-      ordenarQuick(inicioIndice, posicion - 1);
-      ordenarQuick(posicion + 1, finIndice);
-    };
-    ordenarQuick(0, arreglo.length - 1);
-  }
-
-  const tiempoMs = (performance.now() - inicio).toFixed(2);
-  const algoritmo = algoritmos.find((item) => item.nombre === nombreAlgoritmo);
-
-  return {
-    arreglo,
-    metricas: {
-      comparaciones,
-      intercambios,
-      tiempoMs,
-      pasos: comparaciones + intercambios,
-      complejidad: algoritmo ? algoritmo.complejidad : "N/A",
-    },
-  };
-}
-
-export function ejecutarSimulacion() {
+// Los algoritmos se ejecutan en el backend; aquí solo se piden los
+// resultados, se muestran las métricas y se animan los pasos.
+export async function ejecutarSimulacion() {
   if (algoritmosSeleccionados.length === 0) {
     alert("Selecciona al menos un algoritmo para ejecutar la simulación.");
     return;
   }
 
-  const resultados = algoritmosSeleccionados.map((nombre) =>
-    ordenarYMedir(nombre, valoresActuales)
-  );
+  const boton = document.getElementById("btnSimulate");
+  if (boton) boton.disabled = true;
 
-  resultados.forEach(({ metricas }, indice) => {
-    metricasData[algoritmosSeleccionados[indice]] = metricas;
+  let resultados;
+  try {
+    const ids = algoritmosSeleccionados.map(nombreAId);
+    resultados =
+      ids.length === 1
+        ? [await ejecutarAlgoritmo(ids[0], valoresActuales)]
+        : await compararAlgoritmos(ids, valoresActuales);
+  } catch (error) {
+    alert(error.message);
+    return;
+  } finally {
+    if (boton) boton.disabled = false;
+  }
+
+  resultados.forEach((resultado, indice) => {
+    const nombre = algoritmosSeleccionados[indice];
+    const algoritmo = algoritmos.find((item) => item.nombre === nombre);
+    metricasData[nombre] = {
+      comparaciones: resultado.metrics.comparisons,
+      intercambios: resultado.metrics.swaps,
+      tiempoMs: resultado.metrics.executionTimeMs.toFixed(3),
+      pasos: resultado.metrics.steps,
+      complejidad: algoritmo ? algoritmo.complejidad : "N/A",
+    };
   });
   renderizarTarjetasMetricas();
 
   if (chartInstance) {
     chartInstance.data.labels = ["Comparaciones", "Intercambios", "Pasos"];
-    chartInstance.data.datasets = resultados.map(({ metricas }, indice) => ({
+    chartInstance.data.datasets = resultados.map(({ metrics }, indice) => ({
       label: algoritmosSeleccionados[indice],
-      data: [
-        metricas.comparaciones,
-        metricas.intercambios,
-        metricas.pasos,
-      ],
+      data: [metrics.comparisons, metrics.swaps, metrics.steps],
       borderColor: [
         "#ffffff", "#e74c3c", "#3498db", "#2ecc71",
         "#f1c40f", "#FFC0CB", "#800080", "#FFA500",
@@ -613,6 +494,21 @@ export function ejecutarSimulacion() {
     }));
     chartInstance.update();
   }
+
+  // Cada algoritmo se anima a la vez sobre su copia del mismo arreglo.
+  dibujarBarras();
+  resultados.forEach((resultado, indice) => {
+    motores[indice].cargarPasos(convertirPasos(resultado));
+    motores[indice].reproducir();
+  });
+}
+
+function reiniciarSimulacion() {
+  motores.forEach((motor) => motor.reiniciar());
+}
+
+function cambiarVelocidad(evento) {
+  motores.forEach((motor) => motor.fijarVelocidad(evento.target.value));
 }
 
 // Inicialización de Event Listeners e inicio de interfaz
@@ -628,4 +524,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnBack")?.addEventListener("click", regresarAlInicio);
   document.getElementById("btnCustom")?.addEventListener("click", insertarElementosPersonalizados);
   document.getElementById("btnSimulate")?.addEventListener("click", ejecutarSimulacion);
+  document.getElementById("btnReiniciar")?.addEventListener("click", reiniciarSimulacion);
+  document.getElementById("selectVelocidad")?.addEventListener("change", cambiarVelocidad);
 });
