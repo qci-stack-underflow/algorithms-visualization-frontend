@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
@@ -13,8 +13,122 @@
 </head>
 
 <body>
-  Hello there! I'm using Vite, SASS, Nodejs, ECMAScript and JavaScript to build this webpage
-</body>
-<script type="module" src="./js/script.js"></script>
+  <!-- Menu -->
+  <header id="mainHeader">
+    <h1>StackUnderFlow</h1>
 
+    <div class="search-container">
+      <label for="searchInput">Buscar:</label>
+
+      <div class="search-input-wrapper">
+        <input type="text" id="searchInput" placeholder="Escribe algún algoritmo...">
+
+        <button id="btnSearch" type="button" title="Buscar">
+          Buscar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu Boton de filtrar -->
+  <main id="mainContent">
+
+    <div class="toolbar">
+      <select id="complexityFilter" class="select-filter">
+        <option value="ALL">Filtrar por complejidad</option>
+        <option value="O(n²)">O(n²)</option>
+        <option value="O(n log n)">O(n log n)</option>
+        <option value="O(n^2.71)">O(n^2.71)</option>
+      </select>
+    </div>
+
+    <!-- Contenedor donde se generan dinamicamente las tarjetas -->
+    <div class="grid-container" id="algorithmsGrid"></div>
+
+  </main>
+
+  <!-- Pantalla de Inicio o Visualizador -->
+  <div id="visualizerScreen">
+    <!-- Botón para regresar al inicio -->
+    <div class="visualizer-header">
+      <button class="btn-regresar" id="btnBack" type="button">Regresar ↵</button>
+    </div>
+
+    <div class="visualizer-layout">
+      <!-- Panel lateral de opciones -->
+      <div class="sidebar">
+        <h3>Options</h3>
+
+        <!-- Elements: define la cantidad de elementos aleatorios -->
+        <div class="sidebar-group">
+          <label for="elementsInput">Elements (máx. 50)</label>
+          <input type="number" id="elementsInput" value="5" min="1" max="50">
+        </div>
+
+        <!-- Custom elements: valores ingresados por el usuario -->
+        <div class="sidebar-group">
+          <label for="customElementsInput">Custom Elements</label>
+          <input type="text" id="customElementsInput" placeholder="Ej: 10, 4, 8, 3, 7">
+        </div>
+
+        <!-- Insert para guardar los elementos -->
+        <button class="btn-action" id="btnCustom" type="button">Insert</button>
+
+        <!-- Selector de Velocidad -->
+        <div class="sidebar-group">
+          <label for="selectVelocidad">Speed</label>
+          <select id="selectVelocidad" class="select-filter">
+            <option value="500">0.5x (Lento)</option>
+            <option value="250" selected>1.0x (Normal)</option>
+            <option value="100">2.5x (Rápido)</option>
+            <option value="30">8.0x (Muy Rápido)</option>
+          </select>
+        </div>
+
+        <!-- Botón de Reinicio -->
+        <button id="btnReiniciar" class="btn-action">Reset</button>
+
+        <hr class="sidebar-divider">
+
+        <!-- Toggle para comparar algoritmos -->
+        <div class="compare-toggle-container">
+          <span>Comparar algoritmos:</span>
+          <label class="switch">
+            <input type="checkbox" id="compareToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Lista de casillas de algoritmos -->
+        <div class="algorithms-checkbox-list" id="checkboxList">
+          <!-- Generado dinámicamente en JS -->
+        </div>
+
+        <!-- Boton Run (Comparar) -->
+        <button class="btn-run" id="btnSimulate" type="button">Comparar</button>
+      </div>
+
+      <!-- Dibujo de barras y grafica metrica -->
+      <div class="main-canvas">
+        <div class="multi-charts-container" id="multiChartsContainer">
+          <!-- Las graficas de barras se generan en JS -->
+        </div>
+
+        <div class="metrics-section">
+          <!-- Grafica metrica -->
+          <div class="metrics-chart-container">
+            <canvas id="metricsChart"></canvas>
+          </div>
+
+          <!-- Contenedor simple para los campos de metricas -->
+          <div class="metrics-cards-container" id="metricsCardsContainer">
+            <!-- Las tarjetas metricas se generan en JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/script.js"></script>
+</body>
 </html>
