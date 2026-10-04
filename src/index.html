@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
@@ -10,7 +10,6 @@
     href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet">
   <title>Algorithms viz</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -22,9 +21,9 @@
       <label for="searchInput">Buscar:</label>
 
       <div class="search-input-wrapper">
-        <input type="text" id="searchInput" placeholder="Escribe algún algoritmo..." onkeyup="filtrarAlgoritmos()">
+        <input type="text" id="searchInput" placeholder="Escribe algún algoritmo...">
 
-        <button onclick="filtrarAlgoritmos()" title="Buscar">
+        <button id="btnSearch" type="button" title="Buscar">
           Buscar
         </button>
       </div>
@@ -35,7 +34,7 @@
   <main id="mainContent">
 
     <div class="toolbar">
-      <select id="complexityFilter" class="select-filter" onchange="filtrarAlgoritmos()">
+      <select id="complexityFilter" class="select-filter">
         <option value="ALL">Filtrar por complejidad</option>
         <option value="O(n²)">O(n²)</option>
         <option value="O(n log n)">O(n log n)</option>
@@ -52,7 +51,7 @@
   <div id="visualizerScreen">
     <!-- Botón para regresar al inicio -->
     <div class="visualizer-header">
-      <button class="btn-regresar" onclick="regresarAlInicio()">Regresar ↵</button>
+      <button class="btn-regresar" id="btnBack" type="button">Regresar ↵</button>
     </div>
 
     <div class="visualizer-layout">
@@ -62,8 +61,8 @@
 
         <!-- Elements: define la cantidad de elementos aleatorios -->
         <div class="sidebar-group">
-          <label for="elementsInput">Elements</label>
-          <input type="number" id="elementsInput" value="5" min="1" max="15" onchange="generarElementosAleatorios()">
+          <label for="elementsInput">Elements (máx. 50)</label>
+          <input type="number" id="elementsInput" value="5" min="1" max="50">
         </div>
 
         <!-- Custom elements: valores ingresados por el usuario -->
@@ -73,7 +72,7 @@
         </div>
 
         <!-- Insert para guardar los elementos -->
-        <button class="btn-action" onclick="insertarElementosPersonalizados()">Insert</button>
+        <button class="btn-action" id="btnCustom" type="button">Insert</button>
 
         <hr class="sidebar-divider">
 
@@ -81,7 +80,7 @@
         <div class="compare-toggle-container">
           <span>Comparar algoritmos:</span>
           <label class="switch">
-            <input type="checkbox" id="compareToggle" onchange="actualizarEstadoComparacion()">
+            <input type="checkbox" id="compareToggle">
             <span class="slider"></span>
           </label>
         </div>
@@ -92,7 +91,7 @@
         </div>
 
         <!-- Boton Run (Comparar) -->
-        <button class="btn-run" onclick="ejecutarSimulacion()">Comparar</button>
+        <button class="btn-run" id="btnSimulate" type="button">Comparar</button>
       </div>
 
       <!-- Dibujo de barras y grafica metrica -->
@@ -115,9 +114,7 @@
       </div>
     </div>
   </div>
+
+  <script type="module" src="./js/script.js"></script>
 </body>
-
-<script type="module" src="./js/script.js"></script>
-<script src="./js/index.js"></script>
-
 </html>

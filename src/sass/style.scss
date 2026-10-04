@@ -242,6 +242,7 @@ main {
 .visualizer-layout {
   display: flex;
   gap: 20px;
+  min-width: 0;
 }
 
 /* Panel de opciones lateral */
@@ -403,6 +404,7 @@ input:checked + .slider:before {
 /* Area Principal de Dibujo */
 .main-canvas {
   flex: 1;
+  min-width: 0;
   background-color: #3a3a3a;
   border-radius: 8px;
   padding: 20px;
@@ -427,6 +429,7 @@ input:checked + .slider:before {
   padding-bottom: 20px;
   max-height: 500px;
   overflow-y: auto;
+  min-width: 0;
 }
 
 /* Tarjeta de contenido de cada grafica individual */
@@ -443,6 +446,7 @@ input:checked + .slider:before {
   border-radius: 8px;
   padding: 15px 10px 10px 10px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  overflow-x: auto;
 }
 
 .chart-area {
@@ -455,12 +459,30 @@ input:checked + .slider:before {
   padding: 0 10px;
 }
 
+.chart-area-compact {
+  justify-content: flex-start;
+  width: max(100%, calc(var(--bar-count) * 22px));
+  gap: 4px;
+}
+
 .bar-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
   flex: 1;
+}
+
+.chart-area-compact .bar-container {
+  flex: 0 0 22px;
+}
+
+.chart-area-compact .bar {
+  max-width: 14px;
+}
+
+.chart-area-compact .bar-label {
+  font-size: 0.65rem;
 }
 
 .bar {
@@ -542,4 +564,78 @@ input:checked + .slider:before {
 .metric-item span.val {
   font-weight: bold;
   color: #ffffff;
+}
+
+@media (max-width: 800px) {
+  #visualizerScreen {
+    width: calc(100% - 24px);
+    padding: 16px;
+    margin: 12px 0;
+  }
+
+  .visualizer-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .main-canvas {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 24px 16px 20px;
+  }
+
+  header h1 {
+    font-size: 1.65rem;
+  }
+
+  .search-container {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-container label {
+    align-self: flex-start;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-input-wrapper input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  main {
+    padding: 24px 16px;
+  }
+
+  .grid-container {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  #visualizerScreen {
+    width: calc(100% - 16px);
+    padding: 12px;
+  }
+
+  .main-canvas {
+    padding: 12px;
+  }
+
+  .single-chart-group {
+    min-width: 0;
+    width: 100%;
+  }
 }
