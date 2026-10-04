@@ -1,4 +1,3 @@
-import "@sass/style.scss"
 // Lista de algoritmos con la propiedad 'gif' habilitada
 const algoritmos = [
   {

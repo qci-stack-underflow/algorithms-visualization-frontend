@@ -1,14 +1,545 @@
-@use "colors";
-
 * {
-  color: colors.$foreground-color;
-  font-family: "Noto Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
 
 body {
-  background-color: colors.$background-color;
+  background-color: #2b2b2b;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Estilos del encabezado principal */
+header {
+  width: 100%;
+  background-color: #222222;
+  color: white;
+  padding: 30px 20px 25px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+header h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Contenedor del buscador */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-container label {
+  font-size: 1.1rem;
+  color: #dddddd;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #333333;
+  border: 1px solid #555555;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.search-input-wrapper input {
+  border: none;
+  outline: none;
+  padding: 7px 12px;
+  font-size: 1rem;
+  width: 220px;
+  background-color: transparent;
+  color: #ffffff;
+}
+
+.search-input-wrapper input::placeholder {
+  color: #888888;
+}
+
+.search-input-wrapper button {
+  background-color: transparent;
+  border: none;
+  border-left: 1px solid #555555;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.search-input-wrapper button:hover {
+  background-color: #444444;
+}
+
+/* Contenedor principal de tarjetas */
+main {
+  width: 100%;
+  max-width: 1100px;
+  padding: 30px 20px;
+}
+
+/* Barra de filtro */
+.toolbar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+}
+
+.select-filter {
+  background-color: #333333;
+  color: #ffffff;
+  border: 1px solid #555555;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.select-filter:hover {
+  background-color: #444444;
+}
+
+/* Cuadricula para mostrar las tarjetas */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* Diseño de cada tarjeta */
+.card {
+  background-color: #3a3a3a;
+  border: 1px solid #4a4a4a;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Contenedor para el GIF en las tarjetas del Menu */
+.card-gif-container {
+  width: 100%;
+  height: 140px;
+  background-color: #222222;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #444444;
+}
+
+.card-gif-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-gif-placeholder {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 2px;
+}
+
+.card-info {
+  text-align: center;
+  width: 100%;
+}
+
+/* Estilos de las tarjetas */
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.card-complexity {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #dddddd;
+  margin-bottom: 10px;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: #cccccc;
+  line-height: 1.4;
+}
+
+/* Mensaje de no resultados */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 50px;
+  font-size: 1.1rem;
+  color: #ffffff;
+  background-color: #3a3a3a;
+  border-radius: 10px;
+  border: 1px solid #555555;
+}
+
+/* Estilos para la Pantalla de Inicio */
+#visualizerScreen {
+  display: none; /* Se oculta al inicio */
+  width: 100%;
+  max-width: 1200px;
+  min-height: 85vh;
+  background-color: #2b2b2b;
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.visualizer-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+/* Boton Regresar */
+.btn-regresar {
+  background-color: #ffffff;
+  color: #222222;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-regresar:hover {
+  background-color: #dddddd;
+}
+
+.visualizer-layout {
+  display: flex;
+  gap: 20px;
+}
+
+/* Panel de opciones lateral */
+.sidebar {
+  width: 270px;
+  background-color: #222222;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.sidebar h3 {
+  font-size: 1rem;
+  color: #cccccc;
+  margin-bottom: 5px;
+}
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sidebar-group label {
+  font-size: 0.85rem;
+  color: #aaaaaa;
+}
+
+.sidebar-group input[type="number"],
+.sidebar-group input[type="text"] {
+  background-color: #333333;
+  border: 1px solid #555555;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.btn-action {
+  background-color: #444444;
+  color: white;
+  border: none;
+  padding: 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-action:hover {
+  background-color: #555555;
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid #444444;
+  margin: 8px 0;
+}
+
+/* Toggle para Comparar Algoritmos */
+.compare-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #dddddd;
+  font-size: 0.85rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #555555;
+  transition: 0.3s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #6c5ce7;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Lista de casillas para elegir algoritmos a comparar */
+.algorithms-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 5px 0;
+  padding-right: 5px;
+}
+
+.algo-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #cccccc;
+  cursor: pointer;
+}
+
+.algo-checkbox-item input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #6c5ce7;
+  width: 15px;
+  height: 15px;
+}
+
+/* Boton Run (Comparar) */
+.btn-run {
+  background-color: #444444;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.btn-run:hover {
+  background-color: #555555;
+}
+
+/* Area Principal de Dibujo */
+.main-canvas {
+  flex: 1;
+  background-color: #3a3a3a;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 500px;
+  width: 100%;
+}
+
+/* Distribucion flexible con Wrap para la organizacion graficas de barras */
+.multi-charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  border-bottom: 2px solid #555555;
+  padding-bottom: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Tarjeta de contenido de cada grafica individual */
+.single-chart-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 280px;
+  min-width: 250px;
+  max-width: 450px;
+  background-color: #2e2e2e;
+  border: 1px solid #4a4a4a;
+  border-radius: 8px;
+  padding: 15px 10px 10px 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.chart-area {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  height: 180px;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.bar {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 25px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s;
+}
+
+.bar-label {
+  font-size: 0.8rem;
+  color: #dddddd;
+}
+
+.algorithm-title {
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-top: 12px;
+  text-transform: uppercase;
+  color: #ffffff;
+  border-top: 1px solid #444444;
+  width: 100%;
+  text-align: center;
+  padding-top: 8px;
+}
+
+/* Seccion para grafica y tarjetas metricas */
+.metrics-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.metrics-chart-container {
+  background-color: #2b2b2b;
+  border-radius: 8px;
+  padding: 15px;
+  height: 220px;
+  width: 100%;
+}
+
+/* Tarjetas Metricas */
+.metrics-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.metric-card {
+  background-color: #2b2b2b;
+  border-left: 4px solid #6c5ce7;
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-card-title {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #444444;
+  padding-bottom: 4px;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #cccccc;
+}
+
+.metric-item span.val {
+  font-weight: bold;
+  color: #ffffff;
 }
