@@ -150,12 +150,9 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 
 ## Uso de IA
 
-| Integrante | Herramienta | Para qué |
-|---|---|---|
-| Arath | Claude | Apoyo para generar código, resolver errores de configuración y automatizar commits y pull requests |
-| Salvador | Claude | Apoyo para generar código y pruebas, revisar cambios y automatizar commits y pull requests |
-| Edwin | Claude | Apoyo para generar código y corregir errores |
-| Alessandra | Claude | Apoyo para generar código y ajustar el diseño de la interfaz |
+| Herramienta | Para qué se usó |
+|---|---|
+| Claude | Apoyo para generar código y pruebas, resolver errores, revisar cambios y automatizar commits y pull requests |
 
 Todo el código generado con apoyo de IA fue revisado y probado por el equipo, que es responsable de él.
 
