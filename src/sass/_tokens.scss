@@ -1,0 +1,87 @@
+// Variables de diseño. Son propiedades CSS (no variables de SASS) para que
+// el JS también pueda leerlas, por ejemplo los colores de las barras.
+:root {
+  // Superficies: blanco y hueso
+  --bg-page: #faf8f3;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f4f1ea;
+  --bg-muted: #eeeae1;
+  --bg-pattern: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l20 20M20 0L0 20' stroke='%23E4DED2' stroke-width='0.6'/%3E%3C/svg%3E");
+
+  // Texto (contraste AA sobre hueso y blanco)
+  --text-primary: #1c1b19;
+  --text-secondary: #57534b;
+  --text-muted: #76716a;
+
+  --border: #e7e2d8;
+  --border-strong: #d9d2c4;
+  --border-dashed: rgba(28, 27, 25, 0.14);
+
+  // Acento azul zafiro: solo para resaltar y difuminar
+  --accent: #2450d6;
+  --accent-hover: #1c3fb0;
+  --accent-light: #e8eefc;
+  --accent-fg: #ffffff;
+  --accent-glow: rgba(36, 80, 214, 0.14);
+  --accent-ring: rgba(36, 80, 214, 0.22);
+
+  // Estados de las barras animadas (vistas previas y visualizador).
+  // Todos con contraste >= 3:1 sobre blanco. Escritura (solo Merge Sort) y
+  // pivote (solo Quick Sort) nunca aparecen juntos en un mismo algoritmo.
+  --bar-idle: #8b93a3;
+  --bar-compare: #b7861a;
+  --bar-swap: #c8483d;
+  --bar-write: #9c4fb8;
+  --bar-pivot: #2450d6;
+  --bar-done: #2e8b62;
+
+  // Un color por algoritmo en la comparación (gráfica y tarjetas).
+  // Paleta categórica validada (skill dataviz): el orden es parte de la
+  // validación, así que se asigna en este orden y no se reacomoda.
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #e34948;
+
+  // Tintes de los símbolos en la vista previa de Huffman
+  --sym-a-bg: #e8eefc;
+  --sym-a-fg: #1c3fb0;
+  --sym-b-bg: #f6ecd3;
+  --sym-b-fg: #7a5a0f;
+  --sym-c-bg: #e2f0e8;
+  --sym-c-fg: #22694a;
+
+  // Espaciado
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+  --s7: 80px;
+  --s8: 96px;
+
+  // Tipografía: serif solo en títulos; Inter en todo lo demás
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  // Sombras cálidas en lugar de negro puro
+  --shadow-sm: 0 1px 3px rgba(28, 27, 25, 0.06);
+  --shadow-md: 0 4px 16px rgba(28, 27, 25, 0.07), 0 2px 4px rgba(28, 27, 25, 0.04);
+  --shadow-lg: 0 8px 32px rgba(28, 27, 25, 0.1);
+  --shadow-float: 0 20px 60px rgba(28, 27, 25, 0.12);
+
+  --max-w: 1200px;
+  --nav-h: 68px;
+}

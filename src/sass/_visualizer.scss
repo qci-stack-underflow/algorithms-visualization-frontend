@@ -1,0 +1,490 @@
+// Pantalla del visualizador de ordenamientos, con la misma paleta que el inicio.
+
+/* Pantalla del visualizador */
+#visualizerScreen {
+  display: none; /* Se oculta al inicio */
+  width: 100%;
+  max-width: var(--max-w);
+  min-height: 85vh;
+  padding: var(--s4) var(--s3) var(--s5);
+}
+
+.visualizer-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--s2);
+}
+
+/* Boton Regresar */
+.btn-regresar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+
+    svg {
+      transform: translateX(-2px);
+    }
+  }
+}
+
+.visualizer-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+/* Panel de opciones lateral */
+.sidebar {
+  position: sticky;
+  top: var(--s3);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 14px;
+  width: 280px;
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar h3 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.sidebar-group input[type="number"],
+.sidebar-group input[type="text"],
+.select-filter {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    border-color: var(--accent);
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 4px var(--accent-ring);
+  }
+}
+
+.select-filter {
+  cursor: pointer;
+}
+
+.btn-action {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-subtle);
+  }
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 4px 0;
+}
+
+/* Toggle para Comparar Algoritmos */
+.compare-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--border-strong);
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  border-radius: 50%;
+  background-color: var(--bg-surface);
+  box-shadow: 0 1px 3px rgba(28, 27, 25, 0.2);
+  transition: transform 0.25s ease;
+}
+
+input:checked + .slider {
+  background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+input:focus-visible + .slider {
+  box-shadow: 0 0 0 4px var(--accent-ring);
+}
+
+/* Lista de casillas para elegir algoritmos a comparar */
+.algorithms-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  // Cabe la lista completa de los 8 ordenamientos sin scroll.
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0 -8px;
+}
+
+.algo-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--bg-subtle);
+  }
+
+  &:has(input:checked) {
+    color: var(--text-primary);
+  }
+
+  // Fuera del modo comparar solo se puede elegir uno.
+  &:has(input:disabled) {
+    color: var(--text-muted);
+    cursor: default;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.algo-checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: inherit;
+}
+
+/* Boton Run (Comparar) */
+.btn-run {
+  margin-top: 4px;
+  padding: 11px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  box-shadow: 0 6px 20px var(--accent-glow);
+  color: var(--accent-fg);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 10px 28px var(--accent-ring);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+/* Area Principal de Dibujo */
+.main-canvas {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  min-height: 500px;
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Leyenda de los colores de las barras */
+.bar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  list-style: none;
+  font-size: 13px;
+  color: var(--text-secondary);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.swatch--compare {
+  background: var(--bar-compare);
+}
+
+.swatch--swap {
+  background: var(--bar-swap);
+}
+
+.swatch--write {
+  background: var(--bar-write);
+}
+
+.swatch--pivot {
+  background: var(--bar-pivot);
+}
+
+.swatch--done {
+  background: var(--bar-done);
+}
+
+/* Barras y, con un solo ordenamiento, su pseudocódigo al lado */
+.canvas-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--s2);
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Distribucion flexible con Wrap para la organizacion graficas de barras */
+.multi-charts-container {
+  display: flex;
+  flex: 1 1 320px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: var(--s2);
+  // Sin altura máxima: con varios algoritmos el área crece y se recorre con
+  // el scroll de la página (el panel de opciones queda fijo al lado).
+  min-width: 0;
+}
+
+/* Tarjeta de contenido de cada grafica individual */
+.single-chart-group {
+  display: flex;
+  flex: 1 1 280px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 250px;
+  max-width: 450px;
+  padding: 14px 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  overflow-x: auto;
+}
+
+// El punto de color identifica al algoritmo en la gráfica y en su tarjeta.
+.algorithm-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-serie, var(--text-muted));
+  }
+}
+
+/* Seccion para grafica y tarjetas metricas */
+.metrics-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  width: 100%;
+}
+
+.metrics-chart-container {
+  width: 100%;
+  height: 240px;
+  padding: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+/* Tarjetas Metricas */
+.metrics-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+
+.metric-card-title {
+  margin-bottom: 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.metric-item span.val {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+@media (max-width: 800px) {
+  #visualizerScreen {
+    padding: var(--s3) var(--s2) var(--s4);
+  }
+
+  .visualizer-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+  }
+
+  .main-canvas {
+    padding: var(--s2);
+  }
+}
+
+@media (max-width: 480px) {
+  #visualizerScreen {
+    padding: var(--s2) 12px var(--s4);
+  }
+
+  .main-canvas {
+    padding: 12px;
+  }
+
+  .single-chart-group {
+    min-width: 0;
+    width: 100%;
+  }
+}

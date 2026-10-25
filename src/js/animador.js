@@ -1,4 +1,5 @@
 // src/js/animador.js
+import { coloresBarras } from "./tema.js";
 
 export class MotorAnimacion {
   // opciones (opcionales): altura del área de barras y si se muestran los valores.
@@ -6,6 +7,8 @@ export class MotorAnimacion {
     this.container = containerElement;
     this.altura = opciones.altura ?? "200px";
     this.mostrarValores = opciones.mostrarValores ?? true;
+    // Colores de cada estado, tomados de _tokens.scss (--bar-*).
+    this.colores = coloresBarras();
     this.intervalId = null;
     this.velocidadMs = 250;
     this.pasos = [];
@@ -20,6 +23,7 @@ export class MotorAnimacion {
     this.pasoActual = 0;
   }
 
+  // `onPaso(paso, indice)` se llama cada vez que se dibuja un paso.
   reproducir(onPaso) {
     if (onPaso) this.onPasoCallback = onPaso;
     if (this.pasos.length === 0) return;
@@ -30,7 +34,7 @@ export class MotorAnimacion {
       if (this.pasoActual < this.pasos.length) {
         const paso = this.pasos[this.pasoActual];
         this.renderizarBarraEstado(paso);
-        if (this.onPasoCallback) this.onPasoCallback(paso);
+        if (this.onPasoCallback) this.onPasoCallback(paso, this.pasoActual);
         this.pasoActual++;
       } else {
         this.pausar();
@@ -60,7 +64,9 @@ export class MotorAnimacion {
   // Detiene y vuelve a dibujar el estado inicial.
   reiniciar() {
     this.detener();
-    if (this.pasos.length > 0) this.renderizarBarraEstado(this.pasos[0]);
+    if (this.pasos.length === 0) return;
+    this.renderizarBarraEstado(this.pasos[0]);
+    if (this.onPasoCallback) this.onPasoCallback(this.pasos[0], 0);
   }
 
   renderizarBarraEstado(paso) {
@@ -112,24 +118,21 @@ export class MotorAnimacion {
       bar.style.transition = "height 0.2s ease, background-color 0.2s ease";
 
       // Manejo de colores
+      const colores = this.colores;
       if (indices && indices.includes(idx)) {
-        if (tipo === 'comparacion') bar.style.backgroundColor = '#f1c40f'; // Amarillo
-        else if (tipo === 'intercambio') bar.style.backgroundColor = '#e74c3c'; // Rojo
-        else if (tipo === 'escritura') bar.style.backgroundColor = '#9b59b6'; // Morado (Merge Sort)
-        else if (tipo === 'pivote') bar.style.backgroundColor = '#3498db'; // Azul (Quick Sort)
-        else bar.style.backgroundColor = '#ffffff';
+        bar.style.backgroundColor = colores[tipo] ?? colores.base;
       } else if (tipo === 'completado') {
-        bar.style.backgroundColor = '#2ecc71'; // Verde
+        bar.style.backgroundColor = colores.completado;
       } else {
-        bar.style.backgroundColor = '#ffffff'; // Blanco original
+        bar.style.backgroundColor = colores.base;
       }
 
       const label = document.createElement("span");
       label.style.fontSize = totalElementos > 12 ? "11px" : "14px";
-      label.style.color = "#ffffff";
+      label.style.color = colores.etiqueta;
       label.style.marginTop = "6px";
-      label.style.fontWeight = "bold";
-      label.style.fontFamily = "sans-serif";
+      label.style.fontWeight = "500";
+      label.style.fontFamily = "var(--font-mono)";
       label.innerText = valor;
 
       barContainer.appendChild(bar);

@@ -1,0 +1,111 @@
+// Panel de pseudocódigo con la línea del paso actual resaltada.
+// Lo usan el visualizador de ordenamientos y la pantalla de Huffman.
+
+/* Muestra de color junto a un texto */
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* Panel de pseudocódigo */
+.code-panel {
+  display: flex;
+  flex: 1 1 300px;
+  flex-direction: column;
+  max-width: 420px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  overflow: hidden;
+
+  // `display: flex` ganaría al atributo hidden si no se repite aquí.
+  &[hidden] {
+    display: none;
+  }
+}
+
+.code-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.code-panel-title {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.code-panel-counter {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.code-lines {
+  flex: 1;
+  margin: 0;
+  padding: 8px 0;
+  overflow-x: auto;
+  list-style: none;
+  counter-reset: linea;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  // Sin ligaduras: ">=" se ve tal cual lo manda el backend, no como "≥".
+  font-variant-ligatures: none;
+  line-height: 1.75;
+
+  li {
+    position: relative;
+    padding: 0 14px 0 44px;
+    color: var(--text-secondary);
+    white-space: pre;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+
+    // Número de línea
+    &::before {
+      position: absolute;
+      left: 0;
+      width: 30px;
+      color: var(--text-muted);
+      text-align: right;
+      counter-increment: linea;
+      content: counter(linea);
+    }
+
+    // Línea que ejecuta el paso actual
+    &.is-active {
+      background: var(--accent-light);
+      box-shadow: inset 3px 0 0 var(--accent);
+      color: var(--text-primary);
+
+      &::before {
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+.code-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}

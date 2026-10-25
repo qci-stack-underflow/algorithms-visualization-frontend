@@ -4,54 +4,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Visualiza paso a paso algoritmos de ordenamiento y el algoritmo de Huffman.">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect x='8' y='4' width='12' height='5' rx='2.5' fill='%232450D6'/%3E%3Crect x='5' y='11.5' width='18' height='5' rx='2.5' fill='%2357534B'/%3E%3Crect x='2' y='19' width='24' height='5' rx='2.5' fill='%231C1B19'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap"
     rel="stylesheet">
-  <title>Algorithms viz</title>
+  <title>StackUnderFlow · Visualizador de algoritmos</title>
 </head>
 
 <body>
-  <!-- Menu -->
-  <header id="mainHeader">
-    <h1>StackUnderFlow</h1>
+  <!-- Barra de navegación -->
+  <header id="mainHeader" class="site-header">
+    <nav class="nav container" aria-label="Principal">
+      <a class="brand" href="#inicio" aria-label="StackUnderFlow, ir al inicio">
+        <svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
+          <rect class="brand-mark-top" x="8" y="4" width="12" height="5" rx="2.5" />
+          <rect class="brand-mark-mid" x="5" y="11.5" width="18" height="5" rx="2.5" />
+          <rect class="brand-mark-base" x="2" y="19" width="24" height="5" rx="2.5" />
+        </svg>
+        <span>StackUnderFlow</span>
+      </a>
 
-    <div class="search-container">
-      <label for="searchInput">Buscar:</label>
+      <ul class="nav-links">
+        <li><a href="#ordenamientos">Ordenamientos</a></li>
+        <li><a href="#algoritmos">Algoritmos</a></li>
+      </ul>
 
-      <div class="search-input-wrapper">
-        <input type="text" id="searchInput" placeholder="Escribe algún algoritmo...">
-
-        <button id="btnSearch" type="button" title="Buscar">
-          Buscar
-        </button>
-      </div>
-    </div>
+      <a class="btn btn--dark btn--sm" href="huffman.html">Comprimir archivo</a>
+    </nav>
   </header>
 
-  <!-- Menu Boton de filtrar -->
   <main id="mainContent">
+    <!-- Presentación -->
+    <section class="hero" id="inicio" aria-labelledby="heroTitle">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <span class="dashed-line dashed-line--left" aria-hidden="true"></span>
+      <span class="dashed-line dashed-line--right" aria-hidden="true"></span>
 
-    <div class="toolbar">
-      <select id="complexityFilter" class="select-filter">
-        <option value="ALL">Filtrar por complejidad</option>
-        <option value="O(n²)">O(n²)</option>
-        <option value="O(n log n)">O(n log n)</option>
-        <option value="O(n^2.71)">O(n^2.71)</option>
-      </select>
-    </div>
+      <div class="container hero-inner">
+        <a class="badge reveal" href="#algoritmos">
+          <span class="badge-dot" aria-hidden="true"></span>
+          Nuevo · Algoritmo de Huffman
+          <i data-lucide="arrow-right"></i>
+        </a>
 
-    <!-- Contenedor donde se generan dinamicamente las tarjetas -->
-    <div class="grid-container" id="algorithmsGrid"></div>
+        <h1 id="heroTitle" class="reveal">Mira cómo <em>piensan</em> los algoritmos</h1>
 
+        <p class="hero-sub reveal">
+          Visualiza paso a paso ocho algoritmos de ordenamiento, compáralos con
+          exactamente los mismos datos y descubre cómo Huffman comprime un texto.
+        </p>
+
+        <div class="hero-actions reveal">
+          <a class="btn btn--primary" href="#ordenamientos">
+            Explorar ordenamientos
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a class="btn btn--ghost" href="#algoritmos">Conocer Huffman</a>
+        </div>
+      </div>
+
+      <!-- Tarjetas decorativas con datos reales de la aplicación -->
+      <div class="hero-cards" aria-hidden="true">
+        <div class="hero-card hero-card--left">
+          <div class="hero-card-head">
+            <span class="hero-card-title">Insertion Sort</span>
+            <span class="pill">Paso 10 de 52</span>
+          </div>
+          <div class="mini-bars">
+            <span class="mini-bar is-compare" style="--h: 44%"></span>
+            <span class="mini-bar is-compare" style="--h: 22%"></span>
+            <span class="mini-bar" style="--h: 78%"></span>
+            <span class="mini-bar" style="--h: 100%"></span>
+            <span class="mini-bar" style="--h: 89%"></span>
+            <span class="mini-bar" style="--h: 11%"></span>
+            <span class="mini-bar" style="--h: 67%"></span>
+            <span class="mini-bar" style="--h: 33%"></span>
+            <span class="mini-bar" style="--h: 56%"></span>
+          </div>
+          <div class="progress"><span style="--p: 19%"></span></div>
+        </div>
+
+        <div class="hero-card hero-card--center">
+          <div class="hero-card-head">
+            <span class="hero-card-title">Comparaciones</span>
+            <span class="hero-card-caption">mismo arreglo de 9 elementos</span>
+          </div>
+          <ul class="compare-list">
+            <li><span>Bubble Sort</span><span class="compare-track"><span style="--w: 100%"></span></span><b>33</b></li>
+            <li><span>Insertion Sort</span><span class="compare-track"><span style="--w: 85%"></span></span><b>28</b></li>
+            <li><span>Merge Sort</span><span class="compare-track"><span style="--w: 58%"></span></span><b>19</b></li>
+            <li class="is-best"><span>Quick Sort</span><span class="compare-track"><span style="--w: 48%"></span></span><b>16</b></li>
+          </ul>
+        </div>
+
+        <div class="hero-card hero-card--right">
+          <div class="hero-card-head">
+            <span class="hero-card-title">Huffman · Don Quijote</span>
+          </div>
+          <table class="code-table">
+            <tr><td class="sym">␣</td><td>354,706</td><td class="code">111</td></tr>
+            <tr><td class="sym">e</td><td>221,968</td><td class="code">010</td></tr>
+            <tr><td class="sym">a</td><td>192,727</td><td class="code">000</td></tr>
+            <tr><td class="sym">o</td><td>154,052</td><td class="code">1010</td></tr>
+          </table>
+          <div class="hero-card-foot">
+            <span>2.2 MB → 1.2 MB</span>
+            <span class="pill pill--accent">−46 %</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cifras -->
+    <section class="container" aria-label="Cifras del proyecto">
+      <dl class="stats reveal">
+        <div class="stat">
+          <dt>Ordenamientos</dt>
+          <dd data-contar="8">8</dd>
+        </div>
+        <div class="stat">
+          <dt>Elementos por arreglo</dt>
+          <dd data-contar="50">50</dd>
+        </div>
+        <div class="stat">
+          <dt>Métricas por ejecución</dt>
+          <dd data-contar="4">4</dd>
+        </div>
+        <div class="stat">
+          <dt>Algoritmo voraz</dt>
+          <dd data-contar="1">1</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Bloque 1: ordenamientos -->
+    <section class="section" id="ordenamientos" aria-labelledby="sortTitle">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Ordenamientos</span>
+          <h2 id="sortTitle">Ocho formas de ordenar un arreglo</h2>
+          <p>
+            Elige uno para verlo paso a paso, o compáralo con otros usando
+            exactamente los mismos datos.
+          </p>
+        </header>
+
+        <div class="toolbar">
+          <label class="search-field">
+            <i data-lucide="search"></i>
+            <span class="visually-hidden">Buscar algoritmo</span>
+            <input type="search" id="searchInput" placeholder="Buscar algoritmo…" autocomplete="off">
+          </label>
+
+          <div class="chips" id="complexityFilter" role="radiogroup" aria-label="Filtrar por complejidad">
+            <button class="chip is-active" type="button" role="radio" aria-checked="true" data-valor="ALL">Todos</button>
+            <button class="chip" type="button" role="radio" aria-checked="false" data-valor="O(n²)">O(n²)</button>
+            <button class="chip" type="button" role="radio" aria-checked="false" data-valor="O(n log n)">O(n log n)</button>
+            <button class="chip" type="button" role="radio" aria-checked="false" data-valor="O(n^2.71)">O(n^2.71)</button>
+          </div>
+        </div>
+
+        <!-- Contenedor donde se generan dinamicamente las tarjetas -->
+        <div class="grid-container" id="algorithmsGrid"></div>
+      </div>
+    </section>
+
+    <!-- Bloque 2: otros algoritmos (cada uno con su propia pantalla) -->
+    <section class="section section--pattern" id="algoritmos" aria-labelledby="otherTitle">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Algoritmos</span>
+          <h2 id="otherTitle">Más allá de ordenar</h2>
+          <p>
+            Técnicas con características propias. Empezamos con Huffman, un
+            algoritmo voraz que comprime texto.
+          </p>
+        </header>
+
+        <div class="grid-container grid-container--centered" id="otherAlgorithmsGrid"></div>
+      </div>
+    </section>
   </main>
 
   <!-- Pantalla de Inicio o Visualizador -->
   <div id="visualizerScreen">
     <!-- Botón para regresar al inicio -->
     <div class="visualizer-header">
-      <button class="btn-regresar" id="btnBack" type="button">Regresar ↵</button>
+      <button class="btn-regresar" id="btnBack" type="button">
+        <i data-lucide="arrow-left"></i>
+        Regresar
+      </button>
     </div>
 
     <div class="visualizer-layout">
@@ -110,8 +256,33 @@
 
       <!-- Dibujo de barras y grafica metrica -->
       <div class="main-canvas">
-        <div class="multi-charts-container" id="multiChartsContainer">
-          <!-- Las graficas de barras se generan en JS -->
+        <!-- Significado de los colores de las barras -->
+        <ul class="bar-legend" aria-label="Colores de las barras">
+          <li><span class="swatch swatch--compare"></span>Comparación</li>
+          <li><span class="swatch swatch--swap"></span>Intercambio</li>
+          <li><span class="swatch swatch--write"></span>Escritura (Merge)</li>
+          <li><span class="swatch swatch--pivot"></span>Pivote (Quick)</li>
+          <li><span class="swatch swatch--done"></span>Ordenado</li>
+        </ul>
+
+        <div class="canvas-row">
+          <div class="multi-charts-container" id="multiChartsContainer">
+            <!-- Las graficas de barras se generan en JS -->
+          </div>
+
+          <!-- Pseudocódigo con la línea del paso actual. Solo se muestra con
+               un único ordenamiento en pantalla; en una comparación se oculta. -->
+          <aside class="code-panel" id="codePanel" aria-labelledby="codePanelTitle" hidden>
+            <div class="code-panel-head">
+              <h4 class="code-panel-title" id="codePanelTitle">Pseudocódigo</h4>
+              <span class="code-panel-counter" id="codeCounter" title="Paso animado actual"></span>
+            </div>
+            <ol class="code-lines" id="codeLines"></ol>
+            <p class="code-step" id="codeStep">
+              <span class="swatch" id="codeStepSwatch"></span>
+              <span id="codeStepText">Sin ejecutar</span>
+            </p>
+          </aside>
         </div>
 
         <div class="metrics-section">
@@ -128,6 +299,38 @@
       </div>
     </div>
   </div>
+
+  <footer id="mainFooter" class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#inicio">
+          <svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
+            <rect class="brand-mark-top" x="8" y="4" width="12" height="5" rx="2.5" />
+            <rect class="brand-mark-mid" x="5" y="11.5" width="18" height="5" rx="2.5" />
+            <rect class="brand-mark-base" x="2" y="19" width="24" height="5" rx="2.5" />
+          </svg>
+          <span>StackUnderFlow</span>
+        </a>
+        <p>Visualizador de algoritmos para la materia de Análisis de Algoritmos.</p>
+      </div>
+
+      <div>
+        <h3>Explorar</h3>
+        <ul>
+          <li><a href="#ordenamientos">Ordenamientos</a></li>
+          <li><a href="#algoritmos">Algoritmos</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Proyecto</h3>
+        <ul>
+          <li>Análisis de Algoritmos · 2026B</li>
+          <li>Equipo Stack Underflow</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
 
   <script type="module" src="./js/script.js"></script>
 </body>
