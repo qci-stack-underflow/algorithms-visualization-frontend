@@ -2,7 +2,7 @@ import "@sass/style.scss";
 import Chart from "chart.js/auto";
 import { MotorAnimacion } from "./animador.js";
 import { compararAlgoritmos, ejecutarAlgoritmo, nombreAId } from "./api.js";
-import { dibujarIconos, iniciarPantallaInicio } from "./inicio.js";
+import { dibujarIconos, iniciarDetallesVisuales } from "./inicio.js";
 import { convertirPasos } from "./pasos.js";
 import { mostrarPseudocodigo, resaltarPaso } from "./pseudocodigo.js";
 import { coloresSeries, leerVariable } from "./tema.js";
@@ -59,8 +59,7 @@ export const algoritmos = [
   },
 ];
 
-// Algoritmos que no son ordenamientos. Cada uno tendrá su propia pantalla;
-// por ahora el enlace es provisional.
+// Algoritmos que no son ordenamientos. Cada uno tiene su propia pantalla.
 export const otrosAlgoritmos = [
   {
     nombre: "Algoritmo de Huffman",
@@ -68,7 +67,7 @@ export const otrosAlgoritmos = [
     descripcion:
       "Comprime un texto asignando códigos binarios más cortos a las letras que más se repiten.",
     etiquetas: ["Voraz", "Compresión"],
-    enlace: "#",
+    enlace: "huffman.html",
     vistaPrevia: crearVistaPreviaHuffman,
   },
 ];
@@ -699,7 +698,7 @@ function cambiarVelocidad(evento) {
 
 // Inicialización de Event Listeners e inicio de interfaz
 document.addEventListener("DOMContentLoaded", () => {
-  iniciarPantallaInicio();
+  iniciarDetallesVisuales();
   filtrarAlgoritmos(); // dibuja los dos bloques de tarjetas
 
   // Vincular eventos a inputs/botones del DOM para evitar inline 'onclick' u 'onchange'

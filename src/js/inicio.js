@@ -1,8 +1,47 @@
-// Detalles visuales de la pantalla de inicio: íconos, barra de navegación,
-// aparición de secciones al hacer scroll y contadores de las cifras.
-import { createIcons, ArrowLeft, ArrowRight, ArrowUpRight, Search } from "lucide";
+// Detalles visuales comunes a las páginas (inicio y Huffman): íconos, barra
+// de navegación, aparición de secciones al hacer scroll y contadores.
+import {
+  createIcons,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  Download,
+  Eye,
+  FileArchive,
+  Link,
+  Maximize2,
+  Play,
+  Search,
+  SkipBack,
+  SkipForward,
+  StepBack,
+  StepForward,
+  ZoomIn,
+  ZoomOut,
+} from "lucide";
 
-const ICONOS = { ArrowLeft, ArrowRight, ArrowUpRight, Search };
+const ICONOS = {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  Download,
+  Eye,
+  FileArchive,
+  Link,
+  Maximize2,
+  Play,
+  Search,
+  SkipBack,
+  SkipForward,
+  StepBack,
+  StepForward,
+  ZoomIn,
+  ZoomOut,
+};
 const DURACION_CONTADOR_MS = 1200;
 
 export const prefiereMenosMovimiento = () =>
@@ -71,7 +110,7 @@ function observarContadores() {
   cifras.forEach((cifra) => observador.observe(cifra));
 }
 
-export function iniciarPantallaInicio() {
+export function iniciarDetallesVisuales() {
   // Sin JS las secciones se ven completas; con JS aparecen con animación.
   document.documentElement.classList.add("js");
   dibujarIconos();
