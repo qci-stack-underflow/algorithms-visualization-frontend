@@ -1,11 +1,25 @@
 // src/js/animador.js
 
+// Colores del visualizador (tema oscuro). Las vistas previas del inicio
+// pasan los suyos en `opciones.colores`.
+const COLORES_POR_DEFECTO = {
+  base: "#ffffff", // Blanco original
+  comparacion: "#f1c40f", // Amarillo
+  intercambio: "#e74c3c", // Rojo
+  escritura: "#9b59b6", // Morado (Merge Sort)
+  pivote: "#3498db", // Azul (Quick Sort)
+  completado: "#2ecc71", // Verde
+  etiqueta: "#ffffff",
+};
+
 export class MotorAnimacion {
-  // opciones (opcionales): altura del área de barras y si se muestran los valores.
+  // opciones (opcionales): altura del área de barras, si se muestran los
+  // valores y los colores de cada estado.
   constructor(containerElement, opciones = {}) {
     this.container = containerElement;
     this.altura = opciones.altura ?? "200px";
     this.mostrarValores = opciones.mostrarValores ?? true;
+    this.colores = { ...COLORES_POR_DEFECTO, ...opciones.colores };
     this.intervalId = null;
     this.velocidadMs = 250;
     this.pasos = [];
@@ -112,21 +126,18 @@ export class MotorAnimacion {
       bar.style.transition = "height 0.2s ease, background-color 0.2s ease";
 
       // Manejo de colores
+      const colores = this.colores;
       if (indices && indices.includes(idx)) {
-        if (tipo === 'comparacion') bar.style.backgroundColor = '#f1c40f'; // Amarillo
-        else if (tipo === 'intercambio') bar.style.backgroundColor = '#e74c3c'; // Rojo
-        else if (tipo === 'escritura') bar.style.backgroundColor = '#9b59b6'; // Morado (Merge Sort)
-        else if (tipo === 'pivote') bar.style.backgroundColor = '#3498db'; // Azul (Quick Sort)
-        else bar.style.backgroundColor = '#ffffff';
+        bar.style.backgroundColor = colores[tipo] ?? colores.base;
       } else if (tipo === 'completado') {
-        bar.style.backgroundColor = '#2ecc71'; // Verde
+        bar.style.backgroundColor = colores.completado;
       } else {
-        bar.style.backgroundColor = '#ffffff'; // Blanco original
+        bar.style.backgroundColor = colores.base;
       }
 
       const label = document.createElement("span");
       label.style.fontSize = totalElementos > 12 ? "11px" : "14px";
-      label.style.color = "#ffffff";
+      label.style.color = colores.etiqueta;
       label.style.marginTop = "6px";
       label.style.fontWeight = "bold";
       label.style.fontFamily = "sans-serif";
