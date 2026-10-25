@@ -4,6 +4,8 @@ import { MotorAnimacion } from "./animador.js";
 import { compararAlgoritmos, ejecutarAlgoritmo, nombreAId } from "./api.js";
 import { dibujarIconos, iniciarPantallaInicio } from "./inicio.js";
 import { convertirPasos } from "./pasos.js";
+import { mostrarPseudocodigo, resaltarPaso } from "./pseudocodigo.js";
+import { coloresSeries, leerVariable } from "./tema.js";
 import { crearVistaPreviaHuffman } from "./vista-huffman.js";
 // Lista de algoritmos
 export const algoritmos = [
@@ -108,26 +110,11 @@ function obtenerPasosVistaPrevia(nombre) {
   return pasosVistaPrevia.get(nombre);
 }
 
-// Las vistas previas usan los colores claros definidos en _tokens.scss.
-function coloresVistaPrevia() {
-  const estilos = getComputedStyle(document.documentElement);
-  const leer = (variable) => estilos.getPropertyValue(variable).trim();
-  return {
-    base: leer("--bar-idle"),
-    comparacion: leer("--bar-compare"),
-    intercambio: leer("--bar-swap"),
-    escritura: leer("--bar-write"),
-    pivote: leer("--bar-pivot"),
-    completado: leer("--bar-done"),
-  };
-}
-
 function iniciarVistaPrevia(contenedor, nombre, generacion) {
   // Mientras llegan los pasos (o si no hay backend) se ve el arreglo inicial.
   const motor = new MotorAnimacion(contenedor, {
     altura: "136px",
     mostrarValores: false,
-    colores: coloresVistaPrevia(),
   });
   motor.velocidadMs = VELOCIDAD_VISTA_PREVIA_MS;
   motor.renderizarBarraEstado({
@@ -437,10 +424,13 @@ function dibujarBarras() {
   container.innerHTML = "";
 
   const selectVelocidad = document.getElementById("selectVelocidad");
+  const colores = coloresSeries();
 
-  algoritmosSeleccionados.forEach((nombreAlgo) => {
+  algoritmosSeleccionados.forEach((nombreAlgo, idx) => {
     const chartGroup = document.createElement("div");
     chartGroup.className = "single-chart-group";
+    // Mismo color que su serie en la gráfica y su tarjeta de métricas.
+    chartGroup.style.setProperty("--color-serie", colores[idx % colores.length]);
 
     const displayContainer = document.createElement("div");
 
@@ -462,6 +452,9 @@ function dibujarBarras() {
     });
     motores.push(motor);
   });
+
+  // Con un solo ordenamiento se muestra su pseudocódigo; si hay varios, se oculta.
+  mostrarPseudocodigo(algoritmosSeleccionados);
 }
 
 function renderizarTarjetasMetricas() {
@@ -470,10 +463,7 @@ function renderizarTarjetasMetricas() {
   
   container.innerHTML = "";
 
-  const colores = [
-    "#ffffff", "#e74c3c", "#3498db", "#2ecc71",
-    "#f1c40f", "#FFC0CB", "#800080", "#FFA500",
-  ];
+  const colores = coloresSeries();
 
   algoritmosSeleccionados.forEach((nombre, idx) => {
     const m = metricasData[nombre] || {
@@ -528,8 +518,15 @@ function inicializarGraficaMetricas() {
     chartInstance.destroy();
   }
 
+  const textoSecundario = leerVariable("--text-secondary");
+  const textoTenue = leerVariable("--text-muted");
+  const borde = leerVariable("--border");
+  Chart.defaults.font.family = leerVariable("--font-body");
+
+  // Barras agrupadas: cada métrica es una categoría y cada algoritmo una
+  // serie, así se comparan lado a lado con los mismos datos.
   chartInstance = new Chart(ctx, {
-    type: "line",
+    type: "bar",
     data: {
       labels: [],
       datasets: [],
@@ -539,20 +536,35 @@ function inicializarGraficaMetricas() {
       maintainAspectRatio: false,
       plugins: {
         legend: {
+          // Solo con dos o más series; con una, el título ya la nombra.
+          display: false,
+          align: "start",
           labels: {
-            color: "#ffffff",
-            font: { size: 10 },
+            color: textoSecundario,
+            boxWidth: 10,
+            boxHeight: 10,
+            useBorderRadius: true,
+            borderRadius: 2,
+            font: { size: 12 },
           },
+        },
+        tooltip: {
+          backgroundColor: leerVariable("--text-primary"),
+          padding: 10,
+          cornerRadius: 8,
+          boxPadding: 4,
         },
       },
       scales: {
         x: {
-          ticks: { color: "#aaaaaa" },
-          grid: { color: "#444444" },
+          ticks: { color: textoSecundario },
+          grid: { display: false },
+          border: { color: borde },
         },
         y: {
-          ticks: { color: "#aaaaaa" },
-          grid: { color: "#444444" },
+          ticks: { color: textoTenue, precision: 0 },
+          grid: { color: borde },
+          border: { display: false },
           beginAtZero: true,
         },
       },
@@ -649,25 +661,31 @@ export async function ejecutarSimulacion() {
   renderizarTarjetasMetricas();
 
   if (chartInstance) {
+    const colores = coloresSeries();
     chartInstance.data.labels = ["Comparaciones", "Intercambios", "Pasos"];
     chartInstance.data.datasets = resultados.map(({ metrics }, indice) => ({
       label: algoritmosSeleccionados[indice],
       data: [metrics.comparisons, metrics.swaps, metrics.steps],
-      borderColor: [
-        "#ffffff", "#e74c3c", "#3498db", "#2ecc71",
-        "#f1c40f", "#FFC0CB", "#800080", "#FFA500",
-      ][indice % 8],
-      backgroundColor: "transparent",
-      tension: 0.2,
+      backgroundColor: colores[indice % colores.length],
+      borderRadius: 4,
+      maxBarThickness: 36,
+      categoryPercentage: 0.7,
+      barPercentage: 0.88,
     }));
+    chartInstance.options.plugins.legend.display = resultados.length > 1;
     chartInstance.update();
   }
 
   // Cada algoritmo se anima a la vez sobre su copia del mismo arreglo.
   dibujarBarras();
+  const unSoloOrdenamiento = resultados.length === 1;
   resultados.forEach((resultado, indice) => {
-    motores[indice].cargarPasos(convertirPasos(resultado));
-    motores[indice].reproducir();
+    const pasos = convertirPasos(resultado);
+    motores[indice].cargarPasos(pasos);
+    // El pseudocódigo solo sigue la animación cuando hay un único ordenamiento.
+    motores[indice].reproducir(
+      unSoloOrdenamiento ? (paso, i) => resaltarPaso(paso, i, pasos.length) : undefined
+    );
   });
 }
 

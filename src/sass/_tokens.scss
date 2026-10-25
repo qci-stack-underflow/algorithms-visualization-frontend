@@ -25,13 +25,27 @@
   --accent-glow: rgba(36, 80, 214, 0.14);
   --accent-ring: rgba(36, 80, 214, 0.22);
 
-  // Estados de las barras en las vistas previas
+  // Estados de las barras animadas (vistas previas y visualizador).
+  // Todos con contraste >= 3:1 sobre blanco. Escritura (solo Merge Sort) y
+  // pivote (solo Quick Sort) nunca aparecen juntos en un mismo algoritmo.
   --bar-idle: #8b93a3;
   --bar-compare: #b7861a;
   --bar-swap: #c8483d;
-  --bar-write: #7656c8;
+  --bar-write: #9c4fb8;
   --bar-pivot: #2450d6;
   --bar-done: #2e8b62;
+
+  // Un color por algoritmo en la comparación (gráfica y tarjetas).
+  // Paleta categórica validada (skill dataviz): el orden es parte de la
+  // validación, así que se asigna en este orden y no se reacomoda.
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #e34948;
 
   // Tintes de los símbolos en la vista previa de Huffman
   --sym-a-bg: #e8eefc;

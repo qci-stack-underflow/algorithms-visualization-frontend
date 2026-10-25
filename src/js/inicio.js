@@ -1,8 +1,8 @@
 // Detalles visuales de la pantalla de inicio: íconos, barra de navegación,
 // aparición de secciones al hacer scroll y contadores de las cifras.
-import { createIcons, ArrowRight, ArrowUpRight, Search } from "lucide";
+import { createIcons, ArrowLeft, ArrowRight, ArrowUpRight, Search } from "lucide";
 
-const ICONOS = { ArrowRight, ArrowUpRight, Search };
+const ICONOS = { ArrowLeft, ArrowRight, ArrowUpRight, Search };
 const DURACION_CONTADOR_MS = 1200;
 
 export const prefiereMenosMovimiento = () =>

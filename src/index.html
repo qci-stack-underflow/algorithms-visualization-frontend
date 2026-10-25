@@ -195,7 +195,10 @@
   <div id="visualizerScreen">
     <!-- Botón para regresar al inicio -->
     <div class="visualizer-header">
-      <button class="btn-regresar" id="btnBack" type="button">Regresar ↵</button>
+      <button class="btn-regresar" id="btnBack" type="button">
+        <i data-lucide="arrow-left"></i>
+        Regresar
+      </button>
     </div>
 
     <div class="visualizer-layout">
@@ -254,8 +257,33 @@
 
       <!-- Dibujo de barras y grafica metrica -->
       <div class="main-canvas">
-        <div class="multi-charts-container" id="multiChartsContainer">
-          <!-- Las graficas de barras se generan en JS -->
+        <!-- Significado de los colores de las barras -->
+        <ul class="bar-legend" aria-label="Colores de las barras">
+          <li><span class="swatch swatch--compare"></span>Comparación</li>
+          <li><span class="swatch swatch--swap"></span>Intercambio</li>
+          <li><span class="swatch swatch--write"></span>Escritura (Merge)</li>
+          <li><span class="swatch swatch--pivot"></span>Pivote (Quick)</li>
+          <li><span class="swatch swatch--done"></span>Ordenado</li>
+        </ul>
+
+        <div class="canvas-row">
+          <div class="multi-charts-container" id="multiChartsContainer">
+            <!-- Las graficas de barras se generan en JS -->
+          </div>
+
+          <!-- Pseudocódigo con la línea del paso actual. Solo se muestra con
+               un único ordenamiento en pantalla; en una comparación se oculta. -->
+          <aside class="code-panel" id="codePanel" aria-labelledby="codePanelTitle" hidden>
+            <div class="code-panel-head">
+              <h4 class="code-panel-title" id="codePanelTitle">Pseudocódigo</h4>
+              <span class="code-panel-counter" id="codeCounter" title="Paso animado actual"></span>
+            </div>
+            <ol class="code-lines" id="codeLines"></ol>
+            <p class="code-step" id="codeStep">
+              <span class="swatch" id="codeStepSwatch"></span>
+              <span id="codeStepText">Sin ejecutar</span>
+            </p>
+          </aside>
         </div>
 
         <div class="metrics-section">

@@ -1,25 +1,14 @@
 // src/js/animador.js
-
-// Colores del visualizador (tema oscuro). Las vistas previas del inicio
-// pasan los suyos en `opciones.colores`.
-const COLORES_POR_DEFECTO = {
-  base: "#ffffff", // Blanco original
-  comparacion: "#f1c40f", // Amarillo
-  intercambio: "#e74c3c", // Rojo
-  escritura: "#9b59b6", // Morado (Merge Sort)
-  pivote: "#3498db", // Azul (Quick Sort)
-  completado: "#2ecc71", // Verde
-  etiqueta: "#ffffff",
-};
+import { coloresBarras } from "./tema.js";
 
 export class MotorAnimacion {
-  // opciones (opcionales): altura del área de barras, si se muestran los
-  // valores y los colores de cada estado.
+  // opciones (opcionales): altura del área de barras y si se muestran los valores.
   constructor(containerElement, opciones = {}) {
     this.container = containerElement;
     this.altura = opciones.altura ?? "200px";
     this.mostrarValores = opciones.mostrarValores ?? true;
-    this.colores = { ...COLORES_POR_DEFECTO, ...opciones.colores };
+    // Colores de cada estado, tomados de _tokens.scss (--bar-*).
+    this.colores = coloresBarras();
     this.intervalId = null;
     this.velocidadMs = 250;
     this.pasos = [];
@@ -34,6 +23,7 @@ export class MotorAnimacion {
     this.pasoActual = 0;
   }
 
+  // `onPaso(paso, indice)` se llama cada vez que se dibuja un paso.
   reproducir(onPaso) {
     if (onPaso) this.onPasoCallback = onPaso;
     if (this.pasos.length === 0) return;
@@ -44,7 +34,7 @@ export class MotorAnimacion {
       if (this.pasoActual < this.pasos.length) {
         const paso = this.pasos[this.pasoActual];
         this.renderizarBarraEstado(paso);
-        if (this.onPasoCallback) this.onPasoCallback(paso);
+        if (this.onPasoCallback) this.onPasoCallback(paso, this.pasoActual);
         this.pasoActual++;
       } else {
         this.pausar();
@@ -74,7 +64,9 @@ export class MotorAnimacion {
   // Detiene y vuelve a dibujar el estado inicial.
   reiniciar() {
     this.detener();
-    if (this.pasos.length > 0) this.renderizarBarraEstado(this.pasos[0]);
+    if (this.pasos.length === 0) return;
+    this.renderizarBarraEstado(this.pasos[0]);
+    if (this.onPasoCallback) this.onPasoCallback(this.pasos[0], 0);
   }
 
   renderizarBarraEstado(paso) {
@@ -139,8 +131,8 @@ export class MotorAnimacion {
       label.style.fontSize = totalElementos > 12 ? "11px" : "14px";
       label.style.color = colores.etiqueta;
       label.style.marginTop = "6px";
-      label.style.fontWeight = "bold";
-      label.style.fontFamily = "sans-serif";
+      label.style.fontWeight = "500";
+      label.style.fontFamily = "var(--font-mono)";
       label.innerText = valor;
 
       barContainer.appendChild(bar);
