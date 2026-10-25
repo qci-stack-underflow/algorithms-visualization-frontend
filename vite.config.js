@@ -22,6 +22,13 @@ export default defineConfig((mode) => {
   build: {
     outDir: "../dist",
     sourcemap: true,
+    // Dos páginas: el inicio (con el visualizador) y la pantalla de Huffman.
+    rolldownOptions: {
+      input: {
+        main: path.resolve(import.meta.dirname, "./src/index.html"),
+        huffman: path.resolve(import.meta.dirname, "./src/huffman.html"),
+      },
+    },
   },
   resolve: {
     alias: {

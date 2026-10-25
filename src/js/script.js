@@ -2,7 +2,11 @@ import "@sass/style.scss";
 import Chart from "chart.js/auto";
 import { MotorAnimacion } from "./animador.js";
 import { compararAlgoritmos, ejecutarAlgoritmo, nombreAId } from "./api.js";
+import { dibujarIconos, iniciarDetallesVisuales } from "./inicio.js";
 import { convertirPasos } from "./pasos.js";
+import { mostrarPseudocodigo, resaltarPaso } from "./pseudocodigo.js";
+import { coloresSeries, leerVariable } from "./tema.js";
+import { crearVistaPreviaHuffman } from "./vista-huffman.js";
 // Lista de algoritmos
 export const algoritmos = [
   {
@@ -55,8 +59,22 @@ export const algoritmos = [
   },
 ];
 
+// Algoritmos que no son ordenamientos. Cada uno tiene su propia pantalla.
+export const otrosAlgoritmos = [
+  {
+    nombre: "Algoritmo de Huffman",
+    complejidad: "O(n log n)",
+    descripcion:
+      "Comprime un texto asignando códigos binarios más cortos a las letras que más se repiten.",
+    etiquetas: ["Voraz", "Compresión"],
+    enlace: "huffman.html",
+    vistaPrevia: crearVistaPreviaHuffman,
+  },
+];
+
 // Estado de la aplicación
 const MAX_ELEMENTOS = 50;
+let filtroComplejidad = "ALL";
 let valoresActuales = [10, 4, 8, 3, 7];
 let algoritmosSeleccionados = ["Bubble Sort"];
 let chartInstance = null;
@@ -92,17 +110,24 @@ function obtenerPasosVistaPrevia(nombre) {
 }
 
 function iniciarVistaPrevia(contenedor, nombre, generacion) {
+  // Mientras llegan los pasos (o si no hay backend) se ve el arreglo inicial.
+  const motor = new MotorAnimacion(contenedor, {
+    altura: "136px",
+    mostrarValores: false,
+  });
+  motor.velocidadMs = VELOCIDAD_VISTA_PREVIA_MS;
+  motor.renderizarBarraEstado({
+    tipo: "inicial",
+    indices: [],
+    arrayState: ARREGLO_VISTA_PREVIA,
+  });
+  motoresTarjetas.push(motor);
+
   obtenerPasosVistaPrevia(nombre)
     .then((pasos) => {
       if (generacion !== generacionTarjetas) return;
 
-      const motor = new MotorAnimacion(contenedor, {
-        altura: "136px",
-        mostrarValores: false,
-      });
-      motor.velocidadMs = VELOCIDAD_VISTA_PREVIA_MS;
       motor.cargarPasos(pasos);
-      motoresTarjetas.push(motor);
 
       const ultimo = pasos[pasos.length - 1];
       const reproducirVuelta = () =>
@@ -117,7 +142,7 @@ function iniciarVistaPrevia(contenedor, nombre, generacion) {
       reproducirVuelta();
     })
     .catch(() => {
-      // Sin backend se queda el recuadro "GIF".
+      // Sin backend se queda el arreglo inicial.
     });
 }
 
@@ -135,32 +160,68 @@ function resetMetricas() {
   });
 }
 
-function renderizarTarjetas(lista) {
+// Arma el contenido común de una tarjeta del inicio y devuelve el recuadro
+// donde va su vista previa.
+function crearTarjeta(card, alg, indice) {
+  card.classList.add("card");
+  card.style.setProperty("--i", indice);
+
+  const gifContainer = document.createElement("div");
+  gifContainer.className = "card-preview";
+
+  const etiquetas = (alg.etiquetas ?? [])
+    .map((etiqueta) => `<span class="tag">${etiqueta}</span>`)
+    .join("");
+
+  const cardInfo = document.createElement("div");
+  cardInfo.className = "card-info";
+  cardInfo.innerHTML = `
+    <div class="card-head">
+      <h3 class="card-title">${alg.nombre}</h3>
+      <i data-lucide="arrow-up-right" class="card-arrow"></i>
+    </div>
+    <p class="card-desc">${alg.descripcion}</p>
+    <div class="card-tags">
+      <span class="card-complexity">${alg.complejidad}</span>
+      ${etiquetas}
+    </div>
+  `;
+
+  card.appendChild(gifContainer);
+  card.appendChild(cardInfo);
+  return gifContainer;
+}
+
+function renderizarOrdenamientos(lista, generacion) {
   const grid = document.getElementById("algorithmsGrid");
   if (!grid) return;
 
-  detenerVistasPrevias();
-  const generacion = generacionTarjetas;
   grid.innerHTML = "";
 
   if (lista.length === 0) {
     grid.innerHTML = `
       <div class="no-results">
-        No se encontraron algoritmos parecidos. Intenta de nuevo.
+        No se encontraron ordenamientos parecidos. Intenta de nuevo.
       </div>
     `;
     return;
   }
 
-  lista.forEach((alg) => {
-    const card = document.createElement("div");
-    card.className = "card";
+  lista.forEach((alg, indice) => {
+    const card = document.createElement("article");
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `Abrir ${alg.nombre}`);
 
     // Asignación de evento mediante listener
     card.addEventListener("click", () => abrirVisualizador(alg.nombre));
+    card.addEventListener("keydown", (evento) => {
+      if (evento.key !== "Enter" && evento.key !== " ") return;
+      evento.preventDefault();
+      abrirVisualizador(alg.nombre);
+    });
 
-    const gifContainer = document.createElement("div");
-    gifContainer.className = "card-gif-container";
+    const gifContainer = crearTarjeta(card, alg, indice);
 
     if (alg.gif) {
       const image = document.createElement("img");
@@ -178,47 +239,72 @@ function renderizarTarjetas(lista) {
       );
       gifContainer.appendChild(image);
     } else {
-      const placeholder = document.createElement("span");
-      placeholder.className = "card-gif-placeholder";
-      placeholder.textContent = "GIF";
-      gifContainer.appendChild(placeholder);
       iniciarVistaPrevia(gifContainer, alg.nombre, generacion);
     }
 
-    const cardInfo = document.createElement("div");
-    cardInfo.className = "card-info";
-    cardInfo.innerHTML = `
-      <div class="card-title">${alg.nombre}</div>
-      <div class="card-complexity">${alg.complejidad}</div>
-      <div class="card-desc">${alg.descripcion}</div>
-    `;
+    grid.appendChild(card);
+  });
 
-    card.appendChild(gifContainer);
-    card.appendChild(cardInfo);
+  dibujarIconos(grid);
+}
+
+function renderizarOtrosAlgoritmos(lista, generacion) {
+  const seccion = document.getElementById("algoritmos");
+  const grid = document.getElementById("otherAlgorithmsGrid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  // Si la búsqueda no deja ninguno, se oculta el bloque completo.
+  if (seccion) seccion.hidden = lista.length === 0;
+
+  lista.forEach((alg, indice) => {
+    const card = document.createElement("a");
+    card.href = alg.enlace;
+
+    const gifContainer = crearTarjeta(card, alg, indice);
+    alg.vistaPrevia?.(gifContainer, () => generacion === generacionTarjetas);
 
     grid.appendChild(card);
   });
+
+  dibujarIconos(grid);
 }
 
+// La búsqueda aplica a los dos bloques; el filtro de complejidad, solo a
+// los ordenamientos (sus chips están en ese bloque).
 function filtrarAlgoritmos() {
   const inputSearch = document.getElementById("searchInput");
-  const filterComplexity = document.getElementById("complexityFilter");
-
   const textoBusqueda = inputSearch ? inputSearch.value.toLowerCase() : "";
-  const filtroComplejidad = filterComplexity ? filterComplexity.value : "ALL";
 
-  const resultados = algoritmos.filter((alg) => {
-    const coincideNombre =
-      alg.nombre.toLowerCase().includes(textoBusqueda) ||
-      alg.descripcion.toLowerCase().includes(textoBusqueda);
+  const coincideTexto = (alg) =>
+    alg.nombre.toLowerCase().includes(textoBusqueda) ||
+    alg.descripcion.toLowerCase().includes(textoBusqueda);
 
-    const coincideComplejidad =
-      filtroComplejidad === "ALL" || alg.complejidad === filtroComplejidad;
+  const ordenamientos = algoritmos.filter(
+    (alg) =>
+      coincideTexto(alg) &&
+      (filtroComplejidad === "ALL" || alg.complejidad === filtroComplejidad)
+  );
+  const otros = otrosAlgoritmos.filter(coincideTexto);
 
-    return coincideNombre && coincideComplejidad;
+  detenerVistasPrevias();
+  const generacion = generacionTarjetas;
+  renderizarOrdenamientos(ordenamientos, generacion);
+  renderizarOtrosAlgoritmos(otros, generacion);
+}
+
+function seleccionarFiltroComplejidad(evento) {
+  const chip = evento.target.closest(".chip");
+  if (!chip) return;
+
+  filtroComplejidad = chip.dataset.valor;
+  document.querySelectorAll("#complexityFilter .chip").forEach((otro) => {
+    const activo = otro === chip;
+    otro.classList.toggle("is-active", activo);
+    otro.setAttribute("aria-checked", String(activo));
   });
 
-  renderizarTarjetas(resultados);
+  filtrarAlgoritmos();
 }
 
 function renderizarListaCheckboxes() {
@@ -302,7 +388,9 @@ function abrirVisualizador(nombreAlgoritmo) {
   detenerVistasPrevias();
   document.getElementById("mainHeader").style.display = "none";
   document.getElementById("mainContent").style.display = "none";
+  document.getElementById("mainFooter").style.display = "none";
   document.getElementById("visualizerScreen").style.display = "block";
+  window.scrollTo(0, 0);
 
   const compareToggle = document.getElementById("compareToggle");
   if (compareToggle) compareToggle.checked = false;
@@ -320,7 +408,10 @@ function regresarAlInicio() {
   document.getElementById("visualizerScreen").style.display = "none";
   document.getElementById("mainHeader").style.display = "block";
   document.getElementById("mainContent").style.display = "block";
+  document.getElementById("mainFooter").style.display = "block";
   filtrarAlgoritmos(); // vuelve a dibujar las tarjetas y sus vistas previas
+  // Regresa al catálogo de ordenamientos, de donde se abrió el visualizador.
+  document.getElementById("ordenamientos")?.scrollIntoView({ behavior: "instant" });
 }
 
 function dibujarBarras() {
@@ -332,10 +423,13 @@ function dibujarBarras() {
   container.innerHTML = "";
 
   const selectVelocidad = document.getElementById("selectVelocidad");
+  const colores = coloresSeries();
 
-  algoritmosSeleccionados.forEach((nombreAlgo) => {
+  algoritmosSeleccionados.forEach((nombreAlgo, idx) => {
     const chartGroup = document.createElement("div");
     chartGroup.className = "single-chart-group";
+    // Mismo color que su serie en la gráfica y su tarjeta de métricas.
+    chartGroup.style.setProperty("--color-serie", colores[idx % colores.length]);
 
     const displayContainer = document.createElement("div");
 
@@ -357,6 +451,9 @@ function dibujarBarras() {
     });
     motores.push(motor);
   });
+
+  // Con un solo ordenamiento se muestra su pseudocódigo; si hay varios, se oculta.
+  mostrarPseudocodigo(algoritmosSeleccionados);
 }
 
 function renderizarTarjetasMetricas() {
@@ -365,10 +462,7 @@ function renderizarTarjetasMetricas() {
   
   container.innerHTML = "";
 
-  const colores = [
-    "#ffffff", "#e74c3c", "#3498db", "#2ecc71",
-    "#f1c40f", "#FFC0CB", "#800080", "#FFA500",
-  ];
+  const colores = coloresSeries();
 
   algoritmosSeleccionados.forEach((nombre, idx) => {
     const m = metricasData[nombre] || {
@@ -423,8 +517,15 @@ function inicializarGraficaMetricas() {
     chartInstance.destroy();
   }
 
+  const textoSecundario = leerVariable("--text-secondary");
+  const textoTenue = leerVariable("--text-muted");
+  const borde = leerVariable("--border");
+  Chart.defaults.font.family = leerVariable("--font-body");
+
+  // Barras agrupadas: cada métrica es una categoría y cada algoritmo una
+  // serie, así se comparan lado a lado con los mismos datos.
   chartInstance = new Chart(ctx, {
-    type: "line",
+    type: "bar",
     data: {
       labels: [],
       datasets: [],
@@ -434,20 +535,35 @@ function inicializarGraficaMetricas() {
       maintainAspectRatio: false,
       plugins: {
         legend: {
+          // Solo con dos o más series; con una, el título ya la nombra.
+          display: false,
+          align: "start",
           labels: {
-            color: "#ffffff",
-            font: { size: 10 },
+            color: textoSecundario,
+            boxWidth: 10,
+            boxHeight: 10,
+            useBorderRadius: true,
+            borderRadius: 2,
+            font: { size: 12 },
           },
+        },
+        tooltip: {
+          backgroundColor: leerVariable("--text-primary"),
+          padding: 10,
+          cornerRadius: 8,
+          boxPadding: 4,
         },
       },
       scales: {
         x: {
-          ticks: { color: "#aaaaaa" },
-          grid: { color: "#444444" },
+          ticks: { color: textoSecundario },
+          grid: { display: false },
+          border: { color: borde },
         },
         y: {
-          ticks: { color: "#aaaaaa" },
-          grid: { color: "#444444" },
+          ticks: { color: textoTenue, precision: 0 },
+          grid: { color: borde },
+          border: { display: false },
           beginAtZero: true,
         },
       },
@@ -544,25 +660,31 @@ export async function ejecutarSimulacion() {
   renderizarTarjetasMetricas();
 
   if (chartInstance) {
+    const colores = coloresSeries();
     chartInstance.data.labels = ["Comparaciones", "Intercambios", "Pasos"];
     chartInstance.data.datasets = resultados.map(({ metrics }, indice) => ({
       label: algoritmosSeleccionados[indice],
       data: [metrics.comparisons, metrics.swaps, metrics.steps],
-      borderColor: [
-        "#ffffff", "#e74c3c", "#3498db", "#2ecc71",
-        "#f1c40f", "#FFC0CB", "#800080", "#FFA500",
-      ][indice % 8],
-      backgroundColor: "transparent",
-      tension: 0.2,
+      backgroundColor: colores[indice % colores.length],
+      borderRadius: 4,
+      maxBarThickness: 36,
+      categoryPercentage: 0.7,
+      barPercentage: 0.88,
     }));
+    chartInstance.options.plugins.legend.display = resultados.length > 1;
     chartInstance.update();
   }
 
   // Cada algoritmo se anima a la vez sobre su copia del mismo arreglo.
   dibujarBarras();
+  const unSoloOrdenamiento = resultados.length === 1;
   resultados.forEach((resultado, indice) => {
-    motores[indice].cargarPasos(convertirPasos(resultado));
-    motores[indice].reproducir();
+    const pasos = convertirPasos(resultado);
+    motores[indice].cargarPasos(pasos);
+    // El pseudocódigo solo sigue la animación cuando hay un único ordenamiento.
+    motores[indice].reproducir(
+      unSoloOrdenamiento ? (paso, i) => resaltarPaso(paso, i, pasos.length) : undefined
+    );
   });
 }
 
@@ -576,12 +698,12 @@ function cambiarVelocidad(evento) {
 
 // Inicialización de Event Listeners e inicio de interfaz
 document.addEventListener("DOMContentLoaded", () => {
-  renderizarTarjetas(algoritmos);
+  iniciarDetallesVisuales();
+  filtrarAlgoritmos(); // dibuja los dos bloques de tarjetas
 
   // Vincular eventos a inputs/botones del DOM para evitar inline 'onclick' u 'onchange'
   document.getElementById("searchInput")?.addEventListener("input", filtrarAlgoritmos);
-  document.getElementById("btnSearch")?.addEventListener("click", filtrarAlgoritmos);
-  document.getElementById("complexityFilter")?.addEventListener("change", filtrarAlgoritmos);
+  document.getElementById("complexityFilter")?.addEventListener("click", seleccionarFiltroComplejidad);
   document.getElementById("elementsInput")?.addEventListener("change", generarElementosAleatorios);
   document.getElementById("compareToggle")?.addEventListener("change", actualizarEstadoComparacion);
   document.getElementById("btnBack")?.addEventListener("click", regresarAlInicio);
