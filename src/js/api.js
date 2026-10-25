@@ -3,14 +3,20 @@
 // producción se define VITE_API_URL con la URL pública del backend.
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
+// Sin `cuerpo` hace un GET; con `cuerpo`, un POST con JSON.
 async function solicitar(ruta, cuerpo) {
+  const opciones =
+    cuerpo === undefined
+      ? {}
+      : {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cuerpo),
+        };
+
   let respuesta;
   try {
-    respuesta = await fetch(`${API_URL}${ruta}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cuerpo),
-    });
+    respuesta = await fetch(`${API_URL}${ruta}`, opciones);
   } catch {
     throw new Error("No se pudo conectar con el backend.");
   }
@@ -25,6 +31,11 @@ async function solicitar(ruta, cuerpo) {
 // "Bubble Sort" → "bubble-sort" (id que usa el backend)
 export function nombreAId(nombre) {
   return nombre.toLowerCase().replace(/\s+/g, "-");
+}
+
+// GET /algorithms/:id → AlgorithmInfo (nombre, complejidad, pseudocódigo)
+export function obtenerAlgoritmo(id) {
+  return solicitar(`/algorithms/${id}`);
 }
 
 // POST /algorithms/:id/run → AlgorithmResult
