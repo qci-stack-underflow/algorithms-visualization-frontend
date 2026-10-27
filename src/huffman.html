@@ -33,15 +33,15 @@
         <li><a href="index.html#algoritmos">Algoritmos</a></li>
       </ul>
 
-      <a class="btn btn--dark btn--sm" href="#biblioteca" aria-current="page">Comprimir archivo</a>
+      <a class="btn btn--dark btn--sm" href="#/" aria-current="page">Comprimir archivo</a>
     </nav>
   </header>
 
   <!--
     Esqueleto visual: todavía no se descarga ni se comprime nada.
-    Las tres vistas se muestran con :target (#biblioteca, #proceso, #binario);
-    sin hash se ve la biblioteca. Los datos de ejemplo son reales de
-    Don Quijote (Project Gutenberg #2000).
+    Las tres vistas se cambian con el router de js/huffman/rutas.js
+    (#/, #/libro/2000 y #/libro/2000/binario). Los datos de ejemplo son
+    reales de Don Quijote (Project Gutenberg #2000).
   -->
   <main class="vistas">
 
@@ -51,7 +51,7 @@
         <div class="huff-glow" aria-hidden="true"></div>
         <div class="container huff-hero-inner">
           <span class="eyebrow">Algoritmo de Huffman · Voraz</span>
-          <h1 id="bibliotecaTitulo">Comprime un libro con <em>Huffman</em></h1>
+          <h1 id="bibliotecaTitulo" tabindex="-1">Comprime un libro con <em>Huffman</em></h1>
           <p class="huff-sub">
             Elige un libro de Project Gutenberg. Contaremos cuántas veces aparece
             cada letra, construiremos el árbol de Huffman y generaremos un archivo
@@ -86,7 +86,7 @@
         </div>
 
         <div class="libros">
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/2000" data-libro="2000">
             <div class="libro-portada libro-portada--azul" aria-hidden="true">
               <span class="libro-portada-inicial">D</span>
               <span class="libro-portada-autor">Cervantes</span>
@@ -102,7 +102,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/1342" data-libro="1342">
             <div class="libro-portada libro-portada--hueso" aria-hidden="true">
               <span class="libro-portada-inicial">P</span>
               <span class="libro-portada-autor">Austen</span>
@@ -118,7 +118,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/2701" data-libro="2701">
             <div class="libro-portada libro-portada--tinta" aria-hidden="true">
               <span class="libro-portada-inicial">M</span>
               <span class="libro-portada-autor">Melville</span>
@@ -134,7 +134,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/84" data-libro="84">
             <div class="libro-portada libro-portada--hueso" aria-hidden="true">
               <span class="libro-portada-inicial">F</span>
               <span class="libro-portada-autor">Shelley</span>
@@ -150,7 +150,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/1661" data-libro="1661">
             <div class="libro-portada libro-portada--tinta" aria-hidden="true">
               <span class="libro-portada-inicial">S</span>
               <span class="libro-portada-autor">Conan Doyle</span>
@@ -166,7 +166,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/11" data-libro="11">
             <div class="libro-portada libro-portada--azul" aria-hidden="true">
               <span class="libro-portada-inicial">A</span>
               <span class="libro-portada-autor">Carroll</span>
@@ -186,18 +186,21 @@
     </section>
 
     <!-- Vista 2: árbol, frecuencias y archivo -->
-    <section class="vista" id="proceso" aria-labelledby="procesoTitulo">
+    <section class="vista" id="proceso" aria-labelledby="procesoTitulo" hidden>
       <div class="container">
         <div class="vista-barra">
-          <a class="btn-volver" href="#biblioteca">
+          <a class="btn-volver" href="#/">
             <i data-lucide="arrow-left"></i>
             Biblioteca
           </a>
           <div class="vista-libro">
-            <h1 id="procesoTitulo">Don Quijote</h1>
-            <span>Miguel de Cervantes Saavedra · Project Gutenberg #2000</span>
+            <h1 id="procesoTitulo" tabindex="-1" data-libro-titulo>Don Quijote</h1>
+            <span><span data-libro-autor>Miguel de Cervantes Saavedra</span> · Project Gutenberg #<span data-libro-numero>2000</span></span>
           </div>
         </div>
+        <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
+          Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
+        </p>
 
         <ol class="fases" aria-label="Fases de la compresión">
           <li class="is-hecha"><i data-lucide="check"></i>Descargar</li>
@@ -440,10 +443,10 @@
               <div class="archivo-icono" aria-hidden="true"><i data-lucide="file-archive"></i></div>
               <div class="archivo-texto">
                 <h2 id="archivoTitulo">Archivo listo</h2>
-                <p><code>don-quijote.suf</code> · 1.2 MB</p>
+                <p><code data-libro-archivo>don-quijote.suf</code> · 1.2 MB</p>
               </div>
               <div class="archivo-acciones">
-                <a class="btn btn--ghost" href="#binario">
+                <a class="btn btn--ghost" href="#/libro/2000/binario" data-ir="binario">
                   <i data-lucide="eye"></i>
                   Ver binario
                 </a>
@@ -459,15 +462,15 @@
     </section>
 
     <!-- Vista 3: solo binario -->
-    <section class="vista" id="binario" aria-labelledby="binarioTitulo">
+    <section class="vista" id="binario" aria-labelledby="binarioTitulo" hidden>
       <div class="container">
         <div class="vista-barra">
-          <a class="btn-volver" href="#proceso">
+          <a class="btn-volver" href="#/libro/2000" data-ir="proceso">
             <i data-lucide="arrow-left"></i>
             Volver al árbol
           </a>
           <div class="vista-libro">
-            <h1 id="binarioTitulo"><code>don-quijote.suf</code></h1>
+            <h1 id="binarioTitulo" tabindex="-1"><code data-libro-archivo>don-quijote.suf</code></h1>
             <span>1,200,178 bytes · 9,595,277 bits de datos</span>
           </div>
           <button class="btn btn--primary" type="button">
@@ -475,6 +478,9 @@
             Descargar .suf
           </button>
         </div>
+        <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
+          Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
+        </p>
 
         <section class="panel frase" aria-labelledby="fraseTitulo">
           <h2 id="fraseTitulo">Así se codifica «En un lugar de la Mancha»</h2>

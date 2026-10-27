@@ -1,19 +1,36 @@
 // Pantalla de Huffman: biblioteca, proceso (árbol y frecuencias) y binario.
 
-/* Vistas: se muestran con :target; sin hash se ve la biblioteca */
+/* Vistas: el router (js/huffman/rutas.js) deja visible solo la actual */
 .vistas {
   width: 100%;
 }
 
 .vista {
-  display: none;
-  scroll-margin-top: var(--nav-h);
   padding-bottom: var(--s8);
+
+  &[hidden] {
+    display: none;
+  }
 }
 
-.vista:target,
-.vistas:not(:has(.vista:target)) #biblioteca {
-  display: block;
+// El título recibe el foco al cambiar de vista; no necesita el anillo.
+.vista h1:focus {
+  outline: none;
+}
+
+// Mientras no hay backend, avisa que los datos son del Quijote
+.aviso-ejemplo {
+  margin-bottom: var(--s3);
+  padding: 10px 14px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 14px;
+
+  &[hidden] {
+    display: none;
+  }
 }
 
 /* Presentación de la biblioteca */
