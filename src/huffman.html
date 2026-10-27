@@ -13,6 +13,18 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap"
     rel="stylesheet">
   <title>Huffman · StackUnderFlow</title>
+  <script>
+    // Antes de pintar: si se abre directo un libro (#/libro/2000 o
+    // #/libro/2000/binario), marca su vista para que no se vea primero la
+    // biblioteca mientras carga js/huffman.js. Es la misma ruta que lee
+    // js/huffman/rutas.js; navegacion.js quita la marca al mostrar la vista.
+    (function () {
+      var ruta = /^#\/libro\/\d+(\/binario)?\/?$/.exec(location.hash);
+      if (ruta) {
+        document.documentElement.setAttribute("data-ruta-inicial", ruta[1] ? "binario" : "proceso");
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -39,9 +51,9 @@
 
   <!--
     Esqueleto visual: todavía no se descarga ni se comprime nada.
-    Las tres vistas se cambian con el router de js/huffman/rutas.js
-    (#/, #/libro/2000 y #/libro/2000/binario). Los datos de ejemplo son
-    reales de Don Quijote (Project Gutenberg #2000).
+    Las tres vistas se cambian en js/huffman/navegacion.js según la ruta
+    del hash (#/, #/libro/2000 y #/libro/2000/binario; ver rutas.js). Los
+    datos de ejemplo son reales de Don Quijote (Project Gutenberg #2000).
   -->
   <main class="vistas">
 
