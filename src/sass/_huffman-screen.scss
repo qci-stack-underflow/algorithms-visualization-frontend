@@ -1,16 +1,24 @@
 // Pantalla de Huffman: biblioteca, proceso (árbol y frecuencias) y binario.
 
-/* Vistas: el router (js/huffman/rutas.js) deja visible solo la actual */
+/* Vistas: js/huffman/navegacion.js deja visible solo la de la ruta actual
+   (las demás llevan el atributo hidden) */
 .vistas {
   width: 100%;
 }
 
 .vista {
   padding-bottom: var(--s8);
+}
 
-  &[hidden] {
-    display: none;
-  }
+// Primera carga directa a un libro: el script del <head> marca la vista con
+// data-ruta-inicial para que no se pinte la biblioteca mientras carga el JS.
+[data-ruta-inicial] #biblioteca {
+  display: none;
+}
+
+[data-ruta-inicial="proceso"] #proceso,
+[data-ruta-inicial="binario"] #binario {
+  display: block;
 }
 
 // El título recibe el foco al cambiar de vista; no necesita el anillo.
@@ -27,10 +35,6 @@
   background: var(--bg-subtle);
   color: var(--text-secondary);
   font-size: 14px;
-
-  &[hidden] {
-    display: none;
-  }
 }
 
 /* Presentación de la biblioteca */

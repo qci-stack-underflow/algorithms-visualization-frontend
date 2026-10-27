@@ -6,9 +6,18 @@
 
 const PATRON = /^#?\/?(?:libro\/(\d+)(\/binario)?)?\/?$/;
 
+// Enlaces del esqueleto anterior, que cambiaba de vista con :target.
+const RUTAS_ANTERIORES = {
+  "#biblioteca": { vista: "biblioteca", libro: null },
+  "#proceso": { vista: "proceso", libro: 2000 },
+  "#binario": { vista: "binario", libro: 2000 },
+};
+
 // Devuelve { vista, libro } o null si el hash no es una ruta válida.
 // Sin hash (o solo "#") es la biblioteca.
 export function leerRuta(hash) {
+  if (Object.hasOwn(RUTAS_ANTERIORES, hash ?? "")) return { ...RUTAS_ANTERIORES[hash] };
+
   const coincidencia = PATRON.exec(hash ?? "");
   if (!coincidencia) return null;
 
