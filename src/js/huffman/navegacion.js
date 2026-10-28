@@ -2,6 +2,7 @@
 // (biblioteca, proceso o binario), la llena con los datos del libro y cuida
 // el scroll, el foco y el historial. Las rutas se leen y arman en rutas.js.
 import { leerRuta, rutaA } from "./rutas.js";
+import { reiniciarCarga } from "./carga.js";
 
 // Las cifras, el árbol y los bits fijos de la página son de Don Quijote.
 const LIBRO_DE_EJEMPLO = 2000;
@@ -104,6 +105,8 @@ function mostrar(ruta, esCargaInicial) {
 
   // Ya no hace falta la marca del <head> que evitaba pintar la vista equivocada.
   document.documentElement.removeAttribute("data-ruta-inicial");
+  // Una carga o un error del libro anterior no deben quedarse en la vista nueva.
+  reiniciarCarga();
   document.querySelectorAll(".vista").forEach((seccion) => {
     seccion.hidden = seccion.id !== vista;
   });
