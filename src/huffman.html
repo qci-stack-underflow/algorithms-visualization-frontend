@@ -214,16 +214,36 @@
           Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
         </p>
 
-        <ol class="fases" aria-label="Fases de la compresión">
-          <li class="is-hecha"><i data-lucide="check"></i>Descargar</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Contar letras</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Cola de prioridad</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Árbol</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Códigos</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Archivo .suf</li>
+        <!-- Fases y errores: js/huffman/carga.js cambia su estado mientras se espera al backend -->
+        <ol class="fases" aria-label="Fases de la compresión" data-fases>
+          <li class="is-hecha" data-fase="descargar"><i data-lucide="check"></i>Descargar</li>
+          <li class="is-hecha" data-fase="contar"><i data-lucide="check"></i>Contar letras</li>
+          <li class="is-hecha" data-fase="cola"><i data-lucide="check"></i>Cola de prioridad</li>
+          <li class="is-hecha" data-fase="arbol"><i data-lucide="check"></i>Árbol</li>
+          <li class="is-hecha" data-fase="codigos"><i data-lucide="check"></i>Códigos</li>
+          <li class="is-hecha" data-fase="archivo"><i data-lucide="check"></i>Archivo .suf</li>
         </ol>
+        <p class="carga-estado" role="status" data-carga-estado></p>
 
-        <dl class="huff-metricas">
+        <section class="huff-error" aria-labelledby="huffErrorTitulo" data-huff-error hidden>
+          <span class="huff-error-icono" aria-hidden="true"><i data-lucide="triangle-alert"></i></span>
+          <div class="huff-error-texto">
+            <h2 id="huffErrorTitulo" tabindex="-1" data-huff-error-titulo>No se pudo comprimir el libro</h2>
+            <p data-huff-error-mensaje>Ocurrió un error inesperado.</p>
+            <div class="huff-error-acciones">
+              <a class="btn btn--dark btn--sm" href="#/">
+                <i data-lucide="arrow-left"></i>
+                Volver a la biblioteca
+              </a>
+              <button class="btn btn--ghost btn--sm" type="button" data-huff-reintentar hidden>
+                <i data-lucide="rotate-cw"></i>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <dl class="huff-metricas" data-resultado>
           <div>
             <dt>Tamaño original</dt>
             <dd>2.2 MB</dd>
@@ -251,7 +271,7 @@
           </div>
         </dl>
 
-        <div class="proceso-grid">
+        <div class="proceso-grid" data-resultado>
           <div class="proceso-columna">
             <section class="panel panel--arbol" aria-labelledby="arbolPanelTitulo">
               <header class="panel-head">
