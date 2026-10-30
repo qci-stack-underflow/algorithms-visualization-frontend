@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloque D - Frontend Árbol Huffman</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bloque-d-layout">
+    <header>
+      <h2>Árbol de Huffman · Bloque D</h2>
+      <div id="sr-announcer" class="sr-only" aria-live="polite"></div>
+    </header>
+
+    <div id="fases-container"></div>
+
+    <main class="main-viewport">
+      <div class="svg-canvas-container" id="canvas-container">
+        <svg id="arbol-svg" class="arbol-svg"></svg>
+      </div>
+
+      <aside class="sidebar">
+        <section>
+          <h3>Cola de Prioridad</h3>
+          <div id="pqueue-container"></div>
+        </section>
+
+        <section>
+          <h3>Pseudocódigo Sincronizado</h3>
+          <div id="pseudocode-container"></div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="player-controls">
+      <button id="btn-start" class="control-btn">⏮</button>
+      <button id="btn-prev" class="control-btn">◀</button>
+      <button id="btn-play" class="control-btn">▶</button>
+      <button id="btn-next" class="control-btn">▶</button>
+      <button id="btn-end" class="control-btn">⏭</button>
+
+      <input type="range" id="progress-bar" class="progress-bar" min="0" value="0">
+
+      <select id="speed-select" class="control-btn">
+        <option value="0.5">0.5x</option>
+        <option value="1" selected>1.0x</option>
+        <option value="2">2.0x</option>
+        <option value="4">4.0x</option>
+        <option value="8">8.0x</option>
+      </select>
+    </footer>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

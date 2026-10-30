@@ -1,0 +1,214 @@
+/* Bloque D - Estilos CSS */
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --accent-color: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.3);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --highlight-bg: #854d0e;
+  --highlight-border: #facc15;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-main);
+}
+
+.bloque-d-layout {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+}
+
+header {
+  padding: 12px 24px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Fases */
+.fases-bar {
+  display: flex;
+  gap: 12px;
+  padding: 8px 24px;
+  background: #090d16;
+}
+.fase-step {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+}
+.fase-step.active {
+  background: var(--accent-color);
+  color: #000;
+  font-weight: bold;
+}
+
+/* Main Content */
+.main-viewport {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  position: relative;
+  overflow: hidden;
+}
+
+.svg-canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #020617;
+}
+
+svg.arbol-svg {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+/* SVG elementos */
+.arista {
+  stroke: #475569;
+  stroke-width: 2px;
+  transition: stroke 0.3s;
+}
+.arista.resaltada {
+  stroke: var(--accent-color);
+  stroke-width: 4px;
+}
+
+.bit-etiqueta {
+  fill: var(--text-muted);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.nodo-grupo circle {
+  fill: var(--bg-secondary);
+  stroke: var(--border-color);
+  stroke-width: 2px;
+}
+.nodo-grupo.hoja circle {
+  fill: #065f46;
+  stroke: #34d399;
+}
+.nodo-grupo.resaltado circle {
+  fill: #854d0e;
+  stroke: #facc15;
+  stroke-width: 3px;
+}
+
+.peso-texto {
+  fill: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  text-anchor: middle;
+}
+.simbolo-texto {
+  fill: #a7f3d0;
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+/* Paneles Laterales */
+.sidebar {
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+/* Pseudocódigo */
+.pseudocode-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+.pseudocode-line {
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  gap: 8px;
+}
+.pseudocode-line.highlight {
+  background: var(--highlight-bg);
+  color: #fff;
+}
+.line-num {
+  color: var(--text-muted);
+}
+
+.step-description-box {
+  margin-top: 12px;
+  padding: 10px;
+  background: #0f172a;
+  border-left: 3px solid var(--accent-color);
+  font-size: 0.85rem;
+}
+
+/* Cola de Prioridad */
+.pqueue-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pqueue-item {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #0f172a;
+  border: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  display: flex;
+  gap: 4px;
+}
+.pqueue-item.active {
+  border-color: #facc15;
+  background: #713f12;
+}
+
+/* Reproductor Controles */
+.player-controls {
+  padding: 12px 24px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-btn {
+  background: #334155;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.control-btn:hover {
+  background: #475569;
+}
+
+.progress-bar {
+  flex: 1;
+}
+
+/* Movimiento Reducido */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
