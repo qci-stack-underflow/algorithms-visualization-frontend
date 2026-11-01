@@ -3,6 +3,7 @@
 // el scroll, el foco y el historial. Las rutas se leen y arman en rutas.js.
 import { leerRuta, rutaA } from "./rutas.js";
 import { reiniciarCarga } from "./carga.js";
+import { limpiarAvisosDeDescarga } from "./descarga.js";
 import { cargarLibro } from "./datos.js";
 import { llenarProceso } from "./proceso.js";
 
@@ -131,8 +132,10 @@ function mostrar(ruta, esCargaInicial) {
 
   // Ya no hace falta la marca del <head> que evitaba pintar la vista equivocada.
   document.documentElement.removeAttribute("data-ruta-inicial");
-  // Una carga o un error del libro anterior no deben quedarse en la vista nueva.
+  // Una carga, un error o una descarga del libro anterior no deben quedarse
+  // en la vista nueva.
   reiniciarCarga();
+  limpiarAvisosDeDescarga();
   document.querySelectorAll(".vista").forEach((seccion) => {
     seccion.hidden = seccion.id !== vista;
   });

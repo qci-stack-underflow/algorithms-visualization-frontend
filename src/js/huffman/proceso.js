@@ -1,5 +1,5 @@
-// Cifras y tabla de letras de la vista de proceso, con el HuffmanResult del
-// backend (contrato: src/types/huffman.types.ts).
+// Cifras, tabla de letras y tarjeta "Archivo listo" de la vista de proceso,
+// con el HuffmanResult del backend (contrato: src/types/huffman.types.ts).
 import { formatearBytes, numero } from "./formato.js";
 import { mostrarTabla } from "./tabla.js";
 
@@ -35,4 +35,9 @@ export function llenarProceso(resultado) {
     `${numero(resultado.nodes.length)} nodos en el árbol`
   );
   mostrarTabla(resultado.table);
+
+  // Tamaño real del .suf; el nombre lo pone navegacion.js con el título.
+  document.querySelectorAll("[data-archivo-tamano]").forEach((tamano) => {
+    tamano.textContent = formatearBytes(m.fileSizeBytes);
+  });
 }
