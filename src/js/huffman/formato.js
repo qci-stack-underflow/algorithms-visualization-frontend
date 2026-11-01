@@ -1,4 +1,4 @@
-// Cómo se escriben los números en la pantalla de Huffman.
+// Cómo se escriben los números y los símbolos en la pantalla de Huffman.
 
 const ENTERO = new Intl.NumberFormat("es-MX");
 
@@ -12,4 +12,40 @@ export function formatearBytes(bytes) {
   const kb = Math.round(bytes / 1000);
   if (kb < 1000) return `${kb} KB`;
   return `${(bytes / 1e6).toFixed(1)} MB`;
+}
+
+// Caracteres que no se ven: se muestran con un signo y se nombran para
+// los lectores de pantalla y la búsqueda.
+const INVISIBLES = {
+  " ": { signo: "␣", nombre: "espacio" },
+  "\n": { signo: "↵", nombre: "salto de línea" },
+  "\t": { signo: "⇥", nombre: "tabulador" },
+  " ": { signo: "⍽", nombre: "espacio duro" },
+};
+
+// Otros espacios y caracteres de control (p. ej. U+200B) se muestran con
+// su código Unicode.
+const SIN_FORMA = /^[\p{C}\p{Z}]$/u;
+
+const codigoUnicode = (simbolo) =>
+  `U+${simbolo.codePointAt(0).toString(16).toUpperCase().padStart(4, "0")}`;
+
+// Lo que se ve en la tabla y en las fichas: "e", "␣", "↵", "U+200B"
+export function mostrarSimbolo(simbolo) {
+  if (INVISIBLES[simbolo]) return INVISIBLES[simbolo].signo;
+  if (SIN_FORMA.test(simbolo)) return codigoUnicode(simbolo);
+  return simbolo;
+}
+
+// Nombre para leer en voz alta, o null si el símbolo se ve tal cual.
+export function nombrarSimbolo(simbolo) {
+  if (INVISIBLES[simbolo]) return INVISIBLES[simbolo].nombre;
+  if (SIN_FORMA.test(simbolo)) return `carácter ${codigoUnicode(simbolo)}`;
+  return null;
+}
+
+// Lo contrario de mostrarSimbolo para los signos de la tabla de ejemplo.
+export function leerSimboloMostrado(texto) {
+  const invisible = Object.entries(INVISIBLES).find(([, { signo }]) => signo === texto);
+  return invisible ? invisible[0] : texto;
 }

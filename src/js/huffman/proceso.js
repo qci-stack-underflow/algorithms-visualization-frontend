@@ -1,6 +1,7 @@
-// Cifras de la vista de proceso, con el HuffmanResult del
+// Cifras y tabla de letras de la vista de proceso, con el HuffmanResult del
 // backend (contrato: src/types/huffman.types.ts).
 import { formatearBytes, numero } from "./formato.js";
+import { mostrarTabla } from "./tabla.js";
 
 function ponerCifra(clave, valor, detalle) {
   const cifra = document.querySelector(`[data-cifra="${clave}"]`);
@@ -12,7 +13,8 @@ function ponerCifra(clave, valor, detalle) {
 let mostrado = null; // el resultado que ya está en la vista
 
 export function llenarProceso(resultado) {
-  // Al volver del binario llega el mismo resultado: no se vuelve a llenar.
+  // Al volver del binario llega el mismo resultado: se conservan la
+  // búsqueda, el orden y la selección de la tabla.
   if (resultado === mostrado) return;
   mostrado = resultado;
 
@@ -32,4 +34,5 @@ export function llenarProceso(resultado) {
     numero(resultado.distinctSymbols),
     `${numero(resultado.nodes.length)} nodos en el árbol`
   );
+  mostrarTabla(resultado.table);
 }
