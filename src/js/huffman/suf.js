@@ -5,7 +5,8 @@
 //   bits de relleno del último byte (uint8, 0..7)
 //   símbolos distintos k (uint16)
 //   largo del título (uint16) + título en UTF-8
-//   k veces: largo del símbolo (uint8) + símbolo en UTF-8 + frecuencia (uint32)
+//   diccionario, k veces: largo del símbolo (uint8) + símbolo en UTF-8 +
+//     frecuencia (uint32) + largo del código (uint8) + código en ASCII ("010")
 //   datos: los bits comprimidos, el primero en el bit más significativo
 
 export const FIRMA_SUF = "SUF1";
@@ -18,7 +19,8 @@ export class ErrorSuf extends Error {
 }
 
 // Devuelve { encabezado, bytesEncabezado, datos, bitsDatos }:
-// - encabezado: { magic, totalCharacters, paddingBits, symbolCount, title, frequencies }
+// - encabezado: { magic, totalCharacters, paddingBits, symbolCount, title, dictionary },
+//   con dictionary = [{ symbol, frequency, codeLength, code }] (SufDictionaryEntry)
 // - datos: Uint8Array con solo los bits comprimidos
 // - bitsDatos: bits útiles de los datos (sin el relleno)
 export function leerSuf(buffer) {
@@ -57,14 +59,21 @@ export function leerSuf(buffer) {
   if (paddingBits > 7) throw new ErrorSuf(`Los bits de relleno deben ser de 0 a 7, no ${paddingBits}.`);
   const symbolCount = uint16();
   const title = texto(uint16());
-  const frequencies = Array.from({ length: symbolCount }, () => {
+  const dictionary = Array.from({ length: symbolCount }, () => {
     const symbol = texto(uint8());
-    return { symbol, frequency: uint32() };
+    const frequency = uint32();
+    const codeLength = uint8();
+    const inicioCodigo = tomar(codeLength);
+    const code = String.fromCharCode(...bytes.subarray(inicioCodigo, inicioCodigo + codeLength));
+    if (!/^[01]+$/.test(code)) {
+      throw new ErrorSuf(`El código del símbolo «${symbol}» debe ser de ceros y unos, no «${code}».`);
+    }
+    return { symbol, frequency, codeLength, code };
   });
 
   const datos = bytes.subarray(posicion);
   return {
-    encabezado: { magic, totalCharacters, paddingBits, symbolCount, title, frequencies },
+    encabezado: { magic, totalCharacters, paddingBits, symbolCount, title, dictionary },
     bytesEncabezado: posicion,
     datos,
     bitsDatos: Math.max(0, datos.length * 8 - paddingBits),
