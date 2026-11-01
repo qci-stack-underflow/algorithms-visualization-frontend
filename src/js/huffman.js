@@ -1,7 +1,8 @@
 // Pantalla del algoritmo de Huffman.
 // Las tres vistas (biblioteca, proceso y binario) se cambian en
 // huffman/navegacion.js según la ruta del hash (huffman/rutas.js). La
-// biblioteca y el campo de enlace están en huffman/biblioteca.js.
+// biblioteca y el campo de enlace están en huffman/biblioteca.js; las cifras
+// del proceso, en huffman/proceso.js.
 import "@sass/huffman.scss";
 import { iniciarDetallesVisuales } from "./inicio.js";
 import { iniciarNavegacion } from "./huffman/navegacion.js";

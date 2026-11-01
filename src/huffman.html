@@ -50,10 +50,11 @@
   </header>
 
   <!--
-    Esqueleto visual: todavía no se descarga ni se comprime nada.
     Las tres vistas se cambian en js/huffman/navegacion.js según la ruta
-    del hash (#/, #/libro/2000 y #/libro/2000/binario; ver rutas.js). Los
-    datos de ejemplo son reales de Don Quijote (Project Gutenberg #2000).
+    del hash (#/, #/libro/2000 y #/libro/2000/binario; ver rutas.js).
+    Las cifras y la tabla de letras se llenan con los datos del backend
+    (js/huffman/proceso.js). Lo escrito aquí es de Don Quijote (Project
+    Gutenberg #2000) y se queda mientras el backend no tenga /huffman.
   -->
   <main class="vistas">
 
@@ -248,27 +249,27 @@
         </section>
 
         <dl class="huff-metricas" data-resultado>
-          <div>
+          <div data-cifra="original">
             <dt>Tamaño original</dt>
             <dd>2.2 MB</dd>
             <span>2,206,001 bytes</span>
           </div>
-          <div>
+          <div data-cifra="comprimido">
             <dt>Comprimido</dt>
             <dd>1.2 MB</dd>
             <span>1,200,178 bytes</span>
           </div>
-          <div>
+          <div data-cifra="ahorro">
             <dt>Ahorro</dt>
             <dd>45.6 %</dd>
             <span>queda en 54.4 %</span>
           </div>
-          <div>
+          <div data-cifra="bits">
             <dt>Bits por letra</dt>
             <dd>4.47</dd>
             <span>entropía 4.43 · ASCII 8</span>
           </div>
-          <div>
+          <div data-cifra="simbolos">
             <dt>Símbolos distintos</dt>
             <dd>93</dd>
             <span>185 nodos en el árbol</span>

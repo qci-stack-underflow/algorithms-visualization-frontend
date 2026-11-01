@@ -3,8 +3,11 @@
 // el scroll, el foco y el historial. Las rutas se leen y arman en rutas.js.
 import { leerRuta, rutaA } from "./rutas.js";
 import { reiniciarCarga } from "./carga.js";
+import { cargarLibro } from "./datos.js";
+import { llenarProceso } from "./proceso.js";
 
-// Las cifras, el árbol y los bits fijos de la página son de Don Quijote.
+// Mientras el backend no tenga /huffman, las cifras, el árbol y los bits
+// escritos en la página son de Don Quijote.
 const LIBRO_DE_EJEMPLO = 2000;
 
 let tituloPagina = ""; // el <title> de huffman.html, leído al iniciar
@@ -35,8 +38,7 @@ function datosDelLibro(numero) {
   };
 }
 
-function llenarLibro(numero) {
-  const { titulo, autor } = datosDelLibro(numero);
+function llenarLibro(numero, { titulo, autor } = datosDelLibro(numero)) {
   const archivo = nombreDeArchivo(titulo);
   const poner = (selector, texto) =>
     document.querySelectorAll(selector).forEach((elemento) => {
@@ -57,6 +59,22 @@ function llenarLibro(numero) {
   });
 
   return { titulo, archivo };
+}
+
+const tituloDeVista = (vista, datos) =>
+  `${vista === "binario" ? datos.archivo : datos.titulo} · ${tituloPagina}`;
+
+// Con datos del backend ya no aplica el aviso de "vista de ejemplo".
+function mostrarResultado(numero, resultado) {
+  const datos = llenarLibro(numero, {
+    titulo: resultado.book?.title || `Libro #${numero}`,
+    autor: resultado.book?.author || "Autor desconocido",
+  });
+  document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
+    aviso.hidden = true;
+  });
+  if (rutaActual?.libro === numero) document.title = tituloDeVista(rutaActual.vista, datos);
+  llenarProceso(resultado);
 }
 
 // Cada entrada del historial guarda su scroll en history.state: Atrás y
@@ -119,16 +137,14 @@ function mostrar(ruta, esCargaInicial) {
     seccion.hidden = seccion.id !== vista;
   });
 
-  let titulo = tituloPagina;
-  if (libro !== null) {
-    const datos = llenarLibro(libro);
-    titulo = `${vista === "binario" ? datos.archivo : datos.titulo} · ${tituloPagina}`;
-  }
-  document.title = titulo;
+  document.title = libro === null ? tituloPagina : tituloDeVista(vista, llenarLibro(libro));
 
   const scrollRestaurado = ajustarScroll();
   // En la carga inicial el foco no se mueve.
   if (!esCargaInicial) enfocar(vista, rutaAnterior, scrollRestaurado);
+
+  // El proceso pide sus datos al backend (o usa los ya guardados).
+  if (vista === "proceso") cargarLibro(libro, (resultado) => mostrarResultado(libro, resultado));
 }
 
 function alCambiarRuta(esCargaInicial) {
