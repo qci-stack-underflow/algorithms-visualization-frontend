@@ -25,6 +25,10 @@
   --accent-glow: rgba(36, 80, 214, 0.14);
   --accent-ring: rgba(36, 80, 214, 0.22);
 
+  // Errores (pantalla de Huffman). --danger sobre --danger-light: 5.3:1.
+  --danger: #a8402c;
+  --danger-light: #fbece8;
+
   // Estados de las barras animadas (vistas previas y visualizador).
   // Todos con contraste >= 3:1 sobre blanco. Escritura (solo Merge Sort) y
   // pivote (solo Quick Sort) nunca aparecen juntos en un mismo algoritmo.

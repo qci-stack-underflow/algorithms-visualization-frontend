@@ -461,6 +461,134 @@
     background: var(--accent-light);
     color: var(--accent);
   }
+
+  // La fase en curso mientras se espera al backend (js/huffman/carga.js)
+  .is-activa {
+    border-color: var(--accent);
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+}
+
+.fase-punto,
+.fase-spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.fase-punto {
+  border: 1.5px solid var(--border-strong);
+}
+
+.fase-spinner {
+  border: 2px solid var(--accent-light);
+  border-top-color: var(--accent);
+  animation: fase-giro 0.8s linear infinite;
+}
+
+@keyframes fase-giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.carga-estado {
+  margin: calc(var(--s1) * -1) 0 var(--s3);
+  color: var(--text-secondary);
+  font-size: 14px;
+
+  &:empty {
+    display: none;
+  }
+}
+
+// Mientras carga o si hubo un error, no se muestran las cifras ni el árbol
+// de ejemplo; con un error tampoco las fases.
+// El aviso de datos de ejemplo tampoco aplica mientras no hay cifras.
+#proceso[data-estado="cargando"] [data-resultado],
+#proceso[data-estado="error"] [data-resultado],
+#proceso[data-estado] .aviso-ejemplo,
+#proceso[data-estado="error"] .fases {
+  display: none;
+}
+
+/* Error al comprimir: qué pasó y qué hacer */
+.huff-error {
+  display: flex;
+  gap: var(--s2);
+  align-items: flex-start;
+  margin-bottom: var(--s4);
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+
+  h2 {
+    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-size: 22px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  p {
+    max-width: 60ch;
+    color: var(--text-secondary);
+  }
+}
+
+// .huff-error y .btn tienen su propio display: sin esto, hidden no los ocultaría
+.huff-error[hidden],
+.huff-error-acciones [hidden] {
+  display: none;
+}
+
+.huff-error-icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--danger-light);
+  color: var(--danger);
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.huff-error-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  margin-top: var(--s2);
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .huff-error {
+    flex-direction: column;
+    padding: var(--s2);
+  }
+
+  .huff-error-acciones .btn {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 // Cifras de la compresión
