@@ -3,8 +3,19 @@
 // producción se define VITE_API_URL con la URL pública del backend.
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
+// Error de la API con el estado HTTP, para que la interfaz elija qué mensaje
+// mostrar (ver huffman/carga.js). `estado` es 0 si no hubo respuesta.
+export class ErrorApi extends Error {
+  constructor(mensaje, estado) {
+    super(mensaje);
+    this.name = "ErrorApi";
+    this.estado = estado;
+  }
+}
+
 // Sin `cuerpo` hace un GET; con `cuerpo`, un POST con JSON.
-async function solicitar(ruta, cuerpo) {
+// Con formato "bytes" devuelve un ArrayBuffer en lugar de JSON.
+async function solicitar(ruta, cuerpo, formato = "json") {
   const opciones =
     cuerpo === undefined
       ? {}
@@ -18,15 +29,20 @@ async function solicitar(ruta, cuerpo) {
   try {
     respuesta = await fetch(`${API_URL}${ruta}`, opciones);
   } catch {
-    throw new Error("No se pudo conectar con el backend.");
+    throw new ErrorApi("No se pudo conectar con el backend.", 0);
   }
 
-  const datos = await respuesta.json().catch(() => null);
   if (!respuesta.ok) {
-    throw new Error(datos?.message || `Error ${respuesta.status} del backend.`);
+    // Nest responde los errores como JSON con `message`, también en /file.
+    const datos = await respuesta.json().catch(() => null);
+    throw new ErrorApi(datos?.message || `Error ${respuesta.status} del backend.`, respuesta.status);
   }
-  return datos;
+  return formato === "bytes" ? respuesta.arrayBuffer() : respuesta.json().catch(() => null);
 }
+
+// ---------------------------------------------------------------------------
+// Ordenamientos
+// ---------------------------------------------------------------------------
 
 // "Bubble Sort" → "bubble-sort" (id que usa el backend)
 export function nombreAId(nombre) {
@@ -46,4 +62,67 @@ export function ejecutarAlgoritmo(id, input) {
 // POST /algorithms/compare → AlgorithmResult[] (mínimo dos algoritmos)
 export function compararAlgoritmos(ids, input) {
   return solicitar("/algorithms/compare", { algorithms: ids, input });
+}
+
+// ---------------------------------------------------------------------------
+// Huffman (contrato: src/types/huffman.types.ts del backend)
+// ---------------------------------------------------------------------------
+
+// Cada respuesta se guarda: ir del proceso al binario y volver, o abrir dos
+// veces el mismo libro, no la vuelve a pedir. Si una petición falla se
+// olvida, para que "Reintentar" pueda pedirla de nuevo.
+const guardados = {
+  libros: new Map(), // una sola entrada: el catálogo
+  huffman: new Map(), // número de libro → Promise<HuffmanResult>
+  suf: new Map(), // número de libro → Promise<ArrayBuffer>
+};
+const huffmanListos = new Set(); // libros cuyo resultado ya llegó
+
+function recordar(mapa, clave, pedir) {
+  if (!mapa.has(clave)) {
+    const promesa = pedir().catch((error) => {
+      mapa.delete(clave);
+      throw error;
+    });
+    mapa.set(clave, promesa);
+  }
+  return mapa.get(clave);
+}
+
+// El backend solo acepta el número del libro (nunca una URL); se valida
+// aquí también para no hacer una petición que de todos modos daría 400.
+function numeroDeLibro(id) {
+  const numero = Number(id);
+  if (!Number.isInteger(numero) || numero <= 0) {
+    throw new ErrorApi("El número de libro no es válido.", 400);
+  }
+  return numero;
+}
+
+// GET /huffman/books → BookInfo[] (catálogo)
+export async function obtenerLibros() {
+  return recordar(guardados.libros, "catalogo", () => solicitar("/huffman/books"));
+}
+
+// GET /huffman/books/:id → HuffmanResult (frecuencias, árbol, pasos, códigos y métricas)
+export async function obtenerHuffman(id) {
+  const numero = numeroDeLibro(id);
+  return recordar(guardados.huffman, numero, async () => {
+    const resultado = await solicitar(`/huffman/books/${numero}`);
+    huffmanListos.add(numero);
+    return resultado;
+  });
+}
+
+// true si el resultado de ese libro ya llegó (se puede usar sin esperar).
+export function huffmanListo(id) {
+  return huffmanListos.has(Number(id));
+}
+
+// GET /huffman/books/:id/file → ArrayBuffer con el archivo .suf
+export async function descargarSuf(id) {
+  const numero = numeroDeLibro(id);
+  return recordar(guardados.suf, numero, () =>
+    solicitar(`/huffman/books/${numero}/file`, undefined, "bytes")
+  );
 }
