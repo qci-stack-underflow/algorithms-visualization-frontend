@@ -1,0 +1,68 @@
+// Gráfica de barras que anima MotorAnimacion (animador.js): vistas previas de
+// las tarjetas y visualizador. La altura y el color de cada barra cambian en
+// cada paso y se ponen desde el JS.
+
+.grafica {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.grafica-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  // Se recorre de lado cuando las barras no caben en la tarjeta.
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  &.is-densa {
+    gap: 4px;
+  }
+
+  // Centrado con márgenes automáticos en lugar de justify-content: center.
+  // Si las barras no caben, los márgenes valen 0 y la primera barra se puede
+  // alcanzar; con center, lo que sobra a la izquierda quedaba fuera del scroll.
+  > :first-child {
+    margin-inline-start: auto;
+  }
+
+  > :last-child {
+    margin-inline-end: auto;
+  }
+}
+
+// Ancho que se ajusta a la tarjeta, entre 12 px y 42 px por barra.
+.grafica-columna {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 12px;
+  max-width: 42px;
+  height: 100%;
+}
+
+.grafica-barra {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition:
+    height var(--grafica-transicion, 0.2s) ease,
+    background-color var(--grafica-transicion, 0.2s) ease;
+}
+
+.grafica-valor {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+
+  .is-muy-densa & {
+    font-size: 11px;
+  }
+}
