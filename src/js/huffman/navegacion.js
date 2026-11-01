@@ -23,8 +23,9 @@ export function nombreDeArchivo(titulo) {
   return `${base || "libro"}.suf`;
 }
 
-// Por ahora los datos del libro salen de su tarjeta en la biblioteca;
-// con C3 vendrán de GET /huffman/books.
+// Los datos del libro salen de su tarjeta en la biblioteca (dibujada desde
+// GET /huffman/books, ver biblioteca.js). Un libro abierto por enlace que no
+// está en el catálogo se muestra con su número.
 function datosDelLibro(numero) {
   const tarjeta = document.querySelector(`.libro[data-libro="${numero}"]`);
   const texto = (selector) => tarjeta?.querySelector(selector)?.textContent.trim();
@@ -72,6 +73,13 @@ function guardarScroll() {
 function guardarScrollAlDetenerse() {
   clearTimeout(temporizadorScroll);
   temporizadorScroll = setTimeout(guardarScroll, 150);
+}
+
+// Para ir a otra vista desde el JS (p. ej. el campo de enlace), igual que
+// al seguir un enlace: guarda el scroll de la vista que se deja.
+export function ir(vista, libro) {
+  guardarScroll();
+  location.hash = rutaA(vista, libro);
 }
 
 // Devuelve true si regresó a un scroll guardado.

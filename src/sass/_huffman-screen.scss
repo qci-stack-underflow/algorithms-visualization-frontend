@@ -207,11 +207,26 @@
   }
 }
 
-.enlace-nota {
+.enlace-nota,
+.enlace-error {
   margin-top: 12px;
   text-align: center;
   font-size: 13px;
   color: var(--text-muted);
+}
+
+// Enlace que no es de Gutenberg o sin número: se dice en la página, sin alert
+.enlace-error {
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.enlace-libro .campo input[aria-invalid="true"] {
+  border-color: var(--danger);
+
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(168, 64, 44, 0.18);
+  }
 }
 
 /* Biblioteca de libros */
