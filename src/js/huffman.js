@@ -2,12 +2,14 @@
 // Las tres vistas (biblioteca, proceso y binario) se cambian en
 // huffman/navegacion.js según la ruta del hash (huffman/rutas.js). La
 // biblioteca y el campo de enlace están en huffman/biblioteca.js; las cifras
-// y la tabla de letras del proceso, en huffman/proceso.js y huffman/tabla.js.
+// y la tabla de letras del proceso, en huffman/proceso.js y huffman/tabla.js;
+// la descarga del .suf, en huffman/descarga.js.
 import "@sass/huffman.scss";
 import { iniciarDetallesVisuales } from "./inicio.js";
 import { iniciarNavegacion } from "./huffman/navegacion.js";
 import { iniciarBiblioteca } from "./huffman/biblioteca.js";
 import { iniciarTabla } from "./huffman/tabla.js";
+import { iniciarDescargas } from "./huffman/descarga.js";
 
 // Un script type="module" se ejecuta con el HTML ya leído, así que no hace
 // falta esperar a DOMContentLoaded: mostrar la vista correcta cuanto antes
@@ -18,6 +20,7 @@ import { iniciarTabla } from "./huffman/tabla.js";
 iniciarTabla();
 iniciarNavegacion();
 iniciarBiblioteca();
+iniciarDescargas();
 try {
   iniciarDetallesVisuales();
 } catch (error) {

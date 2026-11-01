@@ -1131,6 +1131,34 @@ th[aria-sort="ascending"] .orden::after {
   }
 }
 
+// Resultado de la descarga: "Se descargó…" o qué falló
+.descarga-estado {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  font-size: 13px;
+
+  &:empty {
+    display: none;
+  }
+
+  &.is-error {
+    color: var(--danger);
+    font-weight: 500;
+  }
+}
+
+.descarga-estado--barra {
+  margin: calc(var(--s1) * -1) 0 var(--s3);
+  text-align: right;
+}
+
+// Mientras se descarga, el botón sigue enfocable pero no responde
+.btn[aria-disabled="true"] {
+  opacity: 0.7;
+  cursor: progress;
+  transform: none;
+}
+
 /* Vista binaria */
 .frase {
   margin-bottom: var(--s3);
@@ -1303,5 +1331,9 @@ th[aria-sort="ascending"] .orden::after {
 
   .vista-barra .btn {
     margin-left: 0;
+  }
+
+  .descarga-estado--barra {
+    text-align: left;
   }
 }

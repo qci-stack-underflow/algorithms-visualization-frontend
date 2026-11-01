@@ -489,18 +489,19 @@
               <div class="archivo-icono" aria-hidden="true"><i data-lucide="file-archive"></i></div>
               <div class="archivo-texto">
                 <h2 id="archivoTitulo">Archivo listo</h2>
-                <p><code data-libro-archivo>don-quijote.suf</code> · 1.2 MB</p>
+                <p><code data-libro-archivo>don-quijote.suf</code> · <span data-archivo-tamano>1.2 MB</span></p>
               </div>
               <div class="archivo-acciones">
                 <a class="btn btn--ghost" href="#/libro/2000/binario" data-ir="binario">
                   <i data-lucide="eye"></i>
                   Ver binario
                 </a>
-                <button class="btn btn--primary" type="button">
+                <button class="btn btn--primary" type="button" data-descargar="descargaProceso">
                   <i data-lucide="download"></i>
-                  Descargar .suf
+                  <span data-descargar-texto>Descargar .suf</span>
                 </button>
               </div>
+              <p class="descarga-estado" id="descargaProceso" role="status" data-descarga-estado></p>
             </section>
           </div>
         </div>
@@ -519,11 +520,12 @@
             <h1 id="binarioTitulo" tabindex="-1"><code data-libro-archivo>don-quijote.suf</code></h1>
             <span>1,200,178 bytes · 9,595,277 bits de datos</span>
           </div>
-          <button class="btn btn--primary" type="button">
+          <button class="btn btn--primary" type="button" data-descargar="descargaBinario">
             <i data-lucide="download"></i>
-            Descargar .suf
+            <span data-descargar-texto>Descargar .suf</span>
           </button>
         </div>
+        <p class="descarga-estado descarga-estado--barra" id="descargaBinario" role="status" data-descarga-estado></p>
         <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
           Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
         </p>
