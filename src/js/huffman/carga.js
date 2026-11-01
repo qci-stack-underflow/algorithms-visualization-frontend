@@ -1,7 +1,9 @@
-// Estados de la vista de proceso mientras se espera al backend: el avance de
-// las fases (Descargar, Contar letras…) y un mensaje claro si algo falla.
-// Uso (C2): mostrarCarga() al pedir el libro, terminarCarga() al recibir la
-// respuesta y mostrarError(estadoHttp, reintentar) si la petición falla.
+// Estados de una vista (proceso o binario) mientras se espera al backend: el
+// avance de las fases (Descargar, Contar letras…; solo el proceso las tiene)
+// y un mensaje claro si algo falla.
+// Uso (datos.js): mostrarCarga(vista) al pedir el libro, terminarCarga(vista)
+// al recibir la respuesta y mostrarError(estadoHttp, reintentar, vista) si la
+// petición falla. `vista` es el id de la sección y por omisión es "proceso".
 import { dibujarIconos, prefiereMenosMovimiento } from "../inicio.js";
 
 // Al llegar la respuesta, las fases que faltan se marcan en orden con esta pausa.
@@ -55,18 +57,26 @@ function cancelarTemporizadores() {
   temporizadores = [];
 }
 
-const vista = () => document.getElementById("proceso");
-const fases = () => [...document.querySelectorAll("[data-fases] [data-fase]")];
+const seccion = (vista) => document.getElementById(vista);
+const fases = (vista) => [...(seccion(vista)?.querySelectorAll("[data-fases] [data-fase]") ?? [])];
 
-function ponerEstado(texto) {
-  const estado = document.querySelector("[data-carga-estado]");
+// Lo que se anuncia mientras carga, según la vista.
+const TEXTO_DE_CARGA = {
+  proceso: "Descargando el libro de Project Gutenberg y comprimiéndolo…",
+  binario: "Preparando el archivo .suf…",
+};
+
+function ponerEstado(vista, texto) {
+  const estado = seccion(vista)?.querySelector("[data-carga-estado]");
   if (estado) estado.textContent = texto;
 }
 
 // Las fases antes de `indiceActiva` quedan hechas, esa en curso y las demás
 // pendientes. Con indiceActiva >= número de fases, todas quedan hechas.
-function pintarFases(indiceActiva) {
-  fases().forEach((fase, indice) => {
+function pintarFases(vista, indiceActiva) {
+  const lista = fases(vista);
+  if (lista.length === 0) return;
+  lista.forEach((fase, indice) => {
     const estado = indice < indiceActiva ? "hecha" : indice === indiceActiva ? "activa" : "pendiente";
     fase.classList.toggle("is-hecha", estado === "hecha");
     fase.classList.toggle("is-activa", estado === "activa");
@@ -86,46 +96,45 @@ function pintarFases(indiceActiva) {
     icono.setAttribute("aria-hidden", "true");
     fase.prepend(icono);
   });
-  const lista = document.querySelector("[data-fases]");
-  if (lista) dibujarIconos(lista);
+  dibujarIconos(seccion(vista).querySelector("[data-fases]"));
 }
 
-function ocultarError() {
-  const panel = document.querySelector("[data-huff-error]");
+function ocultarError(vista) {
+  const panel = seccion(vista)?.querySelector("[data-huff-error]");
   if (panel) panel.hidden = true;
 }
 
 // El backend descarga y comprime en una sola respuesta, así que mientras
 // llega solo se marca la primera fase como en curso.
-export function mostrarCarga() {
+export function mostrarCarga(vista = "proceso") {
   cancelarTemporizadores();
-  ocultarError();
-  vista().dataset.estado = "cargando";
-  pintarFases(0);
-  ponerEstado("Descargando el libro de Project Gutenberg y comprimiéndolo…");
+  ocultarError(vista);
+  seccion(vista).dataset.estado = "cargando";
+  pintarFases(vista, 0);
+  ponerEstado(vista, TEXTO_DE_CARGA[vista] ?? TEXTO_DE_CARGA.proceso);
 }
 
 // Marca las fases que faltan, en orden, y vuelve a mostrar los resultados.
 // La promesa se cumple cuando todas están hechas.
-export function terminarCarga() {
+export function terminarCarga(vista = "proceso") {
   cancelarTemporizadores();
-  ocultarError();
-  const total = fases().length;
+  ocultarError(vista);
+  const total = fases(vista).length;
 
   const terminar = () => {
-    pintarFases(total);
-    delete vista().dataset.estado;
-    ponerEstado("");
+    pintarFases(vista, total);
+    delete seccion(vista).dataset.estado;
+    ponerEstado(vista, "");
   };
 
-  if (prefiereMenosMovimiento()) {
+  if (prefiereMenosMovimiento() || total === 0) {
     terminar();
     return Promise.resolve();
   }
 
   return new Promise((resolver) => {
     for (let indice = 1; indice < total; indice += 1) {
-      temporizadores.push(setTimeout(() => pintarFases(indice), ENTRE_FASES_MS * indice));
+      temporizadores.push(setTimeout(() => pintarFases(vista, indice), ENTRE_FASES_MS * indice));
     }
     temporizadores.push(
       setTimeout(() => {
@@ -138,13 +147,13 @@ export function terminarCarga() {
 
 // Muestra qué falló y qué hacer. El botón Reintentar solo aparece si tiene
 // sentido para ese error y se recibe la función que repite la petición.
-export function mostrarError(estado, alReintentar) {
+export function mostrarError(estado, alReintentar, vista = "proceso") {
   cancelarTemporizadores();
   const { titulo, texto, reintentar } = mensajeDeError(estado);
-  vista().dataset.estado = "error";
-  ponerEstado("");
+  seccion(vista).dataset.estado = "error";
+  ponerEstado(vista, "");
 
-  const panel = document.querySelector("[data-huff-error]");
+  const panel = seccion(vista).querySelector("[data-huff-error]");
   panel.querySelector("[data-huff-error-titulo]").textContent = titulo;
   panel.querySelector("[data-huff-error-mensaje]").textContent = texto;
 
@@ -158,13 +167,16 @@ export function mostrarError(estado, alReintentar) {
   panel.querySelector("[data-huff-error-titulo]").focus();
 }
 
-// Regresa la vista a su estado normal (por ejemplo, al cambiar de libro).
+// Regresa las vistas a su estado normal (por ejemplo, al cambiar de libro).
 export function reiniciarCarga() {
-  const proceso = vista();
-  if (!proceso?.dataset.estado && temporizadores.length === 0) return;
+  const conEstado = [...document.querySelectorAll(".vista[data-estado]")];
+  if (conEstado.length === 0 && temporizadores.length === 0) return;
   cancelarTemporizadores();
-  ocultarError();
-  delete proceso.dataset.estado;
-  ponerEstado("");
-  pintarFases(fases().length);
+  ["proceso", "binario"].forEach((vista) => {
+    if (!seccion(vista)) return;
+    ocultarError(vista);
+    delete seccion(vista).dataset.estado;
+    ponerEstado(vista, "");
+    pintarFases(vista, fases(vista).length);
+  });
 }

@@ -518,7 +518,7 @@
           </a>
           <div class="vista-libro">
             <h1 id="binarioTitulo" tabindex="-1"><code data-libro-archivo>don-quijote.suf</code></h1>
-            <span>1,200,178 bytes · 9,595,277 bits de datos</span>
+            <span data-binario-resumen>1,200,178 bytes · 9,595,277 bits de datos</span>
           </div>
           <button class="btn btn--primary" type="button" data-descargar="descargaBinario">
             <i data-lucide="download"></i>
@@ -530,9 +530,30 @@
           Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
         </p>
 
-        <section class="panel frase" aria-labelledby="fraseTitulo">
-          <h2 id="fraseTitulo">Así se codifica «En un lugar de la Mancha»</h2>
-          <div class="frase-fichas">
+        <!-- Carga y errores: js/huffman/carga.js, igual que en el proceso -->
+        <p class="carga-estado" role="status" data-carga-estado></p>
+        <section class="huff-error" aria-labelledby="huffErrorTituloBinario" data-huff-error hidden>
+          <span class="huff-error-icono" aria-hidden="true"><i data-lucide="triangle-alert"></i></span>
+          <div class="huff-error-texto">
+            <h2 id="huffErrorTituloBinario" tabindex="-1" data-huff-error-titulo>No se pudo comprimir el libro</h2>
+            <p data-huff-error-mensaje>Ocurrió un error inesperado.</p>
+            <div class="huff-error-acciones">
+              <a class="btn btn--dark btn--sm" href="#/">
+                <i data-lucide="arrow-left"></i>
+                Volver a la biblioteca
+              </a>
+              <button class="btn btn--ghost btn--sm" type="button" data-huff-reintentar hidden>
+                <i data-lucide="rotate-cw"></i>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- js/huffman/binario.js llena la frase (preview) y los bits del .suf -->
+        <section class="panel frase" aria-labelledby="fraseTitulo" data-resultado data-frase>
+          <h2 id="fraseTitulo" data-frase-titulo>Así se codifica «En un lugar de la Mancha»</h2>
+          <div class="frase-fichas" data-frase-fichas>
             <span class="frase-ficha"><b>E</b><code>11000110111</code></span>
             <span class="frase-ficha"><b>n</b><code>0011</code></span>
             <span class="frase-ficha"><b>␣</b><code>111</code></span>
@@ -558,43 +579,60 @@
             <span class="frase-ficha"><b>h</b><code>1001011</code></span>
             <span class="frase-ficha"><b>a</b><code>000</code></span>
           </div>
+          <p class="frase-total" data-frase-total>24 caracteres: 192 bits en el texto original y 112 con Huffman.</p>
         </section>
 
-        <section class="panel bits" aria-labelledby="bitsTitulo">
+        <section class="panel bits" aria-labelledby="bitsTitulo" data-resultado>
           <header class="panel-head">
             <h2 id="bitsTitulo">Contenido del archivo</h2>
             <div class="bits-leyenda">
-              <span class="chip-dato">Encabezado · 768 bytes</span>
-              <span class="chip-dato chip-dato--acento">Datos · 1,199,410 bytes</span>
+              <span class="chip-dato" data-bits-encabezado>Encabezado · 768 bytes</span>
+              <span class="chip-dato chip-dato--acento" data-bits-datos>Datos · 1,199,410 bytes</span>
+              <span class="chip-dato chip-dato--relleno" data-bits-relleno hidden>Relleno · 0 bits</span>
             </div>
           </header>
-          <ol class="bits-lista">
-            <li><span class="bits-offset">000000</span><span class="bits-fila">10011010 01111001 10100111 10011010 01111001 10100111 11000110 11111010</span></li>
-            <li><span class="bits-offset">000008</span><span class="bits-fila">11110110 00111001 00001000 11101101 01001111 01011110 01011101 10110010</span></li>
-            <li><span class="bits-offset">000016</span><span class="bits-fila">00110101 00100010 10111110 01101000 11111110 00110101 01111011 01100010</span></li>
-            <li><span class="bits-offset">000024</span><span class="bits-fila">11010100 00010111 11001010 11111010 00011111 00010001 00000011 01101100</span></li>
-            <li><span class="bits-offset">000032</span><span class="bits-fila">10110001 00110100 11110011 01001111 00110100 11110011 01001111 00011101</span></li>
-            <li><span class="bits-offset">000040</span><span class="bits-fila">00010111 11000100 01010110 10010001 01110101 10101111 10010101 11011000</span></li>
-            <li><span class="bits-offset">000048</span><span class="bits-fila">00010100 01010010 01000001 11000001 00111111 01100000 10000001 00100101</span></li>
-            <li><span class="bits-offset">000056</span><span class="bits-fila">01100100 10000100 11010011 11001101 00111100 11010011 11001101 00111100</span></li>
-            <li><span class="bits-offset">000064</span><span class="bits-fila">11010011 11001101 00111110 00110111 11010111 10110001 11001000 01000111</span></li>
-            <li><span class="bits-offset">000072</span><span class="bits-fila">01101010 01111010 11110010 11101101 10010001 10101001 00010101 11110011</span></li>
-            <li><span class="bits-offset">000080</span><span class="bits-fila">01000111 11110001 10101011 11011011 00010110 10100000 10111110 01010111</span></li>
-            <li><span class="bits-offset">000088</span><span class="bits-fila">11010000 11111000 10001000 00011011 01100101 10001001 10100111 10011010</span></li>
-            <li><span class="bits-offset">000096</span><span class="bits-fila">01111001 10100111 11111110 01101001 11100101 00000000 01110001 00110100</span></li>
-            <li><span class="bits-offset">000104</span><span class="bits-fila">11110011 01001111 11111100 11010011 11001010 00000100 11110000 10110110</span></li>
-            <li><span class="bits-offset">000112</span><span class="bits-fila">11010100 01110110 10101111 10010101 11110100 00011111 10100010 00100001</span></li>
-            <li><span class="bits-offset">000120</span><span class="bits-fila">00000000 11110011 01001111 00110100 11111111 11001101 00111110 00110111</span></li>
-            <li><span class="bits-offset">000128</span><span class="bits-fila">11010111 11000110 00010101 10111110 01101001 11100110 10011111 11111001</span></li>
-            <li><span class="bits-offset">000136</span><span class="bits-fila">10100111 01100110 10110101 11110001 00001011 11000101 01110101 11110010</span></li>
-            <li><span class="bits-offset">000144</span><span class="bits-fila">10111011 00110001 10110001 11100010 10000010 10011010 01111001 10100111</span></li>
-            <li><span class="bits-offset">000152</span><span class="bits-fila">11111110 01101001 11011001 10010010 10010101 11010101 01001000 10101001</span></li>
-            <li><span class="bits-offset">000160</span><span class="bits-fila">10100111 10011010 01111111 11100110 10011101 10011010 11010111 11010101</span></li>
-            <li><span class="bits-offset">000168</span><span class="bits-fila">10110111 00010101 01111100 10101111 10011010 00111111 10001101 01011110</span></li>
-            <li><span class="bits-offset">000176</span><span class="bits-fila">11011000 10110101 00000101 11110010 10111110 10000111 11000100 01000000</span></li>
-            <li><span class="bits-offset">000184</span><span class="bits-fila">11011011 00101100 01001101 00111100 11010011 11001101 00111100 11010011</span></li>
-          </ol>
-          <p class="bits-pie">Mostrando los primeros 192 bytes de datos de 1,199,410</p>
+
+          <!-- Lo que dice el encabezado del .suf (ver js/huffman/suf.js) -->
+          <dl class="suf-encabezado" data-suf-encabezado hidden>
+            <div><dt>Firma</dt><dd data-suf="firma"></dd></div>
+            <div><dt>Caracteres</dt><dd data-suf="caracteres"></dd></div>
+            <div><dt>Símbolos</dt><dd data-suf="simbolos"></dd></div>
+            <div><dt>Relleno</dt><dd data-suf="relleno"></dd></div>
+            <div><dt>Título</dt><dd data-suf="titulo"></dd></div>
+          </dl>
+
+          <!-- Con datos reales solo se dibujan las filas visibles (lista virtualizada) -->
+          <div class="bits-ventana" tabindex="0" role="region" aria-label="Bits de los datos, 8 bytes por fila" data-bits-ventana>
+            <div class="bits-espacio" data-bits-espacio>
+              <ol class="bits-lista" data-bits-lista>
+                <li><span class="bits-offset">000000</span><span class="bits-fila">10011010 01111001 10100111 10011010 01111001 10100111 11000110 11111010</span></li>
+                <li><span class="bits-offset">000008</span><span class="bits-fila">11110110 00111001 00001000 11101101 01001111 01011110 01011101 10110010</span></li>
+                <li><span class="bits-offset">000016</span><span class="bits-fila">00110101 00100010 10111110 01101000 11111110 00110101 01111011 01100010</span></li>
+                <li><span class="bits-offset">000024</span><span class="bits-fila">11010100 00010111 11001010 11111010 00011111 00010001 00000011 01101100</span></li>
+                <li><span class="bits-offset">000032</span><span class="bits-fila">10110001 00110100 11110011 01001111 00110100 11110011 01001111 00011101</span></li>
+                <li><span class="bits-offset">000040</span><span class="bits-fila">00010111 11000100 01010110 10010001 01110101 10101111 10010101 11011000</span></li>
+                <li><span class="bits-offset">000048</span><span class="bits-fila">00010100 01010010 01000001 11000001 00111111 01100000 10000001 00100101</span></li>
+                <li><span class="bits-offset">000056</span><span class="bits-fila">01100100 10000100 11010011 11001101 00111100 11010011 11001101 00111100</span></li>
+                <li><span class="bits-offset">000064</span><span class="bits-fila">11010011 11001101 00111110 00110111 11010111 10110001 11001000 01000111</span></li>
+                <li><span class="bits-offset">000072</span><span class="bits-fila">01101010 01111010 11110010 11101101 10010001 10101001 00010101 11110011</span></li>
+                <li><span class="bits-offset">000080</span><span class="bits-fila">01000111 11110001 10101011 11011011 00010110 10100000 10111110 01010111</span></li>
+                <li><span class="bits-offset">000088</span><span class="bits-fila">11010000 11111000 10001000 00011011 01100101 10001001 10100111 10011010</span></li>
+                <li><span class="bits-offset">000096</span><span class="bits-fila">01111001 10100111 11111110 01101001 11100101 00000000 01110001 00110100</span></li>
+                <li><span class="bits-offset">000104</span><span class="bits-fila">11110011 01001111 11111100 11010011 11001010 00000100 11110000 10110110</span></li>
+                <li><span class="bits-offset">000112</span><span class="bits-fila">11010100 01110110 10101111 10010101 11110100 00011111 10100010 00100001</span></li>
+                <li><span class="bits-offset">000120</span><span class="bits-fila">00000000 11110011 01001111 00110100 11111111 11001101 00111110 00110111</span></li>
+                <li><span class="bits-offset">000128</span><span class="bits-fila">11010111 11000110 00010101 10111110 01101001 11100110 10011111 11111001</span></li>
+                <li><span class="bits-offset">000136</span><span class="bits-fila">10100111 01100110 10110101 11110001 00001011 11000101 01110101 11110010</span></li>
+                <li><span class="bits-offset">000144</span><span class="bits-fila">10111011 00110001 10110001 11100010 10000010 10011010 01111001 10100111</span></li>
+                <li><span class="bits-offset">000152</span><span class="bits-fila">11111110 01101001 11011001 10010010 10010101 11010101 01001000 10101001</span></li>
+                <li><span class="bits-offset">000160</span><span class="bits-fila">10100111 10011010 01111111 11100110 10011101 10011010 11010111 11010101</span></li>
+                <li><span class="bits-offset">000168</span><span class="bits-fila">10110111 00010101 01111100 10101111 10011010 00111111 10001101 01011110</span></li>
+                <li><span class="bits-offset">000176</span><span class="bits-fila">11011000 10110101 00000101 11110010 10111110 10000111 11000100 01000000</span></li>
+                <li><span class="bits-offset">000184</span><span class="bits-fila">11011011 00101100 01001101 00111100 11010011 11001101 00111100 11010011</span></li>
+              </ol>
+            </div>
+          </div>
+          <p class="bits-pie" data-bits-pie>Mostrando los primeros 192 bytes de datos de 1,199,410</p>
         </section>
       </div>
     </section>

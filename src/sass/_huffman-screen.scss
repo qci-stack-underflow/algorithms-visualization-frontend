@@ -522,13 +522,13 @@
   }
 }
 
-// Mientras carga o si hubo un error, no se muestran las cifras ni el árbol
-// de ejemplo; con un error tampoco las fases.
-// El aviso de datos de ejemplo tampoco aplica mientras no hay cifras.
-#proceso[data-estado="cargando"] [data-resultado],
-#proceso[data-estado="error"] [data-resultado],
-#proceso[data-estado] .aviso-ejemplo,
-#proceso[data-estado="error"] .fases {
+// Mientras carga o si hubo un error, no se muestran los resultados (cifras,
+// árbol, frase y bits); con un error tampoco las fases. El aviso de datos de
+// ejemplo tampoco aplica mientras no hay resultados.
+.vista[data-estado="cargando"] [data-resultado],
+.vista[data-estado="error"] [data-resultado],
+.vista[data-estado] .aviso-ejemplo,
+.vista[data-estado="error"] .fases {
   display: none;
 }
 
@@ -1174,6 +1174,12 @@ th[aria-sort="ascending"] .orden::after {
   gap: 8px;
 }
 
+.frase-total {
+  margin-top: var(--s2);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
 .frase-ficha {
   display: flex;
   flex-direction: column;
@@ -1204,24 +1210,88 @@ th[aria-sort="ascending"] .orden::after {
   gap: 6px;
 }
 
-// Bits en grupos de 8 con la posición (en bytes) a la izquierda. Se
-// desvanece al final para indicar que sigue mucho más.
-.bits-lista {
+.chip-dato--relleno {
+  border-color: rgba(168, 64, 44, 0.3);
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+// Campos del encabezado del .suf en una fila que se acomoda al ancho
+.suf-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px var(--s3);
+  margin-bottom: var(--s2);
+  font-size: 13px;
+
+  > div {
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  dt {
+    color: var(--text-muted);
+  }
+
+  dd {
+    overflow-wrap: anywhere;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+  }
+}
+
+// Bits en grupos de 8 con la posición (en bytes, dentro de los datos) a la
+// izquierda. Se recorre dentro del panel; con datos reales solo existen las
+// filas visibles (js/huffman/binario.js) y .bits-espacio da el alto total.
+.bits-ventana {
+  --alto-fila: 26px;
+
   position: relative;
-  padding: 4px 0;
-  overflow-x: auto;
+  height: min(480px, 60vh);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.bits-espacio {
+  position: relative;
+}
+
+.bits-lista {
+  padding: 4px 12px;
   list-style: none;
   font-family: var(--font-mono);
   font-size: 13px;
-  line-height: 2;
-  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
-  mask-image: linear-gradient(to bottom, #000 70%, transparent);
 
   li {
     display: flex;
     gap: var(--s3);
+    height: var(--alto-fila);
+    line-height: var(--alto-fila);
     white-space: pre;
   }
+}
+
+.bits-ventana.is-virtual .bits-lista {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-block: 0;
+  will-change: transform;
+}
+
+// Los bits que solo completan el último byte
+.bits-relleno {
+  border-radius: 3px;
+  background: var(--danger-light);
+  color: var(--danger);
 }
 
 .bits-offset {
@@ -1238,6 +1308,11 @@ th[aria-sort="ascending"] .orden::after {
   font-size: 13px;
   text-align: center;
   color: var(--text-muted);
+
+  &.is-error {
+    color: var(--danger);
+    font-weight: 500;
+  }
 }
 
 /* Adaptación a pantallas pequeñas */
