@@ -5,10 +5,14 @@ import { descargarSuf, huffmanListo, obtenerHuffman, obtenerLibros, sufListo } f
 import { mostrarCarga, mostrarError, reiniciarCarga, terminarCarga } from "./carga.js";
 import { leerRuta } from "./rutas.js";
 
-// Si el backend todavía no tiene las rutas de /huffman, la pantalla se queda
-// con los datos de ejemplo del Quijote escritos en huffman.html. Cuando las
-// tenga, se usan sus datos sin cambiar nada aquí.
+// Si el backend todavía no tiene las rutas de /huffman, la pantalla usa el
+// resultado de ejemplo del Quijote: el JSON de A1 (docs/ejemplos/
+// huffman-quijote.json del backend). Se importa aparte para que solo se
+// descargue en ese caso; si tampoco llega, se queda lo escrito en
+// huffman.html. Cuando el backend tenga las rutas, se usan sus datos sin
+// cambiar nada aquí.
 let sinRutasDeHuffman = false;
+const cargarEjemplo = () => import("./ejemplo-quijote.json").then((modulo) => modulo.default);
 
 export const enModoEjemplo = () => sinRutasDeHuffman;
 
@@ -35,12 +39,33 @@ const pedir = (numero, vista) =>
 const yaGuardado = (numero, vista) =>
   huffmanListo(numero) && (vista !== "binario" || sufListo(numero));
 
+// Llena la vista con el ejemplo. Si se estaba mostrando la carga en
+// `vistaEnCarga`, la termina igual que con datos reales.
+async function usarEjemplo(numero, alUsarEjemplo, vistaEnCarga = null) {
+  let ejemplo;
+  try {
+    ejemplo = await cargarEjemplo();
+  } catch {
+    if (vistaEnCarga && sigueAbierto(numero)) reiniciarCarga();
+    return;
+  }
+  if (!sigueAbierto(numero)) return;
+  alUsarEjemplo(ejemplo);
+  if (vistaEnCarga) await terminarCarga(vistaEnCarga);
+}
+
 // Devuelve el HuffmanResult, o null si falló, el usuario cambió de libro o
-// no hay backend de Huffman. `alCargar(resultado, bytesSuf)` llena la vista
-// antes de mostrarla (bytesSuf solo en el binario); "Reintentar" vuelve a
-// llamarla. `vista` es "proceso" o "binario".
-export async function cargarLibro(numero, alCargar = () => {}, vista = "proceso") {
-  if (sinRutasDeHuffman) return null;
+// no hay backend de Huffman. Opciones:
+// - vista: "proceso" o "binario" (el binario pide además el .suf)
+// - alCargar(resultado, bytesSuf): llena la vista con datos del backend antes
+//   de mostrarla (bytesSuf solo en el binario); "Reintentar" vuelve a llamarla
+// - alUsarEjemplo(resultado): llena la vista con el ejemplo si no hay backend
+export async function cargarLibro(numero, opciones = {}) {
+  const { vista = "proceso", alCargar = () => {}, alUsarEjemplo = () => {} } = opciones;
+  if (sinRutasDeHuffman) {
+    await usarEjemplo(numero, alUsarEjemplo);
+    return null;
+  }
 
   // Ya guardado (p. ej. al volver del binario): sin carga ni petición nueva.
   if (yaGuardado(numero, vista)) {
@@ -59,14 +84,14 @@ export async function cargarLibro(numero, alCargar = () => {}, vista = "proceso"
   } catch (error) {
     if (error.estado === 404 && (await faltanRutasDeHuffman())) {
       sinRutasDeHuffman = true;
-      if (sigueAbierto(numero)) reiniciarCarga();
+      if (sigueAbierto(numero)) await usarEjemplo(numero, alUsarEjemplo, vista);
       return null;
     }
     // Un error que no es de la API (sin estado) es un fallo del frontend:
     // se registra y se muestra el mensaje de error inesperado.
     if (error.estado === undefined) console.error(error);
     if (sigueAbierto(numero)) {
-      mostrarError(error.estado ?? -1, () => cargarLibro(numero, alCargar, vista), vista);
+      mostrarError(error.estado ?? -1, () => cargarLibro(numero, opciones), vista);
     }
     return null;
   }
