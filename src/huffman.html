@@ -79,18 +79,21 @@
       </div>
 
       <div class="container">
-        <div class="enlace-libro">
+        <!-- js/huffman/biblioteca.js saca el número del libro del enlace -->
+        <form class="enlace-libro" data-enlace-libro novalidate>
           <label class="campo">
             <i data-lucide="link"></i>
-            <span class="visually-hidden">Enlace del libro</span>
-            <input type="url" placeholder="https://www.gutenberg.org/ebooks/2000" autocomplete="off">
+            <span class="visually-hidden">Enlace del libro en Project Gutenberg</span>
+            <input type="url" name="enlace" placeholder="https://www.gutenberg.org/ebooks/2000" autocomplete="off"
+              aria-describedby="enlaceNota enlaceError">
           </label>
-          <button class="btn btn--primary" type="button">
+          <button class="btn btn--primary" type="submit">
             Comprimir
             <i data-lucide="arrow-right"></i>
           </button>
-        </div>
-        <p class="enlace-nota">Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
+        </form>
+        <p class="enlace-nota" id="enlaceNota" data-enlace-nota>Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
+        <p class="enlace-error" id="enlaceError" role="alert" data-enlace-error hidden></p>
 
         <div class="biblioteca-head">
           <h2>O elige uno de la biblioteca</h2>
