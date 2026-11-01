@@ -77,6 +77,7 @@ const guardados = {
   suf: new Map(), // número de libro → Promise<ArrayBuffer>
 };
 const huffmanListos = new Set(); // libros cuyo resultado ya llegó
+const sufListos = new Set(); // libros cuyo .suf ya llegó
 
 function recordar(mapa, clave, pedir) {
   if (!mapa.has(clave)) {
@@ -122,7 +123,14 @@ export function huffmanListo(id) {
 // GET /huffman/books/:id/file → ArrayBuffer con el archivo .suf
 export async function descargarSuf(id) {
   const numero = numeroDeLibro(id);
-  return recordar(guardados.suf, numero, () =>
-    solicitar(`/huffman/books/${numero}/file`, undefined, "bytes")
-  );
+  return recordar(guardados.suf, numero, async () => {
+    const bytes = await solicitar(`/huffman/books/${numero}/file`, undefined, "bytes");
+    sufListos.add(numero);
+    return bytes;
+  });
+}
+
+// true si el .suf de ese libro ya llegó.
+export function sufListo(id) {
+  return sufListos.has(Number(id));
 }

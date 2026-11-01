@@ -6,6 +6,7 @@ import { reiniciarCarga } from "./carga.js";
 import { limpiarAvisosDeDescarga } from "./descarga.js";
 import { cargarLibro } from "./datos.js";
 import { llenarProceso } from "./proceso.js";
+import { llenarBinario } from "./binario.js";
 
 // Mientras el backend no tenga /huffman, las cifras, el árbol y los bits
 // escritos en la página son de Don Quijote.
@@ -66,7 +67,8 @@ const tituloDeVista = (vista, datos) =>
   `${vista === "binario" ? datos.archivo : datos.titulo} · ${tituloPagina}`;
 
 // Con datos del backend ya no aplica el aviso de "vista de ejemplo".
-function mostrarResultado(numero, resultado) {
+// `bytesSuf` solo llega al abrir el binario.
+function mostrarResultado(numero, resultado, bytesSuf) {
   const datos = llenarLibro(numero, {
     titulo: resultado.book?.title || `Libro #${numero}`,
     autor: resultado.book?.author || "Autor desconocido",
@@ -76,6 +78,7 @@ function mostrarResultado(numero, resultado) {
   });
   if (rutaActual?.libro === numero) document.title = tituloDeVista(rutaActual.vista, datos);
   llenarProceso(resultado);
+  if (bytesSuf) llenarBinario(resultado, bytesSuf);
 }
 
 // Cada entrada del historial guarda su scroll en history.state: Atrás y
@@ -146,8 +149,11 @@ function mostrar(ruta, esCargaInicial) {
   // En la carga inicial el foco no se mueve.
   if (!esCargaInicial) enfocar(vista, rutaAnterior, scrollRestaurado);
 
-  // El proceso pide sus datos al backend (o usa los ya guardados).
-  if (vista === "proceso") cargarLibro(libro, (resultado) => mostrarResultado(libro, resultado));
+  // El proceso y el binario piden sus datos al backend (o usan los ya
+  // guardados); el binario, además, los bytes del .suf.
+  if (libro !== null) {
+    cargarLibro(libro, (resultado, bytesSuf) => mostrarResultado(libro, resultado, bytesSuf), vista);
+  }
 }
 
 function alCambiarRuta(esCargaInicial) {

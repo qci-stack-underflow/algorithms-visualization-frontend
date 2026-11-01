@@ -1,6 +1,7 @@
-// Pide el resultado de Huffman de un libro mostrando la carga y los errores
-// de la vista de proceso (carga.js).
-import { huffmanListo, obtenerHuffman, obtenerLibros } from "../api.js";
+// Pide los datos de un libro mostrando la carga y los errores en su vista
+// (carga.js): el resultado de Huffman para el proceso, y además el .suf para
+// el binario.
+import { descargarSuf, huffmanListo, obtenerHuffman, obtenerLibros, sufListo } from "../api.js";
 import { mostrarCarga, mostrarError, reiniciarCarga, terminarCarga } from "./carga.js";
 import { leerRuta } from "./rutas.js";
 
@@ -25,34 +26,47 @@ async function faltanRutasDeHuffman() {
 // Si el usuario ya cambió de libro, la respuesta tardía no debe tocar la vista.
 const sigueAbierto = (numero) => leerRuta(location.hash)?.libro === numero;
 
+// El binario necesita también los bytes del .suf.
+const pedir = (numero, vista) =>
+  vista === "binario"
+    ? Promise.all([obtenerHuffman(numero), descargarSuf(numero)])
+    : Promise.all([obtenerHuffman(numero)]);
+
+const yaGuardado = (numero, vista) =>
+  huffmanListo(numero) && (vista !== "binario" || sufListo(numero));
+
 // Devuelve el HuffmanResult, o null si falló, el usuario cambió de libro o
-// no hay backend de Huffman. `alCargar(resultado)` llena la vista antes de
-// mostrarla; "Reintentar" vuelve a llamarla.
-export async function cargarLibro(numero, alCargar = () => {}) {
+// no hay backend de Huffman. `alCargar(resultado, bytesSuf)` llena la vista
+// antes de mostrarla (bytesSuf solo en el binario); "Reintentar" vuelve a
+// llamarla. `vista` es "proceso" o "binario".
+export async function cargarLibro(numero, alCargar = () => {}, vista = "proceso") {
   if (sinRutasDeHuffman) return null;
 
   // Ya guardado (p. ej. al volver del binario): sin carga ni petición nueva.
-  if (huffmanListo(numero)) {
-    const resultado = await obtenerHuffman(numero);
-    if (sigueAbierto(numero)) alCargar(resultado);
-    return resultado;
+  if (yaGuardado(numero, vista)) {
+    const datos = await pedir(numero, vista);
+    if (sigueAbierto(numero)) alCargar(...datos);
+    return datos[0];
   }
 
-  mostrarCarga();
+  mostrarCarga(vista);
   try {
-    const resultado = await obtenerHuffman(numero);
+    const datos = await pedir(numero, vista);
     if (!sigueAbierto(numero)) return null;
-    alCargar(resultado);
-    await terminarCarga();
-    return resultado;
+    alCargar(...datos);
+    await terminarCarga(vista);
+    return datos[0];
   } catch (error) {
     if (error.estado === 404 && (await faltanRutasDeHuffman())) {
       sinRutasDeHuffman = true;
       if (sigueAbierto(numero)) reiniciarCarga();
       return null;
     }
+    // Un error que no es de la API (sin estado) es un fallo del frontend:
+    // se registra y se muestra el mensaje de error inesperado.
+    if (error.estado === undefined) console.error(error);
     if (sigueAbierto(numero)) {
-      mostrarError(error.estado ?? 0, () => cargarLibro(numero, alCargar));
+      mostrarError(error.estado ?? -1, () => cargarLibro(numero, alCargar, vista), vista);
     }
     return null;
   }
