@@ -6,10 +6,10 @@ import { reiniciarCarga } from "./carga.js";
 import { limpiarAvisosDeDescarga } from "./descarga.js";
 import { cargarLibro } from "./datos.js";
 import { llenarProceso } from "./proceso.js";
-import { llenarBinario } from "./binario.js";
+import { llenarBinario, llenarBinarioDeEjemplo } from "./binario.js";
 
-// Mientras el backend no tenga /huffman, las cifras, el árbol y los bits
-// escritos en la página son de Don Quijote.
+// Mientras el backend no tenga /huffman, la pantalla muestra el ejemplo de
+// Don Quijote (el JSON de A1, ver datos.js); con otro libro se avisa.
 const LIBRO_DE_EJEMPLO = 2000;
 
 let tituloPagina = ""; // el <title> de huffman.html, leído al iniciar
@@ -66,6 +66,19 @@ function llenarLibro(numero, { titulo, autor } = datosDelLibro(numero)) {
 const tituloDeVista = (vista, datos) =>
   `${vista === "binario" ? datos.archivo : datos.titulo} · ${tituloPagina}`;
 
+// Avisa que hay un resultado en la pantalla, para que el árbol (bloque D) se
+// dibuje con sus nodes y steps, sea del backend o de ejemplo:
+//   document.addEventListener("huffman-resultado", (evento) => {
+//     evento.detail; // { libro, resultado, ejemplo }
+//   });
+// Se dispara cada vez que se abre el proceso o el binario de un libro; si
+// `resultado` es el mismo objeto que la vez anterior, no cambió nada.
+function avisarResultado(libro, resultado, ejemplo) {
+  document.dispatchEvent(
+    new CustomEvent("huffman-resultado", { detail: { libro, resultado, ejemplo } })
+  );
+}
+
 // Con datos del backend ya no aplica el aviso de "vista de ejemplo".
 // `bytesSuf` solo llega al abrir el binario.
 function mostrarResultado(numero, resultado, bytesSuf) {
@@ -79,6 +92,15 @@ function mostrarResultado(numero, resultado, bytesSuf) {
   if (rutaActual?.libro === numero) document.title = tituloDeVista(rutaActual.vista, datos);
   llenarProceso(resultado);
   if (bytesSuf) llenarBinario(resultado, bytesSuf);
+  avisarResultado(numero, resultado, false);
+}
+
+// Sin backend de Huffman: el título y el aviso se quedan como los puso
+// llenarLibro (el libro pedido y, si no es el Quijote, "vista de ejemplo").
+function mostrarEjemplo(numero, ejemplo) {
+  llenarProceso(ejemplo);
+  llenarBinarioDeEjemplo(ejemplo);
+  avisarResultado(numero, ejemplo, true);
 }
 
 // Cada entrada del historial guarda su scroll en history.state: Atrás y
@@ -152,7 +174,11 @@ function mostrar(ruta, esCargaInicial) {
   // El proceso y el binario piden sus datos al backend (o usan los ya
   // guardados); el binario, además, los bytes del .suf.
   if (libro !== null) {
-    cargarLibro(libro, (resultado, bytesSuf) => mostrarResultado(libro, resultado, bytesSuf), vista);
+    cargarLibro(libro, {
+      vista,
+      alCargar: (resultado, bytesSuf) => mostrarResultado(libro, resultado, bytesSuf),
+      alUsarEjemplo: (ejemplo) => mostrarEjemplo(libro, ejemplo),
+    });
   }
 }
 

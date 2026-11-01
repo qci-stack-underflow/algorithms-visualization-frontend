@@ -1,0 +1,4715 @@
+{
+  "book": {
+    "id": 2000,
+    "title": "Don Quijote",
+    "author": "Miguel de Cervantes Saavedra",
+    "language": "Español",
+    "size": "2.2 MB",
+    "bytes": 2168320
+  },
+  "totalCharacters": 2110737,
+  "distinctSymbols": 92,
+  "rootId": 182,
+  "nodes": [
+    {
+      "id": 0,
+      "weight": 37681,
+      "symbol": "\n",
+      "left": null,
+      "right": null,
+      "parentId": 163,
+      "isLeaf": true,
+      "code": "101110"
+    },
+    {
+      "id": 1,
+      "weight": 1431,
+      "symbol": "E",
+      "left": null,
+      "right": null,
+      "parentId": 134,
+      "isLeaf": true,
+      "code": "11010010111"
+    },
+    {
+      "id": 2,
+      "weight": 88518,
+      "symbol": "l",
+      "left": null,
+      "right": null,
+      "parentId": 170,
+      "isLeaf": true,
+      "code": "11011"
+    },
+    {
+      "id": 3,
+      "weight": 354706,
+      "symbol": " ",
+      "left": null,
+      "right": null,
+      "parentId": 179,
+      "isLeaf": true,
+      "code": "111"
+    },
+    {
+      "id": 4,
+      "weight": 77759,
+      "symbol": "i",
+      "left": null,
+      "right": null,
+      "parentId": 168,
+      "isLeaf": true,
+      "code": "10110"
+    },
+    {
+      "id": 5,
+      "weight": 108449,
+      "symbol": "n",
+      "left": null,
+      "right": null,
+      "parentId": 172,
+      "isLeaf": true,
+      "code": "0110"
+    },
+    {
+      "id": 6,
+      "weight": 16999,
+      "symbol": "g",
+      "left": null,
+      "right": null,
+      "parentId": 156,
+      "isLeaf": true,
+      "code": "1001100"
+    },
+    {
+      "id": 7,
+      "weight": 221968,
+      "symbol": "e",
+      "left": null,
+      "right": null,
+      "parentId": 177,
+      "isLeaf": true,
+      "code": "010"
+    },
+    {
+      "id": 8,
+      "weight": 154052,
+      "symbol": "o",
+      "left": null,
+      "right": null,
+      "parentId": 174,
+      "isLeaf": true,
+      "code": "1010"
+    },
+    {
+      "id": 9,
+      "weight": 123238,
+      "symbol": "s",
+      "left": null,
+      "right": null,
+      "parentId": 173,
+      "isLeaf": true,
+      "code": "1000"
+    },
+    {
+      "id": 10,
+      "weight": 19631,
+      "symbol": "h",
+      "left": null,
+      "right": null,
+      "parentId": 157,
+      "isLeaf": true,
+      "code": "1001111"
+    },
+    {
+      "id": 11,
+      "weight": 85823,
+      "symbol": "d",
+      "left": null,
+      "right": null,
+      "parentId": 169,
+      "isLeaf": true,
+      "code": "11001"
+    },
+    {
+      "id": 12,
+      "weight": 192727,
+      "symbol": "a",
+      "left": null,
+      "right": null,
+      "parentId": 176,
+      "isLeaf": true,
+      "code": "000"
+    },
+    {
+      "id": 13,
+      "weight": 2736,
+      "symbol": "Q",
+      "left": null,
+      "right": null,
+      "parentId": 141,
+      "isLeaf": true,
+      "code": "1101001010"
+    },
+    {
+      "id": 14,
+      "weight": 78689,
+      "symbol": "u",
+      "left": null,
+      "right": null,
+      "parentId": 169,
+      "isLeaf": true,
+      "code": "11000"
+    },
+    {
+      "id": 15,
+      "weight": 10495,
+      "symbol": "j",
+      "left": null,
+      "right": null,
+      "parentId": 152,
+      "isLeaf": true,
+      "code": "11010001"
+    },
+    {
+      "id": 16,
+      "weight": 61238,
+      "symbol": "t",
+      "left": null,
+      "right": null,
+      "parentId": 166,
+      "isLeaf": true,
+      "code": "01111"
+    },
+    {
+      "id": 17,
+      "weight": 1156,
+      "symbol": "M",
+      "left": null,
+      "right": null,
+      "parentId": 131,
+      "isLeaf": true,
+      "code": "11010000010"
+    },
+    {
+      "id": 18,
+      "weight": 58339,
+      "symbol": "c",
+      "left": null,
+      "right": null,
+      "parentId": 166,
+      "isLeaf": true,
+      "code": "01110"
+    },
+    {
+      "id": 19,
+      "weight": 33881,
+      "symbol": "p",
+      "left": null,
+      "right": null,
+      "parentId": 161,
+      "isLeaf": true,
+      "code": "100101"
+    },
+    {
+      "id": 20,
+      "weight": 100863,
+      "symbol": "r",
+      "left": null,
+      "right": null,
+      "parentId": 171,
+      "isLeaf": true,
+      "code": "0010"
+    },
+    {
+      "id": 21,
+      "weight": 1577,
+      "symbol": "C",
+      "left": null,
+      "right": null,
+      "parentId": 135,
+      "isLeaf": true,
+      "code": "0011100001"
+    },
+    {
+      "id": 22,
+      "weight": 17436,
+      "symbol": "v",
+      "left": null,
+      "right": null,
+      "parentId": 156,
+      "isLeaf": true,
+      "code": "1001101"
+    },
+    {
+      "id": 23,
+      "weight": 3299,
+      "symbol": "S",
+      "left": null,
+      "right": null,
+      "parentId": 142,
+      "isLeaf": true,
+      "code": "001110001"
+    },
+    {
+      "id": 24,
+      "weight": 1010,
+      "symbol": "T",
+      "left": null,
+      "right": null,
+      "parentId": 130,
+      "isLeaf": true,
+      "code": "10011100000"
+    },
+    {
+      "id": 25,
+      "weight": 43682,
+      "symbol": "m",
+      "left": null,
+      "right": null,
+      "parentId": 164,
+      "isLeaf": true,
+      "code": "110101"
+    },
+    {
+      "id": 26,
+      "weight": 671,
+      "symbol": "R",
+      "left": null,
+      "right": null,
+      "parentId": 124,
+      "isLeaf": true,
+      "code": "110100100001"
+    },
+    {
+      "id": 27,
+      "weight": 23874,
+      "symbol": "y",
+      "left": null,
+      "right": null,
+      "parentId": 159,
+      "isLeaf": true,
+      "code": "001101"
+    },
+    {
+      "id": 28,
+      "weight": 1896,
+      "symbol": "A",
+      "left": null,
+      "right": null,
+      "parentId": 137,
+      "isLeaf": true,
+      "code": "0011111010"
+    },
+    {
+      "id": 29,
+      "weight": 2123,
+      "symbol": "D",
+      "left": null,
+      "right": null,
+      "parentId": 139,
+      "isLeaf": true,
+      "code": "1101000000"
+    },
+    {
+      "id": 30,
+      "weight": 29973,
+      "symbol": "q",
+      "left": null,
+      "right": null,
+      "parentId": 161,
+      "isLeaf": true,
+      "code": "100100"
+    },
+    {
+      "id": 31,
+      "weight": 475,
+      "symbol": "B",
+      "left": null,
+      "right": null,
+      "parentId": 122,
+      "isLeaf": true,
+      "code": "001111100011"
+    },
+    {
+      "id": 32,
+      "weight": 7104,
+      "symbol": "é",
+      "left": null,
+      "right": null,
+      "parentId": 148,
+      "isLeaf": true,
+      "code": "00111011"
+    },
+    {
+      "id": 33,
+      "weight": 1720,
+      "symbol": "P",
+      "left": null,
+      "right": null,
+      "parentId": 136,
+      "isLeaf": true,
+      "code": "0011111001"
+    },
+    {
+      "id": 34,
+      "weight": 9224,
+      "symbol": "ó",
+      "left": null,
+      "right": null,
+      "parentId": 151,
+      "isLeaf": true,
+      "code": "10011101"
+    },
+    {
+      "id": 35,
+      "weight": 23802,
+      "symbol": "b",
+      "left": null,
+      "right": null,
+      "parentId": 159,
+      "isLeaf": true,
+      "code": "001100"
+    },
+    {
+      "id": 36,
+      "weight": 7148,
+      "symbol": "f",
+      "left": null,
+      "right": null,
+      "parentId": 149,
+      "isLeaf": true,
+      "code": "00111101"
+    },
+    {
+      "id": 37,
+      "weight": 6425,
+      "symbol": "z",
+      "left": null,
+      "right": null,
+      "parentId": 147,
+      "isLeaf": true,
+      "code": "00111001"
+    },
+    {
+      "id": 38,
+      "weight": 12464,
+      "symbol": "í",
+      "left": null,
+      "right": null,
+      "parentId": 153,
+      "isLeaf": true,
+      "code": "11010011"
+    },
+    {
+      "id": 39,
+      "weight": 7136,
+      "symbol": "á",
+      "left": null,
+      "right": null,
+      "parentId": 149,
+      "isLeaf": true,
+      "code": "00111100"
+    },
+    {
+      "id": 40,
+      "weight": 40277,
+      "symbol": ",",
+      "left": null,
+      "right": null,
+      "parentId": 163,
+      "isLeaf": true,
+      "code": "101111"
+    },
+    {
+      "id": 41,
+      "weight": 89,
+      "symbol": "ü",
+      "left": null,
+      "right": null,
+      "parentId": 110,
+      "isLeaf": true,
+      "code": "110100100000011"
+    },
+    {
+      "id": 42,
+      "weight": 4272,
+      "symbol": "ñ",
+      "left": null,
+      "right": null,
+      "parentId": 144,
+      "isLeaf": true,
+      "code": "100111001"
+    },
+    {
+      "id": 43,
+      "weight": 2,
+      "symbol": "]",
+      "left": null,
+      "right": null,
+      "parentId": 95,
+      "isLeaf": true,
+      "code": "00111110001011011000"
+    },
+    {
+      "id": 44,
+      "weight": 476,
+      "symbol": "F",
+      "left": null,
+      "right": null,
+      "parentId": 123,
+      "isLeaf": true,
+      "code": "100111000010"
+    },
+    {
+      "id": 45,
+      "weight": 1181,
+      "symbol": "L",
+      "left": null,
+      "right": null,
+      "parentId": 131,
+      "isLeaf": true,
+      "code": "11010000011"
+    },
+    {
+      "id": 46,
+      "weight": 1272,
+      "symbol": "ú",
+      "left": null,
+      "right": null,
+      "parentId": 132,
+      "isLeaf": true,
+      "code": "11010010001"
+    },
+    {
+      "id": 47,
+      "weight": 559,
+      "symbol": "V",
+      "left": null,
+      "right": null,
+      "parentId": 123,
+      "isLeaf": true,
+      "code": "100111000011"
+    },
+    {
+      "id": 48,
+      "weight": 349,
+      "symbol": "G",
+      "left": null,
+      "right": null,
+      "parentId": 120,
+      "isLeaf": true,
+      "code": "001110000000"
+    },
+    {
+      "id": 49,
+      "weight": 206,
+      "symbol": "x",
+      "left": null,
+      "right": null,
+      "parentId": 116,
+      "isLeaf": true,
+      "code": "0011111000011"
+    },
+    {
+      "id": 50,
+      "weight": 1339,
+      "symbol": "Y",
+      "left": null,
+      "right": null,
+      "parentId": 133,
+      "isLeaf": true,
+      "code": "11010010010"
+    },
+    {
+      "id": 51,
+      "weight": 121,
+      "symbol": "J",
+      "left": null,
+      "right": null,
+      "parentId": 114,
+      "isLeaf": true,
+      "code": "11010010000000"
+    },
+    {
+      "id": 52,
+      "weight": 4802,
+      "symbol": ";",
+      "left": null,
+      "right": null,
+      "parentId": 145,
+      "isLeaf": true,
+      "code": "110100001"
+    },
+    {
+      "id": 53,
+      "weight": 8212,
+      "symbol": ".",
+      "left": null,
+      "right": null,
+      "parentId": 150,
+      "isLeaf": true,
+      "code": "00111111"
+    },
+    {
+      "id": 54,
+      "weight": 345,
+      "symbol": "I",
+      "left": null,
+      "right": null,
+      "parentId": 119,
+      "isLeaf": true,
+      "code": "1101001001111"
+    },
+    {
+      "id": 55,
+      "weight": 362,
+      "symbol": "O",
+      "left": null,
+      "right": null,
+      "parentId": 120,
+      "isLeaf": true,
+      "code": "001110000001"
+    },
+    {
+      "id": 56,
+      "weight": 769,
+      "symbol": "N",
+      "left": null,
+      "right": null,
+      "parentId": 127,
+      "isLeaf": true,
+      "code": "00111000001"
+    },
+    {
+      "id": 57,
+      "weight": 90,
+      "symbol": "U",
+      "left": null,
+      "right": null,
+      "parentId": 111,
+      "isLeaf": true,
+      "code": "00111110000100"
+    },
+    {
+      "id": 58,
+      "weight": 8,
+      "symbol": "1",
+      "left": null,
+      "right": null,
+      "parentId": 103,
+      "isLeaf": true,
+      "code": "001111100010110100"
+    },
+    {
+      "id": 59,
+      "weight": 4,
+      "symbol": "6",
+      "left": null,
+      "right": null,
+      "parentId": 99,
+      "isLeaf": true,
+      "code": "0011111000101101010"
+    },
+    {
+      "id": 60,
+      "weight": 2,
+      "symbol": "0",
+      "left": null,
+      "right": null,
+      "parentId": 95,
+      "isLeaf": true,
+      "code": "00111110001011011001"
+    },
+    {
+      "id": 61,
+      "weight": 2,
+      "symbol": "4",
+      "left": null,
+      "right": null,
+      "parentId": 96,
+      "isLeaf": true,
+      "code": "00111110001011011010"
+    },
+    {
+      "id": 62,
+      "weight": 2047,
+      "symbol": ":",
+      "left": null,
+      "right": null,
+      "parentId": 138,
+      "isLeaf": true,
+      "code": "1001110001"
+    },
+    {
+      "id": 63,
+      "weight": 114,
+      "symbol": "É",
+      "left": null,
+      "right": null,
+      "parentId": 112,
+      "isLeaf": true,
+      "code": "00111110001001"
+    },
+    {
+      "id": 64,
+      "weight": 5,
+      "symbol": "Ó",
+      "left": null,
+      "right": null,
+      "parentId": 102,
+      "isLeaf": true,
+      "code": "001111100010110000"
+    },
+    {
+      "id": 65,
+      "weight": 959,
+      "symbol": "¿",
+      "left": null,
+      "right": null,
+      "parentId": 129,
+      "isLeaf": true,
+      "code": "00111110110"
+    },
+    {
+      "id": 66,
+      "weight": 960,
+      "symbol": "?",
+      "left": null,
+      "right": null,
+      "parentId": 129,
+      "isLeaf": true,
+      "code": "00111110111"
+    },
+    {
+      "id": 67,
+      "weight": 6923,
+      "symbol": "—",
+      "left": null,
+      "right": null,
+      "parentId": 148,
+      "isLeaf": true,
+      "code": "00111010"
+    },
+    {
+      "id": 68,
+      "weight": 685,
+      "symbol": "¡",
+      "left": null,
+      "right": null,
+      "parentId": 125,
+      "isLeaf": true,
+      "code": "110100100110"
+    },
+    {
+      "id": 69,
+      "weight": 693,
+      "symbol": "!",
+      "left": null,
+      "right": null,
+      "parentId": 126,
+      "isLeaf": true,
+      "code": "110100101100"
+    },
+    {
+      "id": 70,
+      "weight": 174,
+      "symbol": "X",
+      "left": null,
+      "right": null,
+      "parentId": 115,
+      "isLeaf": true,
+      "code": "11010010011101"
+    },
+    {
+      "id": 71,
+      "weight": 118,
+      "symbol": "Z",
+      "left": null,
+      "right": null,
+      "parentId": 113,
+      "isLeaf": true,
+      "code": "00111110001010"
+    },
+    {
+      "id": 72,
+      "weight": 290,
+      "symbol": "»",
+      "left": null,
+      "right": null,
+      "parentId": 118,
+      "isLeaf": true,
+      "code": "1101001000001"
+    },
+    {
+      "id": 73,
+      "weight": 380,
+      "symbol": "H",
+      "left": null,
+      "right": null,
+      "parentId": 121,
+      "isLeaf": true,
+      "code": "001111100000"
+    },
+    {
+      "id": 74,
+      "weight": 109,
+      "symbol": "-",
+      "left": null,
+      "right": null,
+      "parentId": 112,
+      "isLeaf": true,
+      "code": "00111110001000"
+    },
+    {
+      "id": 75,
+      "weight": 704,
+      "symbol": "'",
+      "left": null,
+      "right": null,
+      "parentId": 126,
+      "isLeaf": true,
+      "code": "110100101101"
+    },
+    {
+      "id": 76,
+      "weight": 37,
+      "symbol": "Á",
+      "left": null,
+      "right": null,
+      "parentId": 108,
+      "isLeaf": true,
+      "code": "001111100001010"
+    },
+    {
+      "id": 77,
+      "weight": 14,
+      "symbol": "Í",
+      "left": null,
+      "right": null,
+      "parentId": 105,
+      "isLeaf": true,
+      "code": "00111110001011001"
+    },
+    {
+      "id": 78,
+      "weight": 1,
+      "symbol": "Ñ",
+      "left": null,
+      "right": null,
+      "parentId": 92,
+      "isLeaf": true,
+      "code": "001111100010110111010"
+    },
+    {
+      "id": 79,
+      "weight": 57,
+      "symbol": "«",
+      "left": null,
+      "right": null,
+      "parentId": 108,
+      "isLeaf": true,
+      "code": "001111100001011"
+    },
+    {
+      "id": 80,
+      "weight": 62,
+      "symbol": "(",
+      "left": null,
+      "right": null,
+      "parentId": 109,
+      "isLeaf": true,
+      "code": "001111100010111"
+    },
+    {
+      "id": 81,
+      "weight": 62,
+      "symbol": ")",
+      "left": null,
+      "right": null,
+      "parentId": 110,
+      "isLeaf": true,
+      "code": "110100100000010"
+    },
+    {
+      "id": 82,
+      "weight": 166,
+      "symbol": "\"",
+      "left": null,
+      "right": null,
+      "parentId": 115,
+      "isLeaf": true,
+      "code": "11010010011100"
+    },
+    {
+      "id": 83,
+      "weight": 4,
+      "symbol": "ï",
+      "left": null,
+      "right": null,
+      "parentId": 99,
+      "isLeaf": true,
+      "code": "0011111000101101011"
+    },
+    {
+      "id": 84,
+      "weight": 7,
+      "symbol": "Ú",
+      "left": null,
+      "right": null,
+      "parentId": 102,
+      "isLeaf": true,
+      "code": "001111100010110001"
+    },
+    {
+      "id": 85,
+      "weight": 2,
+      "symbol": "W",
+      "left": null,
+      "right": null,
+      "parentId": 96,
+      "isLeaf": true,
+      "code": "00111110001011011011"
+    },
+    {
+      "id": 86,
+      "weight": 1,
+      "symbol": "à",
+      "left": null,
+      "right": null,
+      "parentId": 92,
+      "isLeaf": true,
+      "code": "001111100010110111011"
+    },
+    {
+      "id": 87,
+      "weight": 1,
+      "symbol": "7",
+      "left": null,
+      "right": null,
+      "parentId": 93,
+      "isLeaf": true,
+      "code": "001111100010110111100"
+    },
+    {
+      "id": 88,
+      "weight": 1,
+      "symbol": "5",
+      "left": null,
+      "right": null,
+      "parentId": 93,
+      "isLeaf": true,
+      "code": "001111100010110111101"
+    },
+    {
+      "id": 89,
+      "weight": 1,
+      "symbol": "2",
+      "left": null,
+      "right": null,
+      "parentId": 94,
+      "isLeaf": true,
+      "code": "001111100010110111110"
+    },
+    {
+      "id": 90,
+      "weight": 1,
+      "symbol": "3",
+      "left": null,
+      "right": null,
+      "parentId": 94,
+      "isLeaf": true,
+      "code": "001111100010110111111"
+    },
+    {
+      "id": 91,
+      "weight": 2,
+      "symbol": "ù",
+      "left": null,
+      "right": null,
+      "parentId": 97,
+      "isLeaf": true,
+      "code": "00111110001011011100"
+    },
+    {
+      "id": 92,
+      "weight": 2,
+      "symbol": null,
+      "left": 78,
+      "right": 86,
+      "parentId": 97,
+      "isLeaf": false,
+      "code": "00111110001011011101"
+    },
+    {
+      "id": 93,
+      "weight": 2,
+      "symbol": null,
+      "left": 87,
+      "right": 88,
+      "parentId": 98,
+      "isLeaf": false,
+      "code": "00111110001011011110"
+    },
+    {
+      "id": 94,
+      "weight": 2,
+      "symbol": null,
+      "left": 89,
+      "right": 90,
+      "parentId": 98,
+      "isLeaf": false,
+      "code": "00111110001011011111"
+    },
+    {
+      "id": 95,
+      "weight": 4,
+      "symbol": null,
+      "left": 43,
+      "right": 60,
+      "parentId": 100,
+      "isLeaf": false,
+      "code": "0011111000101101100"
+    },
+    {
+      "id": 96,
+      "weight": 4,
+      "symbol": null,
+      "left": 61,
+      "right": 85,
+      "parentId": 100,
+      "isLeaf": false,
+      "code": "0011111000101101101"
+    },
+    {
+      "id": 97,
+      "weight": 4,
+      "symbol": null,
+      "left": 91,
+      "right": 92,
+      "parentId": 101,
+      "isLeaf": false,
+      "code": "0011111000101101110"
+    },
+    {
+      "id": 98,
+      "weight": 4,
+      "symbol": null,
+      "left": 93,
+      "right": 94,
+      "parentId": 101,
+      "isLeaf": false,
+      "code": "0011111000101101111"
+    },
+    {
+      "id": 99,
+      "weight": 8,
+      "symbol": null,
+      "left": 59,
+      "right": 83,
+      "parentId": 103,
+      "isLeaf": false,
+      "code": "001111100010110101"
+    },
+    {
+      "id": 100,
+      "weight": 8,
+      "symbol": null,
+      "left": 95,
+      "right": 96,
+      "parentId": 104,
+      "isLeaf": false,
+      "code": "001111100010110110"
+    },
+    {
+      "id": 101,
+      "weight": 8,
+      "symbol": null,
+      "left": 97,
+      "right": 98,
+      "parentId": 104,
+      "isLeaf": false,
+      "code": "001111100010110111"
+    },
+    {
+      "id": 102,
+      "weight": 12,
+      "symbol": null,
+      "left": 64,
+      "right": 84,
+      "parentId": 105,
+      "isLeaf": false,
+      "code": "00111110001011000"
+    },
+    {
+      "id": 103,
+      "weight": 16,
+      "symbol": null,
+      "left": 58,
+      "right": 99,
+      "parentId": 106,
+      "isLeaf": false,
+      "code": "00111110001011010"
+    },
+    {
+      "id": 104,
+      "weight": 16,
+      "symbol": null,
+      "left": 100,
+      "right": 101,
+      "parentId": 106,
+      "isLeaf": false,
+      "code": "00111110001011011"
+    },
+    {
+      "id": 105,
+      "weight": 26,
+      "symbol": null,
+      "left": 102,
+      "right": 77,
+      "parentId": 107,
+      "isLeaf": false,
+      "code": "0011111000101100"
+    },
+    {
+      "id": 106,
+      "weight": 32,
+      "symbol": null,
+      "left": 103,
+      "right": 104,
+      "parentId": 107,
+      "isLeaf": false,
+      "code": "0011111000101101"
+    },
+    {
+      "id": 107,
+      "weight": 58,
+      "symbol": null,
+      "left": 105,
+      "right": 106,
+      "parentId": 109,
+      "isLeaf": false,
+      "code": "001111100010110"
+    },
+    {
+      "id": 108,
+      "weight": 94,
+      "symbol": null,
+      "left": 76,
+      "right": 79,
+      "parentId": 111,
+      "isLeaf": false,
+      "code": "00111110000101"
+    },
+    {
+      "id": 109,
+      "weight": 120,
+      "symbol": null,
+      "left": 107,
+      "right": 80,
+      "parentId": 113,
+      "isLeaf": false,
+      "code": "00111110001011"
+    },
+    {
+      "id": 110,
+      "weight": 151,
+      "symbol": null,
+      "left": 81,
+      "right": 41,
+      "parentId": 114,
+      "isLeaf": false,
+      "code": "11010010000001"
+    },
+    {
+      "id": 111,
+      "weight": 184,
+      "symbol": null,
+      "left": 57,
+      "right": 108,
+      "parentId": 116,
+      "isLeaf": false,
+      "code": "0011111000010"
+    },
+    {
+      "id": 112,
+      "weight": 223,
+      "symbol": null,
+      "left": 74,
+      "right": 63,
+      "parentId": 117,
+      "isLeaf": false,
+      "code": "0011111000100"
+    },
+    {
+      "id": 113,
+      "weight": 238,
+      "symbol": null,
+      "left": 71,
+      "right": 109,
+      "parentId": 117,
+      "isLeaf": false,
+      "code": "0011111000101"
+    },
+    {
+      "id": 114,
+      "weight": 272,
+      "symbol": null,
+      "left": 51,
+      "right": 110,
+      "parentId": 118,
+      "isLeaf": false,
+      "code": "1101001000000"
+    },
+    {
+      "id": 115,
+      "weight": 340,
+      "symbol": null,
+      "left": 82,
+      "right": 70,
+      "parentId": 119,
+      "isLeaf": false,
+      "code": "1101001001110"
+    },
+    {
+      "id": 116,
+      "weight": 390,
+      "symbol": null,
+      "left": 111,
+      "right": 49,
+      "parentId": 121,
+      "isLeaf": false,
+      "code": "001111100001"
+    },
+    {
+      "id": 117,
+      "weight": 461,
+      "symbol": null,
+      "left": 112,
+      "right": 113,
+      "parentId": 122,
+      "isLeaf": false,
+      "code": "001111100010"
+    },
+    {
+      "id": 118,
+      "weight": 562,
+      "symbol": null,
+      "left": 114,
+      "right": 72,
+      "parentId": 124,
+      "isLeaf": false,
+      "code": "110100100000"
+    },
+    {
+      "id": 119,
+      "weight": 685,
+      "symbol": null,
+      "left": 115,
+      "right": 54,
+      "parentId": 125,
+      "isLeaf": false,
+      "code": "110100100111"
+    },
+    {
+      "id": 120,
+      "weight": 711,
+      "symbol": null,
+      "left": 48,
+      "right": 55,
+      "parentId": 127,
+      "isLeaf": false,
+      "code": "00111000000"
+    },
+    {
+      "id": 121,
+      "weight": 770,
+      "symbol": null,
+      "left": 73,
+      "right": 116,
+      "parentId": 128,
+      "isLeaf": false,
+      "code": "00111110000"
+    },
+    {
+      "id": 122,
+      "weight": 936,
+      "symbol": null,
+      "left": 117,
+      "right": 31,
+      "parentId": 128,
+      "isLeaf": false,
+      "code": "00111110001"
+    },
+    {
+      "id": 123,
+      "weight": 1035,
+      "symbol": null,
+      "left": 44,
+      "right": 47,
+      "parentId": 130,
+      "isLeaf": false,
+      "code": "10011100001"
+    },
+    {
+      "id": 124,
+      "weight": 1233,
+      "symbol": null,
+      "left": 118,
+      "right": 26,
+      "parentId": 132,
+      "isLeaf": false,
+      "code": "11010010000"
+    },
+    {
+      "id": 125,
+      "weight": 1370,
+      "symbol": null,
+      "left": 68,
+      "right": 119,
+      "parentId": 133,
+      "isLeaf": false,
+      "code": "11010010011"
+    },
+    {
+      "id": 126,
+      "weight": 1397,
+      "symbol": null,
+      "left": 69,
+      "right": 75,
+      "parentId": 134,
+      "isLeaf": false,
+      "code": "11010010110"
+    },
+    {
+      "id": 127,
+      "weight": 1480,
+      "symbol": null,
+      "left": 120,
+      "right": 56,
+      "parentId": 135,
+      "isLeaf": false,
+      "code": "0011100000"
+    },
+    {
+      "id": 128,
+      "weight": 1706,
+      "symbol": null,
+      "left": 121,
+      "right": 122,
+      "parentId": 136,
+      "isLeaf": false,
+      "code": "0011111000"
+    },
+    {
+      "id": 129,
+      "weight": 1919,
+      "symbol": null,
+      "left": 65,
+      "right": 66,
+      "parentId": 137,
+      "isLeaf": false,
+      "code": "0011111011"
+    },
+    {
+      "id": 130,
+      "weight": 2045,
+      "symbol": null,
+      "left": 24,
+      "right": 123,
+      "parentId": 138,
+      "isLeaf": false,
+      "code": "1001110000"
+    },
+    {
+      "id": 131,
+      "weight": 2337,
+      "symbol": null,
+      "left": 17,
+      "right": 45,
+      "parentId": 139,
+      "isLeaf": false,
+      "code": "1101000001"
+    },
+    {
+      "id": 132,
+      "weight": 2505,
+      "symbol": null,
+      "left": 124,
+      "right": 46,
+      "parentId": 140,
+      "isLeaf": false,
+      "code": "1101001000"
+    },
+    {
+      "id": 133,
+      "weight": 2709,
+      "symbol": null,
+      "left": 50,
+      "right": 125,
+      "parentId": 140,
+      "isLeaf": false,
+      "code": "1101001001"
+    },
+    {
+      "id": 134,
+      "weight": 2828,
+      "symbol": null,
+      "left": 126,
+      "right": 1,
+      "parentId": 141,
+      "isLeaf": false,
+      "code": "1101001011"
+    },
+    {
+      "id": 135,
+      "weight": 3057,
+      "symbol": null,
+      "left": 127,
+      "right": 21,
+      "parentId": 142,
+      "isLeaf": false,
+      "code": "001110000"
+    },
+    {
+      "id": 136,
+      "weight": 3426,
+      "symbol": null,
+      "left": 128,
+      "right": 33,
+      "parentId": 143,
+      "isLeaf": false,
+      "code": "001111100"
+    },
+    {
+      "id": 137,
+      "weight": 3815,
+      "symbol": null,
+      "left": 28,
+      "right": 129,
+      "parentId": 143,
+      "isLeaf": false,
+      "code": "001111101"
+    },
+    {
+      "id": 138,
+      "weight": 4092,
+      "symbol": null,
+      "left": 130,
+      "right": 62,
+      "parentId": 144,
+      "isLeaf": false,
+      "code": "100111000"
+    },
+    {
+      "id": 139,
+      "weight": 4460,
+      "symbol": null,
+      "left": 29,
+      "right": 131,
+      "parentId": 145,
+      "isLeaf": false,
+      "code": "110100000"
+    },
+    {
+      "id": 140,
+      "weight": 5214,
+      "symbol": null,
+      "left": 132,
+      "right": 133,
+      "parentId": 146,
+      "isLeaf": false,
+      "code": "110100100"
+    },
+    {
+      "id": 141,
+      "weight": 5564,
+      "symbol": null,
+      "left": 13,
+      "right": 134,
+      "parentId": 146,
+      "isLeaf": false,
+      "code": "110100101"
+    },
+    {
+      "id": 142,
+      "weight": 6356,
+      "symbol": null,
+      "left": 135,
+      "right": 23,
+      "parentId": 147,
+      "isLeaf": false,
+      "code": "00111000"
+    },
+    {
+      "id": 143,
+      "weight": 7241,
+      "symbol": null,
+      "left": 136,
+      "right": 137,
+      "parentId": 150,
+      "isLeaf": false,
+      "code": "00111110"
+    },
+    {
+      "id": 144,
+      "weight": 8364,
+      "symbol": null,
+      "left": 138,
+      "right": 42,
+      "parentId": 151,
+      "isLeaf": false,
+      "code": "10011100"
+    },
+    {
+      "id": 145,
+      "weight": 9262,
+      "symbol": null,
+      "left": 139,
+      "right": 52,
+      "parentId": 152,
+      "isLeaf": false,
+      "code": "11010000"
+    },
+    {
+      "id": 146,
+      "weight": 10778,
+      "symbol": null,
+      "left": 140,
+      "right": 141,
+      "parentId": 153,
+      "isLeaf": false,
+      "code": "11010010"
+    },
+    {
+      "id": 147,
+      "weight": 12781,
+      "symbol": null,
+      "left": 142,
+      "right": 37,
+      "parentId": 154,
+      "isLeaf": false,
+      "code": "0011100"
+    },
+    {
+      "id": 148,
+      "weight": 14027,
+      "symbol": null,
+      "left": 67,
+      "right": 32,
+      "parentId": 154,
+      "isLeaf": false,
+      "code": "0011101"
+    },
+    {
+      "id": 149,
+      "weight": 14284,
+      "symbol": null,
+      "left": 39,
+      "right": 36,
+      "parentId": 155,
+      "isLeaf": false,
+      "code": "0011110"
+    },
+    {
+      "id": 150,
+      "weight": 15453,
+      "symbol": null,
+      "left": 143,
+      "right": 53,
+      "parentId": 155,
+      "isLeaf": false,
+      "code": "0011111"
+    },
+    {
+      "id": 151,
+      "weight": 17588,
+      "symbol": null,
+      "left": 144,
+      "right": 34,
+      "parentId": 157,
+      "isLeaf": false,
+      "code": "1001110"
+    },
+    {
+      "id": 152,
+      "weight": 19757,
+      "symbol": null,
+      "left": 145,
+      "right": 15,
+      "parentId": 158,
+      "isLeaf": false,
+      "code": "1101000"
+    },
+    {
+      "id": 153,
+      "weight": 23242,
+      "symbol": null,
+      "left": 146,
+      "right": 38,
+      "parentId": 158,
+      "isLeaf": false,
+      "code": "1101001"
+    },
+    {
+      "id": 154,
+      "weight": 26808,
+      "symbol": null,
+      "left": 147,
+      "right": 148,
+      "parentId": 160,
+      "isLeaf": false,
+      "code": "001110"
+    },
+    {
+      "id": 155,
+      "weight": 29737,
+      "symbol": null,
+      "left": 149,
+      "right": 150,
+      "parentId": 160,
+      "isLeaf": false,
+      "code": "001111"
+    },
+    {
+      "id": 156,
+      "weight": 34435,
+      "symbol": null,
+      "left": 6,
+      "right": 22,
+      "parentId": 162,
+      "isLeaf": false,
+      "code": "100110"
+    },
+    {
+      "id": 157,
+      "weight": 37219,
+      "symbol": null,
+      "left": 151,
+      "right": 10,
+      "parentId": 162,
+      "isLeaf": false,
+      "code": "100111"
+    },
+    {
+      "id": 158,
+      "weight": 42999,
+      "symbol": null,
+      "left": 152,
+      "right": 153,
+      "parentId": 164,
+      "isLeaf": false,
+      "code": "110100"
+    },
+    {
+      "id": 159,
+      "weight": 47676,
+      "symbol": null,
+      "left": 35,
+      "right": 27,
+      "parentId": 165,
+      "isLeaf": false,
+      "code": "00110"
+    },
+    {
+      "id": 160,
+      "weight": 56545,
+      "symbol": null,
+      "left": 154,
+      "right": 155,
+      "parentId": 165,
+      "isLeaf": false,
+      "code": "00111"
+    },
+    {
+      "id": 161,
+      "weight": 63854,
+      "symbol": null,
+      "left": 30,
+      "right": 19,
+      "parentId": 167,
+      "isLeaf": false,
+      "code": "10010"
+    },
+    {
+      "id": 162,
+      "weight": 71654,
+      "symbol": null,
+      "left": 156,
+      "right": 157,
+      "parentId": 167,
+      "isLeaf": false,
+      "code": "10011"
+    },
+    {
+      "id": 163,
+      "weight": 77958,
+      "symbol": null,
+      "left": 0,
+      "right": 40,
+      "parentId": 168,
+      "isLeaf": false,
+      "code": "10111"
+    },
+    {
+      "id": 164,
+      "weight": 86681,
+      "symbol": null,
+      "left": 158,
+      "right": 25,
+      "parentId": 170,
+      "isLeaf": false,
+      "code": "11010"
+    },
+    {
+      "id": 165,
+      "weight": 104221,
+      "symbol": null,
+      "left": 159,
+      "right": 160,
+      "parentId": 171,
+      "isLeaf": false,
+      "code": "0011"
+    },
+    {
+      "id": 166,
+      "weight": 119577,
+      "symbol": null,
+      "left": 18,
+      "right": 16,
+      "parentId": 172,
+      "isLeaf": false,
+      "code": "0111"
+    },
+    {
+      "id": 167,
+      "weight": 135508,
+      "symbol": null,
+      "left": 161,
+      "right": 162,
+      "parentId": 173,
+      "isLeaf": false,
+      "code": "1001"
+    },
+    {
+      "id": 168,
+      "weight": 155717,
+      "symbol": null,
+      "left": 4,
+      "right": 163,
+      "parentId": 174,
+      "isLeaf": false,
+      "code": "1011"
+    },
+    {
+      "id": 169,
+      "weight": 164512,
+      "symbol": null,
+      "left": 14,
+      "right": 11,
+      "parentId": 175,
+      "isLeaf": false,
+      "code": "1100"
+    },
+    {
+      "id": 170,
+      "weight": 175199,
+      "symbol": null,
+      "left": 164,
+      "right": 2,
+      "parentId": 175,
+      "isLeaf": false,
+      "code": "1101"
+    },
+    {
+      "id": 171,
+      "weight": 205084,
+      "symbol": null,
+      "left": 20,
+      "right": 165,
+      "parentId": 176,
+      "isLeaf": false,
+      "code": "001"
+    },
+    {
+      "id": 172,
+      "weight": 228026,
+      "symbol": null,
+      "left": 5,
+      "right": 166,
+      "parentId": 177,
+      "isLeaf": false,
+      "code": "011"
+    },
+    {
+      "id": 173,
+      "weight": 258746,
+      "symbol": null,
+      "left": 9,
+      "right": 167,
+      "parentId": 178,
+      "isLeaf": false,
+      "code": "100"
+    },
+    {
+      "id": 174,
+      "weight": 309769,
+      "symbol": null,
+      "left": 8,
+      "right": 168,
+      "parentId": 178,
+      "isLeaf": false,
+      "code": "101"
+    },
+    {
+      "id": 175,
+      "weight": 339711,
+      "symbol": null,
+      "left": 169,
+      "right": 170,
+      "parentId": 179,
+      "isLeaf": false,
+      "code": "110"
+    },
+    {
+      "id": 176,
+      "weight": 397811,
+      "symbol": null,
+      "left": 12,
+      "right": 171,
+      "parentId": 180,
+      "isLeaf": false,
+      "code": "00"
+    },
+    {
+      "id": 177,
+      "weight": 449994,
+      "symbol": null,
+      "left": 7,
+      "right": 172,
+      "parentId": 180,
+      "isLeaf": false,
+      "code": "01"
+    },
+    {
+      "id": 178,
+      "weight": 568515,
+      "symbol": null,
+      "left": 173,
+      "right": 174,
+      "parentId": 181,
+      "isLeaf": false,
+      "code": "10"
+    },
+    {
+      "id": 179,
+      "weight": 694417,
+      "symbol": null,
+      "left": 175,
+      "right": 3,
+      "parentId": 181,
+      "isLeaf": false,
+      "code": "11"
+    },
+    {
+      "id": 180,
+      "weight": 847805,
+      "symbol": null,
+      "left": 176,
+      "right": 177,
+      "parentId": 182,
+      "isLeaf": false,
+      "code": "0"
+    },
+    {
+      "id": 181,
+      "weight": 1262932,
+      "symbol": null,
+      "left": 178,
+      "right": 179,
+      "parentId": 182,
+      "isLeaf": false,
+      "code": "1"
+    },
+    {
+      "id": 182,
+      "weight": 2110737,
+      "symbol": null,
+      "left": 180,
+      "right": 181,
+      "parentId": null,
+      "isLeaf": false,
+      "code": ""
+    }
+  ],
+  "steps": [
+    {
+      "type": "extract-min",
+      "nodeId": 78,
+      "line": 3,
+      "description": "Extrae nodo 78 ('Ñ', peso 1)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 86,
+      "line": 4,
+      "description": "Extrae nodo 86 ('à', peso 1)"
+    },
+    {
+      "type": "merge",
+      "leftId": 78,
+      "rightId": 86,
+      "parentId": 92,
+      "weight": 2,
+      "line": 5,
+      "description": "Une nodo 78 (peso 1) + nodo 86 (peso 1) en nodo 92 (peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 87,
+      "line": 3,
+      "description": "Extrae nodo 87 ('7', peso 1)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 88,
+      "line": 4,
+      "description": "Extrae nodo 88 ('5', peso 1)"
+    },
+    {
+      "type": "merge",
+      "leftId": 87,
+      "rightId": 88,
+      "parentId": 93,
+      "weight": 2,
+      "line": 5,
+      "description": "Une nodo 87 (peso 1) + nodo 88 (peso 1) en nodo 93 (peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 89,
+      "line": 3,
+      "description": "Extrae nodo 89 ('2', peso 1)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 90,
+      "line": 4,
+      "description": "Extrae nodo 90 ('3', peso 1)"
+    },
+    {
+      "type": "merge",
+      "leftId": 89,
+      "rightId": 90,
+      "parentId": 94,
+      "weight": 2,
+      "line": 5,
+      "description": "Une nodo 89 (peso 1) + nodo 90 (peso 1) en nodo 94 (peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 43,
+      "line": 3,
+      "description": "Extrae nodo 43 (']', peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 60,
+      "line": 4,
+      "description": "Extrae nodo 60 ('0', peso 2)"
+    },
+    {
+      "type": "merge",
+      "leftId": 43,
+      "rightId": 60,
+      "parentId": 95,
+      "weight": 4,
+      "line": 5,
+      "description": "Une nodo 43 (peso 2) + nodo 60 (peso 2) en nodo 95 (peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 61,
+      "line": 3,
+      "description": "Extrae nodo 61 ('4', peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 85,
+      "line": 4,
+      "description": "Extrae nodo 85 ('W', peso 2)"
+    },
+    {
+      "type": "merge",
+      "leftId": 61,
+      "rightId": 85,
+      "parentId": 96,
+      "weight": 4,
+      "line": 5,
+      "description": "Une nodo 61 (peso 2) + nodo 85 (peso 2) en nodo 96 (peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 91,
+      "line": 3,
+      "description": "Extrae nodo 91 ('ù', peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 92,
+      "line": 4,
+      "description": "Extrae nodo 92 (interno, peso 2)"
+    },
+    {
+      "type": "merge",
+      "leftId": 91,
+      "rightId": 92,
+      "parentId": 97,
+      "weight": 4,
+      "line": 5,
+      "description": "Une nodo 91 (peso 2) + nodo 92 (peso 2) en nodo 97 (peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 93,
+      "line": 3,
+      "description": "Extrae nodo 93 (interno, peso 2)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 94,
+      "line": 4,
+      "description": "Extrae nodo 94 (interno, peso 2)"
+    },
+    {
+      "type": "merge",
+      "leftId": 93,
+      "rightId": 94,
+      "parentId": 98,
+      "weight": 4,
+      "line": 5,
+      "description": "Une nodo 93 (peso 2) + nodo 94 (peso 2) en nodo 98 (peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 59,
+      "line": 3,
+      "description": "Extrae nodo 59 ('6', peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 83,
+      "line": 4,
+      "description": "Extrae nodo 83 ('ï', peso 4)"
+    },
+    {
+      "type": "merge",
+      "leftId": 59,
+      "rightId": 83,
+      "parentId": 99,
+      "weight": 8,
+      "line": 5,
+      "description": "Une nodo 59 (peso 4) + nodo 83 (peso 4) en nodo 99 (peso 8)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 95,
+      "line": 3,
+      "description": "Extrae nodo 95 (interno, peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 96,
+      "line": 4,
+      "description": "Extrae nodo 96 (interno, peso 4)"
+    },
+    {
+      "type": "merge",
+      "leftId": 95,
+      "rightId": 96,
+      "parentId": 100,
+      "weight": 8,
+      "line": 5,
+      "description": "Une nodo 95 (peso 4) + nodo 96 (peso 4) en nodo 100 (peso 8)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 97,
+      "line": 3,
+      "description": "Extrae nodo 97 (interno, peso 4)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 98,
+      "line": 4,
+      "description": "Extrae nodo 98 (interno, peso 4)"
+    },
+    {
+      "type": "merge",
+      "leftId": 97,
+      "rightId": 98,
+      "parentId": 101,
+      "weight": 8,
+      "line": 5,
+      "description": "Une nodo 97 (peso 4) + nodo 98 (peso 4) en nodo 101 (peso 8)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 64,
+      "line": 3,
+      "description": "Extrae nodo 64 ('Ó', peso 5)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 84,
+      "line": 4,
+      "description": "Extrae nodo 84 ('Ú', peso 7)"
+    },
+    {
+      "type": "merge",
+      "leftId": 64,
+      "rightId": 84,
+      "parentId": 102,
+      "weight": 12,
+      "line": 5,
+      "description": "Une nodo 64 (peso 5) + nodo 84 (peso 7) en nodo 102 (peso 12)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 58,
+      "line": 3,
+      "description": "Extrae nodo 58 ('1', peso 8)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 99,
+      "line": 4,
+      "description": "Extrae nodo 99 (interno, peso 8)"
+    },
+    {
+      "type": "merge",
+      "leftId": 58,
+      "rightId": 99,
+      "parentId": 103,
+      "weight": 16,
+      "line": 5,
+      "description": "Une nodo 58 (peso 8) + nodo 99 (peso 8) en nodo 103 (peso 16)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 100,
+      "line": 3,
+      "description": "Extrae nodo 100 (interno, peso 8)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 101,
+      "line": 4,
+      "description": "Extrae nodo 101 (interno, peso 8)"
+    },
+    {
+      "type": "merge",
+      "leftId": 100,
+      "rightId": 101,
+      "parentId": 104,
+      "weight": 16,
+      "line": 5,
+      "description": "Une nodo 100 (peso 8) + nodo 101 (peso 8) en nodo 104 (peso 16)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 102,
+      "line": 3,
+      "description": "Extrae nodo 102 (interno, peso 12)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 77,
+      "line": 4,
+      "description": "Extrae nodo 77 ('Í', peso 14)"
+    },
+    {
+      "type": "merge",
+      "leftId": 102,
+      "rightId": 77,
+      "parentId": 105,
+      "weight": 26,
+      "line": 5,
+      "description": "Une nodo 102 (peso 12) + nodo 77 (peso 14) en nodo 105 (peso 26)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 103,
+      "line": 3,
+      "description": "Extrae nodo 103 (interno, peso 16)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 104,
+      "line": 4,
+      "description": "Extrae nodo 104 (interno, peso 16)"
+    },
+    {
+      "type": "merge",
+      "leftId": 103,
+      "rightId": 104,
+      "parentId": 106,
+      "weight": 32,
+      "line": 5,
+      "description": "Une nodo 103 (peso 16) + nodo 104 (peso 16) en nodo 106 (peso 32)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 105,
+      "line": 3,
+      "description": "Extrae nodo 105 (interno, peso 26)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 106,
+      "line": 4,
+      "description": "Extrae nodo 106 (interno, peso 32)"
+    },
+    {
+      "type": "merge",
+      "leftId": 105,
+      "rightId": 106,
+      "parentId": 107,
+      "weight": 58,
+      "line": 5,
+      "description": "Une nodo 105 (peso 26) + nodo 106 (peso 32) en nodo 107 (peso 58)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 76,
+      "line": 3,
+      "description": "Extrae nodo 76 ('Á', peso 37)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 79,
+      "line": 4,
+      "description": "Extrae nodo 79 ('«', peso 57)"
+    },
+    {
+      "type": "merge",
+      "leftId": 76,
+      "rightId": 79,
+      "parentId": 108,
+      "weight": 94,
+      "line": 5,
+      "description": "Une nodo 76 (peso 37) + nodo 79 (peso 57) en nodo 108 (peso 94)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 107,
+      "line": 3,
+      "description": "Extrae nodo 107 (interno, peso 58)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 80,
+      "line": 4,
+      "description": "Extrae nodo 80 ('(', peso 62)"
+    },
+    {
+      "type": "merge",
+      "leftId": 107,
+      "rightId": 80,
+      "parentId": 109,
+      "weight": 120,
+      "line": 5,
+      "description": "Une nodo 107 (peso 58) + nodo 80 (peso 62) en nodo 109 (peso 120)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 81,
+      "line": 3,
+      "description": "Extrae nodo 81 (')', peso 62)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 41,
+      "line": 4,
+      "description": "Extrae nodo 41 ('ü', peso 89)"
+    },
+    {
+      "type": "merge",
+      "leftId": 81,
+      "rightId": 41,
+      "parentId": 110,
+      "weight": 151,
+      "line": 5,
+      "description": "Une nodo 81 (peso 62) + nodo 41 (peso 89) en nodo 110 (peso 151)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 57,
+      "line": 3,
+      "description": "Extrae nodo 57 ('U', peso 90)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 108,
+      "line": 4,
+      "description": "Extrae nodo 108 (interno, peso 94)"
+    },
+    {
+      "type": "merge",
+      "leftId": 57,
+      "rightId": 108,
+      "parentId": 111,
+      "weight": 184,
+      "line": 5,
+      "description": "Une nodo 57 (peso 90) + nodo 108 (peso 94) en nodo 111 (peso 184)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 74,
+      "line": 3,
+      "description": "Extrae nodo 74 ('-', peso 109)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 63,
+      "line": 4,
+      "description": "Extrae nodo 63 ('É', peso 114)"
+    },
+    {
+      "type": "merge",
+      "leftId": 74,
+      "rightId": 63,
+      "parentId": 112,
+      "weight": 223,
+      "line": 5,
+      "description": "Une nodo 74 (peso 109) + nodo 63 (peso 114) en nodo 112 (peso 223)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 71,
+      "line": 3,
+      "description": "Extrae nodo 71 ('Z', peso 118)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 109,
+      "line": 4,
+      "description": "Extrae nodo 109 (interno, peso 120)"
+    },
+    {
+      "type": "merge",
+      "leftId": 71,
+      "rightId": 109,
+      "parentId": 113,
+      "weight": 238,
+      "line": 5,
+      "description": "Une nodo 71 (peso 118) + nodo 109 (peso 120) en nodo 113 (peso 238)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 51,
+      "line": 3,
+      "description": "Extrae nodo 51 ('J', peso 121)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 110,
+      "line": 4,
+      "description": "Extrae nodo 110 (interno, peso 151)"
+    },
+    {
+      "type": "merge",
+      "leftId": 51,
+      "rightId": 110,
+      "parentId": 114,
+      "weight": 272,
+      "line": 5,
+      "description": "Une nodo 51 (peso 121) + nodo 110 (peso 151) en nodo 114 (peso 272)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 82,
+      "line": 3,
+      "description": "Extrae nodo 82 ('\"', peso 166)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 70,
+      "line": 4,
+      "description": "Extrae nodo 70 ('X', peso 174)"
+    },
+    {
+      "type": "merge",
+      "leftId": 82,
+      "rightId": 70,
+      "parentId": 115,
+      "weight": 340,
+      "line": 5,
+      "description": "Une nodo 82 (peso 166) + nodo 70 (peso 174) en nodo 115 (peso 340)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 111,
+      "line": 3,
+      "description": "Extrae nodo 111 (interno, peso 184)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 49,
+      "line": 4,
+      "description": "Extrae nodo 49 ('x', peso 206)"
+    },
+    {
+      "type": "merge",
+      "leftId": 111,
+      "rightId": 49,
+      "parentId": 116,
+      "weight": 390,
+      "line": 5,
+      "description": "Une nodo 111 (peso 184) + nodo 49 (peso 206) en nodo 116 (peso 390)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 112,
+      "line": 3,
+      "description": "Extrae nodo 112 (interno, peso 223)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 113,
+      "line": 4,
+      "description": "Extrae nodo 113 (interno, peso 238)"
+    },
+    {
+      "type": "merge",
+      "leftId": 112,
+      "rightId": 113,
+      "parentId": 117,
+      "weight": 461,
+      "line": 5,
+      "description": "Une nodo 112 (peso 223) + nodo 113 (peso 238) en nodo 117 (peso 461)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 114,
+      "line": 3,
+      "description": "Extrae nodo 114 (interno, peso 272)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 72,
+      "line": 4,
+      "description": "Extrae nodo 72 ('»', peso 290)"
+    },
+    {
+      "type": "merge",
+      "leftId": 114,
+      "rightId": 72,
+      "parentId": 118,
+      "weight": 562,
+      "line": 5,
+      "description": "Une nodo 114 (peso 272) + nodo 72 (peso 290) en nodo 118 (peso 562)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 115,
+      "line": 3,
+      "description": "Extrae nodo 115 (interno, peso 340)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 54,
+      "line": 4,
+      "description": "Extrae nodo 54 ('I', peso 345)"
+    },
+    {
+      "type": "merge",
+      "leftId": 115,
+      "rightId": 54,
+      "parentId": 119,
+      "weight": 685,
+      "line": 5,
+      "description": "Une nodo 115 (peso 340) + nodo 54 (peso 345) en nodo 119 (peso 685)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 48,
+      "line": 3,
+      "description": "Extrae nodo 48 ('G', peso 349)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 55,
+      "line": 4,
+      "description": "Extrae nodo 55 ('O', peso 362)"
+    },
+    {
+      "type": "merge",
+      "leftId": 48,
+      "rightId": 55,
+      "parentId": 120,
+      "weight": 711,
+      "line": 5,
+      "description": "Une nodo 48 (peso 349) + nodo 55 (peso 362) en nodo 120 (peso 711)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 73,
+      "line": 3,
+      "description": "Extrae nodo 73 ('H', peso 380)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 116,
+      "line": 4,
+      "description": "Extrae nodo 116 (interno, peso 390)"
+    },
+    {
+      "type": "merge",
+      "leftId": 73,
+      "rightId": 116,
+      "parentId": 121,
+      "weight": 770,
+      "line": 5,
+      "description": "Une nodo 73 (peso 380) + nodo 116 (peso 390) en nodo 121 (peso 770)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 117,
+      "line": 3,
+      "description": "Extrae nodo 117 (interno, peso 461)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 31,
+      "line": 4,
+      "description": "Extrae nodo 31 ('B', peso 475)"
+    },
+    {
+      "type": "merge",
+      "leftId": 117,
+      "rightId": 31,
+      "parentId": 122,
+      "weight": 936,
+      "line": 5,
+      "description": "Une nodo 117 (peso 461) + nodo 31 (peso 475) en nodo 122 (peso 936)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 44,
+      "line": 3,
+      "description": "Extrae nodo 44 ('F', peso 476)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 47,
+      "line": 4,
+      "description": "Extrae nodo 47 ('V', peso 559)"
+    },
+    {
+      "type": "merge",
+      "leftId": 44,
+      "rightId": 47,
+      "parentId": 123,
+      "weight": 1035,
+      "line": 5,
+      "description": "Une nodo 44 (peso 476) + nodo 47 (peso 559) en nodo 123 (peso 1035)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 118,
+      "line": 3,
+      "description": "Extrae nodo 118 (interno, peso 562)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 26,
+      "line": 4,
+      "description": "Extrae nodo 26 ('R', peso 671)"
+    },
+    {
+      "type": "merge",
+      "leftId": 118,
+      "rightId": 26,
+      "parentId": 124,
+      "weight": 1233,
+      "line": 5,
+      "description": "Une nodo 118 (peso 562) + nodo 26 (peso 671) en nodo 124 (peso 1233)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 68,
+      "line": 3,
+      "description": "Extrae nodo 68 ('¡', peso 685)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 119,
+      "line": 4,
+      "description": "Extrae nodo 119 (interno, peso 685)"
+    },
+    {
+      "type": "merge",
+      "leftId": 68,
+      "rightId": 119,
+      "parentId": 125,
+      "weight": 1370,
+      "line": 5,
+      "description": "Une nodo 68 (peso 685) + nodo 119 (peso 685) en nodo 125 (peso 1370)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 69,
+      "line": 3,
+      "description": "Extrae nodo 69 ('!', peso 693)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 75,
+      "line": 4,
+      "description": "Extrae nodo 75 (\"'\", peso 704)"
+    },
+    {
+      "type": "merge",
+      "leftId": 69,
+      "rightId": 75,
+      "parentId": 126,
+      "weight": 1397,
+      "line": 5,
+      "description": "Une nodo 69 (peso 693) + nodo 75 (peso 704) en nodo 126 (peso 1397)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 120,
+      "line": 3,
+      "description": "Extrae nodo 120 (interno, peso 711)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 56,
+      "line": 4,
+      "description": "Extrae nodo 56 ('N', peso 769)"
+    },
+    {
+      "type": "merge",
+      "leftId": 120,
+      "rightId": 56,
+      "parentId": 127,
+      "weight": 1480,
+      "line": 5,
+      "description": "Une nodo 120 (peso 711) + nodo 56 (peso 769) en nodo 127 (peso 1480)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 121,
+      "line": 3,
+      "description": "Extrae nodo 121 (interno, peso 770)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 122,
+      "line": 4,
+      "description": "Extrae nodo 122 (interno, peso 936)"
+    },
+    {
+      "type": "merge",
+      "leftId": 121,
+      "rightId": 122,
+      "parentId": 128,
+      "weight": 1706,
+      "line": 5,
+      "description": "Une nodo 121 (peso 770) + nodo 122 (peso 936) en nodo 128 (peso 1706)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 65,
+      "line": 3,
+      "description": "Extrae nodo 65 ('¿', peso 959)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 66,
+      "line": 4,
+      "description": "Extrae nodo 66 ('?', peso 960)"
+    },
+    {
+      "type": "merge",
+      "leftId": 65,
+      "rightId": 66,
+      "parentId": 129,
+      "weight": 1919,
+      "line": 5,
+      "description": "Une nodo 65 (peso 959) + nodo 66 (peso 960) en nodo 129 (peso 1919)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 24,
+      "line": 3,
+      "description": "Extrae nodo 24 ('T', peso 1010)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 123,
+      "line": 4,
+      "description": "Extrae nodo 123 (interno, peso 1035)"
+    },
+    {
+      "type": "merge",
+      "leftId": 24,
+      "rightId": 123,
+      "parentId": 130,
+      "weight": 2045,
+      "line": 5,
+      "description": "Une nodo 24 (peso 1010) + nodo 123 (peso 1035) en nodo 130 (peso 2045)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 17,
+      "line": 3,
+      "description": "Extrae nodo 17 ('M', peso 1156)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 45,
+      "line": 4,
+      "description": "Extrae nodo 45 ('L', peso 1181)"
+    },
+    {
+      "type": "merge",
+      "leftId": 17,
+      "rightId": 45,
+      "parentId": 131,
+      "weight": 2337,
+      "line": 5,
+      "description": "Une nodo 17 (peso 1156) + nodo 45 (peso 1181) en nodo 131 (peso 2337)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 124,
+      "line": 3,
+      "description": "Extrae nodo 124 (interno, peso 1233)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 46,
+      "line": 4,
+      "description": "Extrae nodo 46 ('ú', peso 1272)"
+    },
+    {
+      "type": "merge",
+      "leftId": 124,
+      "rightId": 46,
+      "parentId": 132,
+      "weight": 2505,
+      "line": 5,
+      "description": "Une nodo 124 (peso 1233) + nodo 46 (peso 1272) en nodo 132 (peso 2505)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 50,
+      "line": 3,
+      "description": "Extrae nodo 50 ('Y', peso 1339)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 125,
+      "line": 4,
+      "description": "Extrae nodo 125 (interno, peso 1370)"
+    },
+    {
+      "type": "merge",
+      "leftId": 50,
+      "rightId": 125,
+      "parentId": 133,
+      "weight": 2709,
+      "line": 5,
+      "description": "Une nodo 50 (peso 1339) + nodo 125 (peso 1370) en nodo 133 (peso 2709)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 126,
+      "line": 3,
+      "description": "Extrae nodo 126 (interno, peso 1397)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 1,
+      "line": 4,
+      "description": "Extrae nodo 1 ('E', peso 1431)"
+    },
+    {
+      "type": "merge",
+      "leftId": 126,
+      "rightId": 1,
+      "parentId": 134,
+      "weight": 2828,
+      "line": 5,
+      "description": "Une nodo 126 (peso 1397) + nodo 1 (peso 1431) en nodo 134 (peso 2828)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 127,
+      "line": 3,
+      "description": "Extrae nodo 127 (interno, peso 1480)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 21,
+      "line": 4,
+      "description": "Extrae nodo 21 ('C', peso 1577)"
+    },
+    {
+      "type": "merge",
+      "leftId": 127,
+      "rightId": 21,
+      "parentId": 135,
+      "weight": 3057,
+      "line": 5,
+      "description": "Une nodo 127 (peso 1480) + nodo 21 (peso 1577) en nodo 135 (peso 3057)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 128,
+      "line": 3,
+      "description": "Extrae nodo 128 (interno, peso 1706)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 33,
+      "line": 4,
+      "description": "Extrae nodo 33 ('P', peso 1720)"
+    },
+    {
+      "type": "merge",
+      "leftId": 128,
+      "rightId": 33,
+      "parentId": 136,
+      "weight": 3426,
+      "line": 5,
+      "description": "Une nodo 128 (peso 1706) + nodo 33 (peso 1720) en nodo 136 (peso 3426)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 28,
+      "line": 3,
+      "description": "Extrae nodo 28 ('A', peso 1896)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 129,
+      "line": 4,
+      "description": "Extrae nodo 129 (interno, peso 1919)"
+    },
+    {
+      "type": "merge",
+      "leftId": 28,
+      "rightId": 129,
+      "parentId": 137,
+      "weight": 3815,
+      "line": 5,
+      "description": "Une nodo 28 (peso 1896) + nodo 129 (peso 1919) en nodo 137 (peso 3815)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 130,
+      "line": 3,
+      "description": "Extrae nodo 130 (interno, peso 2045)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 62,
+      "line": 4,
+      "description": "Extrae nodo 62 (':', peso 2047)"
+    },
+    {
+      "type": "merge",
+      "leftId": 130,
+      "rightId": 62,
+      "parentId": 138,
+      "weight": 4092,
+      "line": 5,
+      "description": "Une nodo 130 (peso 2045) + nodo 62 (peso 2047) en nodo 138 (peso 4092)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 29,
+      "line": 3,
+      "description": "Extrae nodo 29 ('D', peso 2123)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 131,
+      "line": 4,
+      "description": "Extrae nodo 131 (interno, peso 2337)"
+    },
+    {
+      "type": "merge",
+      "leftId": 29,
+      "rightId": 131,
+      "parentId": 139,
+      "weight": 4460,
+      "line": 5,
+      "description": "Une nodo 29 (peso 2123) + nodo 131 (peso 2337) en nodo 139 (peso 4460)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 132,
+      "line": 3,
+      "description": "Extrae nodo 132 (interno, peso 2505)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 133,
+      "line": 4,
+      "description": "Extrae nodo 133 (interno, peso 2709)"
+    },
+    {
+      "type": "merge",
+      "leftId": 132,
+      "rightId": 133,
+      "parentId": 140,
+      "weight": 5214,
+      "line": 5,
+      "description": "Une nodo 132 (peso 2505) + nodo 133 (peso 2709) en nodo 140 (peso 5214)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 13,
+      "line": 3,
+      "description": "Extrae nodo 13 ('Q', peso 2736)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 134,
+      "line": 4,
+      "description": "Extrae nodo 134 (interno, peso 2828)"
+    },
+    {
+      "type": "merge",
+      "leftId": 13,
+      "rightId": 134,
+      "parentId": 141,
+      "weight": 5564,
+      "line": 5,
+      "description": "Une nodo 13 (peso 2736) + nodo 134 (peso 2828) en nodo 141 (peso 5564)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 135,
+      "line": 3,
+      "description": "Extrae nodo 135 (interno, peso 3057)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 23,
+      "line": 4,
+      "description": "Extrae nodo 23 ('S', peso 3299)"
+    },
+    {
+      "type": "merge",
+      "leftId": 135,
+      "rightId": 23,
+      "parentId": 142,
+      "weight": 6356,
+      "line": 5,
+      "description": "Une nodo 135 (peso 3057) + nodo 23 (peso 3299) en nodo 142 (peso 6356)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 136,
+      "line": 3,
+      "description": "Extrae nodo 136 (interno, peso 3426)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 137,
+      "line": 4,
+      "description": "Extrae nodo 137 (interno, peso 3815)"
+    },
+    {
+      "type": "merge",
+      "leftId": 136,
+      "rightId": 137,
+      "parentId": 143,
+      "weight": 7241,
+      "line": 5,
+      "description": "Une nodo 136 (peso 3426) + nodo 137 (peso 3815) en nodo 143 (peso 7241)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 138,
+      "line": 3,
+      "description": "Extrae nodo 138 (interno, peso 4092)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 42,
+      "line": 4,
+      "description": "Extrae nodo 42 ('ñ', peso 4272)"
+    },
+    {
+      "type": "merge",
+      "leftId": 138,
+      "rightId": 42,
+      "parentId": 144,
+      "weight": 8364,
+      "line": 5,
+      "description": "Une nodo 138 (peso 4092) + nodo 42 (peso 4272) en nodo 144 (peso 8364)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 139,
+      "line": 3,
+      "description": "Extrae nodo 139 (interno, peso 4460)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 52,
+      "line": 4,
+      "description": "Extrae nodo 52 (';', peso 4802)"
+    },
+    {
+      "type": "merge",
+      "leftId": 139,
+      "rightId": 52,
+      "parentId": 145,
+      "weight": 9262,
+      "line": 5,
+      "description": "Une nodo 139 (peso 4460) + nodo 52 (peso 4802) en nodo 145 (peso 9262)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 140,
+      "line": 3,
+      "description": "Extrae nodo 140 (interno, peso 5214)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 141,
+      "line": 4,
+      "description": "Extrae nodo 141 (interno, peso 5564)"
+    },
+    {
+      "type": "merge",
+      "leftId": 140,
+      "rightId": 141,
+      "parentId": 146,
+      "weight": 10778,
+      "line": 5,
+      "description": "Une nodo 140 (peso 5214) + nodo 141 (peso 5564) en nodo 146 (peso 10778)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 142,
+      "line": 3,
+      "description": "Extrae nodo 142 (interno, peso 6356)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 37,
+      "line": 4,
+      "description": "Extrae nodo 37 ('z', peso 6425)"
+    },
+    {
+      "type": "merge",
+      "leftId": 142,
+      "rightId": 37,
+      "parentId": 147,
+      "weight": 12781,
+      "line": 5,
+      "description": "Une nodo 142 (peso 6356) + nodo 37 (peso 6425) en nodo 147 (peso 12781)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 67,
+      "line": 3,
+      "description": "Extrae nodo 67 ('—', peso 6923)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 32,
+      "line": 4,
+      "description": "Extrae nodo 32 ('é', peso 7104)"
+    },
+    {
+      "type": "merge",
+      "leftId": 67,
+      "rightId": 32,
+      "parentId": 148,
+      "weight": 14027,
+      "line": 5,
+      "description": "Une nodo 67 (peso 6923) + nodo 32 (peso 7104) en nodo 148 (peso 14027)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 39,
+      "line": 3,
+      "description": "Extrae nodo 39 ('á', peso 7136)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 36,
+      "line": 4,
+      "description": "Extrae nodo 36 ('f', peso 7148)"
+    },
+    {
+      "type": "merge",
+      "leftId": 39,
+      "rightId": 36,
+      "parentId": 149,
+      "weight": 14284,
+      "line": 5,
+      "description": "Une nodo 39 (peso 7136) + nodo 36 (peso 7148) en nodo 149 (peso 14284)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 143,
+      "line": 3,
+      "description": "Extrae nodo 143 (interno, peso 7241)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 53,
+      "line": 4,
+      "description": "Extrae nodo 53 ('.', peso 8212)"
+    },
+    {
+      "type": "merge",
+      "leftId": 143,
+      "rightId": 53,
+      "parentId": 150,
+      "weight": 15453,
+      "line": 5,
+      "description": "Une nodo 143 (peso 7241) + nodo 53 (peso 8212) en nodo 150 (peso 15453)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 144,
+      "line": 3,
+      "description": "Extrae nodo 144 (interno, peso 8364)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 34,
+      "line": 4,
+      "description": "Extrae nodo 34 ('ó', peso 9224)"
+    },
+    {
+      "type": "merge",
+      "leftId": 144,
+      "rightId": 34,
+      "parentId": 151,
+      "weight": 17588,
+      "line": 5,
+      "description": "Une nodo 144 (peso 8364) + nodo 34 (peso 9224) en nodo 151 (peso 17588)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 145,
+      "line": 3,
+      "description": "Extrae nodo 145 (interno, peso 9262)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 15,
+      "line": 4,
+      "description": "Extrae nodo 15 ('j', peso 10495)"
+    },
+    {
+      "type": "merge",
+      "leftId": 145,
+      "rightId": 15,
+      "parentId": 152,
+      "weight": 19757,
+      "line": 5,
+      "description": "Une nodo 145 (peso 9262) + nodo 15 (peso 10495) en nodo 152 (peso 19757)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 146,
+      "line": 3,
+      "description": "Extrae nodo 146 (interno, peso 10778)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 38,
+      "line": 4,
+      "description": "Extrae nodo 38 ('í', peso 12464)"
+    },
+    {
+      "type": "merge",
+      "leftId": 146,
+      "rightId": 38,
+      "parentId": 153,
+      "weight": 23242,
+      "line": 5,
+      "description": "Une nodo 146 (peso 10778) + nodo 38 (peso 12464) en nodo 153 (peso 23242)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 147,
+      "line": 3,
+      "description": "Extrae nodo 147 (interno, peso 12781)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 148,
+      "line": 4,
+      "description": "Extrae nodo 148 (interno, peso 14027)"
+    },
+    {
+      "type": "merge",
+      "leftId": 147,
+      "rightId": 148,
+      "parentId": 154,
+      "weight": 26808,
+      "line": 5,
+      "description": "Une nodo 147 (peso 12781) + nodo 148 (peso 14027) en nodo 154 (peso 26808)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 149,
+      "line": 3,
+      "description": "Extrae nodo 149 (interno, peso 14284)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 150,
+      "line": 4,
+      "description": "Extrae nodo 150 (interno, peso 15453)"
+    },
+    {
+      "type": "merge",
+      "leftId": 149,
+      "rightId": 150,
+      "parentId": 155,
+      "weight": 29737,
+      "line": 5,
+      "description": "Une nodo 149 (peso 14284) + nodo 150 (peso 15453) en nodo 155 (peso 29737)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 6,
+      "line": 3,
+      "description": "Extrae nodo 6 ('g', peso 16999)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 22,
+      "line": 4,
+      "description": "Extrae nodo 22 ('v', peso 17436)"
+    },
+    {
+      "type": "merge",
+      "leftId": 6,
+      "rightId": 22,
+      "parentId": 156,
+      "weight": 34435,
+      "line": 5,
+      "description": "Une nodo 6 (peso 16999) + nodo 22 (peso 17436) en nodo 156 (peso 34435)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 151,
+      "line": 3,
+      "description": "Extrae nodo 151 (interno, peso 17588)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 10,
+      "line": 4,
+      "description": "Extrae nodo 10 ('h', peso 19631)"
+    },
+    {
+      "type": "merge",
+      "leftId": 151,
+      "rightId": 10,
+      "parentId": 157,
+      "weight": 37219,
+      "line": 5,
+      "description": "Une nodo 151 (peso 17588) + nodo 10 (peso 19631) en nodo 157 (peso 37219)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 152,
+      "line": 3,
+      "description": "Extrae nodo 152 (interno, peso 19757)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 153,
+      "line": 4,
+      "description": "Extrae nodo 153 (interno, peso 23242)"
+    },
+    {
+      "type": "merge",
+      "leftId": 152,
+      "rightId": 153,
+      "parentId": 158,
+      "weight": 42999,
+      "line": 5,
+      "description": "Une nodo 152 (peso 19757) + nodo 153 (peso 23242) en nodo 158 (peso 42999)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 35,
+      "line": 3,
+      "description": "Extrae nodo 35 ('b', peso 23802)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 27,
+      "line": 4,
+      "description": "Extrae nodo 27 ('y', peso 23874)"
+    },
+    {
+      "type": "merge",
+      "leftId": 35,
+      "rightId": 27,
+      "parentId": 159,
+      "weight": 47676,
+      "line": 5,
+      "description": "Une nodo 35 (peso 23802) + nodo 27 (peso 23874) en nodo 159 (peso 47676)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 154,
+      "line": 3,
+      "description": "Extrae nodo 154 (interno, peso 26808)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 155,
+      "line": 4,
+      "description": "Extrae nodo 155 (interno, peso 29737)"
+    },
+    {
+      "type": "merge",
+      "leftId": 154,
+      "rightId": 155,
+      "parentId": 160,
+      "weight": 56545,
+      "line": 5,
+      "description": "Une nodo 154 (peso 26808) + nodo 155 (peso 29737) en nodo 160 (peso 56545)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 30,
+      "line": 3,
+      "description": "Extrae nodo 30 ('q', peso 29973)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 19,
+      "line": 4,
+      "description": "Extrae nodo 19 ('p', peso 33881)"
+    },
+    {
+      "type": "merge",
+      "leftId": 30,
+      "rightId": 19,
+      "parentId": 161,
+      "weight": 63854,
+      "line": 5,
+      "description": "Une nodo 30 (peso 29973) + nodo 19 (peso 33881) en nodo 161 (peso 63854)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 156,
+      "line": 3,
+      "description": "Extrae nodo 156 (interno, peso 34435)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 157,
+      "line": 4,
+      "description": "Extrae nodo 157 (interno, peso 37219)"
+    },
+    {
+      "type": "merge",
+      "leftId": 156,
+      "rightId": 157,
+      "parentId": 162,
+      "weight": 71654,
+      "line": 5,
+      "description": "Une nodo 156 (peso 34435) + nodo 157 (peso 37219) en nodo 162 (peso 71654)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 0,
+      "line": 3,
+      "description": "Extrae nodo 0 ('\\n', peso 37681)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 40,
+      "line": 4,
+      "description": "Extrae nodo 40 (',', peso 40277)"
+    },
+    {
+      "type": "merge",
+      "leftId": 0,
+      "rightId": 40,
+      "parentId": 163,
+      "weight": 77958,
+      "line": 5,
+      "description": "Une nodo 0 (peso 37681) + nodo 40 (peso 40277) en nodo 163 (peso 77958)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 158,
+      "line": 3,
+      "description": "Extrae nodo 158 (interno, peso 42999)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 25,
+      "line": 4,
+      "description": "Extrae nodo 25 ('m', peso 43682)"
+    },
+    {
+      "type": "merge",
+      "leftId": 158,
+      "rightId": 25,
+      "parentId": 164,
+      "weight": 86681,
+      "line": 5,
+      "description": "Une nodo 158 (peso 42999) + nodo 25 (peso 43682) en nodo 164 (peso 86681)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 159,
+      "line": 3,
+      "description": "Extrae nodo 159 (interno, peso 47676)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 160,
+      "line": 4,
+      "description": "Extrae nodo 160 (interno, peso 56545)"
+    },
+    {
+      "type": "merge",
+      "leftId": 159,
+      "rightId": 160,
+      "parentId": 165,
+      "weight": 104221,
+      "line": 5,
+      "description": "Une nodo 159 (peso 47676) + nodo 160 (peso 56545) en nodo 165 (peso 104221)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 18,
+      "line": 3,
+      "description": "Extrae nodo 18 ('c', peso 58339)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 16,
+      "line": 4,
+      "description": "Extrae nodo 16 ('t', peso 61238)"
+    },
+    {
+      "type": "merge",
+      "leftId": 18,
+      "rightId": 16,
+      "parentId": 166,
+      "weight": 119577,
+      "line": 5,
+      "description": "Une nodo 18 (peso 58339) + nodo 16 (peso 61238) en nodo 166 (peso 119577)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 161,
+      "line": 3,
+      "description": "Extrae nodo 161 (interno, peso 63854)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 162,
+      "line": 4,
+      "description": "Extrae nodo 162 (interno, peso 71654)"
+    },
+    {
+      "type": "merge",
+      "leftId": 161,
+      "rightId": 162,
+      "parentId": 167,
+      "weight": 135508,
+      "line": 5,
+      "description": "Une nodo 161 (peso 63854) + nodo 162 (peso 71654) en nodo 167 (peso 135508)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 4,
+      "line": 3,
+      "description": "Extrae nodo 4 ('i', peso 77759)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 163,
+      "line": 4,
+      "description": "Extrae nodo 163 (interno, peso 77958)"
+    },
+    {
+      "type": "merge",
+      "leftId": 4,
+      "rightId": 163,
+      "parentId": 168,
+      "weight": 155717,
+      "line": 5,
+      "description": "Une nodo 4 (peso 77759) + nodo 163 (peso 77958) en nodo 168 (peso 155717)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 14,
+      "line": 3,
+      "description": "Extrae nodo 14 ('u', peso 78689)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 11,
+      "line": 4,
+      "description": "Extrae nodo 11 ('d', peso 85823)"
+    },
+    {
+      "type": "merge",
+      "leftId": 14,
+      "rightId": 11,
+      "parentId": 169,
+      "weight": 164512,
+      "line": 5,
+      "description": "Une nodo 14 (peso 78689) + nodo 11 (peso 85823) en nodo 169 (peso 164512)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 164,
+      "line": 3,
+      "description": "Extrae nodo 164 (interno, peso 86681)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 2,
+      "line": 4,
+      "description": "Extrae nodo 2 ('l', peso 88518)"
+    },
+    {
+      "type": "merge",
+      "leftId": 164,
+      "rightId": 2,
+      "parentId": 170,
+      "weight": 175199,
+      "line": 5,
+      "description": "Une nodo 164 (peso 86681) + nodo 2 (peso 88518) en nodo 170 (peso 175199)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 20,
+      "line": 3,
+      "description": "Extrae nodo 20 ('r', peso 100863)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 165,
+      "line": 4,
+      "description": "Extrae nodo 165 (interno, peso 104221)"
+    },
+    {
+      "type": "merge",
+      "leftId": 20,
+      "rightId": 165,
+      "parentId": 171,
+      "weight": 205084,
+      "line": 5,
+      "description": "Une nodo 20 (peso 100863) + nodo 165 (peso 104221) en nodo 171 (peso 205084)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 5,
+      "line": 3,
+      "description": "Extrae nodo 5 ('n', peso 108449)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 166,
+      "line": 4,
+      "description": "Extrae nodo 166 (interno, peso 119577)"
+    },
+    {
+      "type": "merge",
+      "leftId": 5,
+      "rightId": 166,
+      "parentId": 172,
+      "weight": 228026,
+      "line": 5,
+      "description": "Une nodo 5 (peso 108449) + nodo 166 (peso 119577) en nodo 172 (peso 228026)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 9,
+      "line": 3,
+      "description": "Extrae nodo 9 ('s', peso 123238)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 167,
+      "line": 4,
+      "description": "Extrae nodo 167 (interno, peso 135508)"
+    },
+    {
+      "type": "merge",
+      "leftId": 9,
+      "rightId": 167,
+      "parentId": 173,
+      "weight": 258746,
+      "line": 5,
+      "description": "Une nodo 9 (peso 123238) + nodo 167 (peso 135508) en nodo 173 (peso 258746)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 8,
+      "line": 3,
+      "description": "Extrae nodo 8 ('o', peso 154052)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 168,
+      "line": 4,
+      "description": "Extrae nodo 168 (interno, peso 155717)"
+    },
+    {
+      "type": "merge",
+      "leftId": 8,
+      "rightId": 168,
+      "parentId": 174,
+      "weight": 309769,
+      "line": 5,
+      "description": "Une nodo 8 (peso 154052) + nodo 168 (peso 155717) en nodo 174 (peso 309769)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 169,
+      "line": 3,
+      "description": "Extrae nodo 169 (interno, peso 164512)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 170,
+      "line": 4,
+      "description": "Extrae nodo 170 (interno, peso 175199)"
+    },
+    {
+      "type": "merge",
+      "leftId": 169,
+      "rightId": 170,
+      "parentId": 175,
+      "weight": 339711,
+      "line": 5,
+      "description": "Une nodo 169 (peso 164512) + nodo 170 (peso 175199) en nodo 175 (peso 339711)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 12,
+      "line": 3,
+      "description": "Extrae nodo 12 ('a', peso 192727)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 171,
+      "line": 4,
+      "description": "Extrae nodo 171 (interno, peso 205084)"
+    },
+    {
+      "type": "merge",
+      "leftId": 12,
+      "rightId": 171,
+      "parentId": 176,
+      "weight": 397811,
+      "line": 5,
+      "description": "Une nodo 12 (peso 192727) + nodo 171 (peso 205084) en nodo 176 (peso 397811)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 7,
+      "line": 3,
+      "description": "Extrae nodo 7 ('e', peso 221968)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 172,
+      "line": 4,
+      "description": "Extrae nodo 172 (interno, peso 228026)"
+    },
+    {
+      "type": "merge",
+      "leftId": 7,
+      "rightId": 172,
+      "parentId": 177,
+      "weight": 449994,
+      "line": 5,
+      "description": "Une nodo 7 (peso 221968) + nodo 172 (peso 228026) en nodo 177 (peso 449994)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 173,
+      "line": 3,
+      "description": "Extrae nodo 173 (interno, peso 258746)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 174,
+      "line": 4,
+      "description": "Extrae nodo 174 (interno, peso 309769)"
+    },
+    {
+      "type": "merge",
+      "leftId": 173,
+      "rightId": 174,
+      "parentId": 178,
+      "weight": 568515,
+      "line": 5,
+      "description": "Une nodo 173 (peso 258746) + nodo 174 (peso 309769) en nodo 178 (peso 568515)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 175,
+      "line": 3,
+      "description": "Extrae nodo 175 (interno, peso 339711)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 3,
+      "line": 4,
+      "description": "Extrae nodo 3 (' ', peso 354706)"
+    },
+    {
+      "type": "merge",
+      "leftId": 175,
+      "rightId": 3,
+      "parentId": 179,
+      "weight": 694417,
+      "line": 5,
+      "description": "Une nodo 175 (peso 339711) + nodo 3 (peso 354706) en nodo 179 (peso 694417)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 176,
+      "line": 3,
+      "description": "Extrae nodo 176 (interno, peso 397811)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 177,
+      "line": 4,
+      "description": "Extrae nodo 177 (interno, peso 449994)"
+    },
+    {
+      "type": "merge",
+      "leftId": 176,
+      "rightId": 177,
+      "parentId": 180,
+      "weight": 847805,
+      "line": 5,
+      "description": "Une nodo 176 (peso 397811) + nodo 177 (peso 449994) en nodo 180 (peso 847805)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 178,
+      "line": 3,
+      "description": "Extrae nodo 178 (interno, peso 568515)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 179,
+      "line": 4,
+      "description": "Extrae nodo 179 (interno, peso 694417)"
+    },
+    {
+      "type": "merge",
+      "leftId": 178,
+      "rightId": 179,
+      "parentId": 181,
+      "weight": 1262932,
+      "line": 5,
+      "description": "Une nodo 178 (peso 568515) + nodo 179 (peso 694417) en nodo 181 (peso 1262932)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 180,
+      "line": 3,
+      "description": "Extrae nodo 180 (interno, peso 847805)"
+    },
+    {
+      "type": "extract-min",
+      "nodeId": 181,
+      "line": 4,
+      "description": "Extrae nodo 181 (interno, peso 1262932)"
+    },
+    {
+      "type": "merge",
+      "leftId": 180,
+      "rightId": 181,
+      "parentId": 182,
+      "weight": 2110737,
+      "line": 5,
+      "description": "Une nodo 180 (peso 847805) + nodo 181 (peso 1262932) en nodo 182 (peso 2110737)"
+    },
+    {
+      "type": "assign-code",
+      "nodeId": 182,
+      "code": "",
+      "line": 8,
+      "description": "Códigos asignados a los 92 símbolos"
+    }
+  ],
+  "table": [
+    {
+      "symbol": " ",
+      "frequency": 354706,
+      "percentage": 16.8,
+      "code": "111",
+      "bits": 3,
+      "nodeId": 3
+    },
+    {
+      "symbol": "e",
+      "frequency": 221968,
+      "percentage": 10.5,
+      "code": "010",
+      "bits": 3,
+      "nodeId": 7
+    },
+    {
+      "symbol": "a",
+      "frequency": 192727,
+      "percentage": 9.1,
+      "code": "000",
+      "bits": 3,
+      "nodeId": 12
+    },
+    {
+      "symbol": "o",
+      "frequency": 154052,
+      "percentage": 7.3,
+      "code": "1010",
+      "bits": 4,
+      "nodeId": 8
+    },
+    {
+      "symbol": "s",
+      "frequency": 123238,
+      "percentage": 5.8,
+      "code": "1000",
+      "bits": 4,
+      "nodeId": 9
+    },
+    {
+      "symbol": "n",
+      "frequency": 108449,
+      "percentage": 5.1,
+      "code": "0110",
+      "bits": 4,
+      "nodeId": 5
+    },
+    {
+      "symbol": "r",
+      "frequency": 100863,
+      "percentage": 4.8,
+      "code": "0010",
+      "bits": 4,
+      "nodeId": 20
+    },
+    {
+      "symbol": "l",
+      "frequency": 88518,
+      "percentage": 4.2,
+      "code": "11011",
+      "bits": 5,
+      "nodeId": 2
+    },
+    {
+      "symbol": "d",
+      "frequency": 85823,
+      "percentage": 4.1,
+      "code": "11001",
+      "bits": 5,
+      "nodeId": 11
+    },
+    {
+      "symbol": "u",
+      "frequency": 78689,
+      "percentage": 3.7,
+      "code": "11000",
+      "bits": 5,
+      "nodeId": 14
+    },
+    {
+      "symbol": "i",
+      "frequency": 77759,
+      "percentage": 3.7,
+      "code": "10110",
+      "bits": 5,
+      "nodeId": 4
+    },
+    {
+      "symbol": "t",
+      "frequency": 61238,
+      "percentage": 2.9,
+      "code": "01111",
+      "bits": 5,
+      "nodeId": 16
+    },
+    {
+      "symbol": "c",
+      "frequency": 58339,
+      "percentage": 2.8,
+      "code": "01110",
+      "bits": 5,
+      "nodeId": 18
+    },
+    {
+      "symbol": "m",
+      "frequency": 43682,
+      "percentage": 2.1,
+      "code": "110101",
+      "bits": 6,
+      "nodeId": 25
+    },
+    {
+      "symbol": ",",
+      "frequency": 40277,
+      "percentage": 1.9,
+      "code": "101111",
+      "bits": 6,
+      "nodeId": 40
+    },
+    {
+      "symbol": "\n",
+      "frequency": 37681,
+      "percentage": 1.8,
+      "code": "101110",
+      "bits": 6,
+      "nodeId": 0
+    },
+    {
+      "symbol": "p",
+      "frequency": 33881,
+      "percentage": 1.6,
+      "code": "100101",
+      "bits": 6,
+      "nodeId": 19
+    },
+    {
+      "symbol": "q",
+      "frequency": 29973,
+      "percentage": 1.4,
+      "code": "100100",
+      "bits": 6,
+      "nodeId": 30
+    },
+    {
+      "symbol": "y",
+      "frequency": 23874,
+      "percentage": 1.1,
+      "code": "001101",
+      "bits": 6,
+      "nodeId": 27
+    },
+    {
+      "symbol": "b",
+      "frequency": 23802,
+      "percentage": 1.1,
+      "code": "001100",
+      "bits": 6,
+      "nodeId": 35
+    },
+    {
+      "symbol": "h",
+      "frequency": 19631,
+      "percentage": 0.9,
+      "code": "1001111",
+      "bits": 7,
+      "nodeId": 10
+    },
+    {
+      "symbol": "v",
+      "frequency": 17436,
+      "percentage": 0.8,
+      "code": "1001101",
+      "bits": 7,
+      "nodeId": 22
+    },
+    {
+      "symbol": "g",
+      "frequency": 16999,
+      "percentage": 0.8,
+      "code": "1001100",
+      "bits": 7,
+      "nodeId": 6
+    },
+    {
+      "symbol": "í",
+      "frequency": 12464,
+      "percentage": 0.6,
+      "code": "11010011",
+      "bits": 8,
+      "nodeId": 38
+    },
+    {
+      "symbol": "j",
+      "frequency": 10495,
+      "percentage": 0.5,
+      "code": "11010001",
+      "bits": 8,
+      "nodeId": 15
+    },
+    {
+      "symbol": "ó",
+      "frequency": 9224,
+      "percentage": 0.4,
+      "code": "10011101",
+      "bits": 8,
+      "nodeId": 34
+    },
+    {
+      "symbol": ".",
+      "frequency": 8212,
+      "percentage": 0.4,
+      "code": "00111111",
+      "bits": 8,
+      "nodeId": 53
+    },
+    {
+      "symbol": "f",
+      "frequency": 7148,
+      "percentage": 0.3,
+      "code": "00111101",
+      "bits": 8,
+      "nodeId": 36
+    },
+    {
+      "symbol": "á",
+      "frequency": 7136,
+      "percentage": 0.3,
+      "code": "00111100",
+      "bits": 8,
+      "nodeId": 39
+    },
+    {
+      "symbol": "é",
+      "frequency": 7104,
+      "percentage": 0.3,
+      "code": "00111011",
+      "bits": 8,
+      "nodeId": 32
+    },
+    {
+      "symbol": "—",
+      "frequency": 6923,
+      "percentage": 0.3,
+      "code": "00111010",
+      "bits": 8,
+      "nodeId": 67
+    },
+    {
+      "symbol": "z",
+      "frequency": 6425,
+      "percentage": 0.3,
+      "code": "00111001",
+      "bits": 8,
+      "nodeId": 37
+    },
+    {
+      "symbol": ";",
+      "frequency": 4802,
+      "percentage": 0.2,
+      "code": "110100001",
+      "bits": 9,
+      "nodeId": 52
+    },
+    {
+      "symbol": "ñ",
+      "frequency": 4272,
+      "percentage": 0.2,
+      "code": "100111001",
+      "bits": 9,
+      "nodeId": 42
+    },
+    {
+      "symbol": "S",
+      "frequency": 3299,
+      "percentage": 0.2,
+      "code": "001110001",
+      "bits": 9,
+      "nodeId": 23
+    },
+    {
+      "symbol": "Q",
+      "frequency": 2736,
+      "percentage": 0.1,
+      "code": "1101001010",
+      "bits": 10,
+      "nodeId": 13
+    },
+    {
+      "symbol": "D",
+      "frequency": 2123,
+      "percentage": 0.1,
+      "code": "1101000000",
+      "bits": 10,
+      "nodeId": 29
+    },
+    {
+      "symbol": ":",
+      "frequency": 2047,
+      "percentage": 0.1,
+      "code": "1001110001",
+      "bits": 10,
+      "nodeId": 62
+    },
+    {
+      "symbol": "A",
+      "frequency": 1896,
+      "percentage": 0.1,
+      "code": "0011111010",
+      "bits": 10,
+      "nodeId": 28
+    },
+    {
+      "symbol": "P",
+      "frequency": 1720,
+      "percentage": 0.1,
+      "code": "0011111001",
+      "bits": 10,
+      "nodeId": 33
+    },
+    {
+      "symbol": "C",
+      "frequency": 1577,
+      "percentage": 0.1,
+      "code": "0011100001",
+      "bits": 10,
+      "nodeId": 21
+    },
+    {
+      "symbol": "E",
+      "frequency": 1431,
+      "percentage": 0.1,
+      "code": "11010010111",
+      "bits": 11,
+      "nodeId": 1
+    },
+    {
+      "symbol": "Y",
+      "frequency": 1339,
+      "percentage": 0.1,
+      "code": "11010010010",
+      "bits": 11,
+      "nodeId": 50
+    },
+    {
+      "symbol": "ú",
+      "frequency": 1272,
+      "percentage": 0.1,
+      "code": "11010010001",
+      "bits": 11,
+      "nodeId": 46
+    },
+    {
+      "symbol": "L",
+      "frequency": 1181,
+      "percentage": 0.1,
+      "code": "11010000011",
+      "bits": 11,
+      "nodeId": 45
+    },
+    {
+      "symbol": "M",
+      "frequency": 1156,
+      "percentage": 0.1,
+      "code": "11010000010",
+      "bits": 11,
+      "nodeId": 17
+    },
+    {
+      "symbol": "T",
+      "frequency": 1010,
+      "percentage": 0.0,
+      "code": "10011100000",
+      "bits": 11,
+      "nodeId": 24
+    },
+    {
+      "symbol": "?",
+      "frequency": 960,
+      "percentage": 0.0,
+      "code": "00111110111",
+      "bits": 11,
+      "nodeId": 66
+    },
+    {
+      "symbol": "¿",
+      "frequency": 959,
+      "percentage": 0.0,
+      "code": "00111110110",
+      "bits": 11,
+      "nodeId": 65
+    },
+    {
+      "symbol": "N",
+      "frequency": 769,
+      "percentage": 0.0,
+      "code": "00111000001",
+      "bits": 11,
+      "nodeId": 56
+    },
+    {
+      "symbol": "'",
+      "frequency": 704,
+      "percentage": 0.0,
+      "code": "110100101101",
+      "bits": 12,
+      "nodeId": 75
+    },
+    {
+      "symbol": "!",
+      "frequency": 693,
+      "percentage": 0.0,
+      "code": "110100101100",
+      "bits": 12,
+      "nodeId": 69
+    },
+    {
+      "symbol": "¡",
+      "frequency": 685,
+      "percentage": 0.0,
+      "code": "110100100110",
+      "bits": 12,
+      "nodeId": 68
+    },
+    {
+      "symbol": "R",
+      "frequency": 671,
+      "percentage": 0.0,
+      "code": "110100100001",
+      "bits": 12,
+      "nodeId": 26
+    },
+    {
+      "symbol": "V",
+      "frequency": 559,
+      "percentage": 0.0,
+      "code": "100111000011",
+      "bits": 12,
+      "nodeId": 47
+    },
+    {
+      "symbol": "F",
+      "frequency": 476,
+      "percentage": 0.0,
+      "code": "100111000010",
+      "bits": 12,
+      "nodeId": 44
+    },
+    {
+      "symbol": "B",
+      "frequency": 475,
+      "percentage": 0.0,
+      "code": "001111100011",
+      "bits": 12,
+      "nodeId": 31
+    },
+    {
+      "symbol": "H",
+      "frequency": 380,
+      "percentage": 0.0,
+      "code": "001111100000",
+      "bits": 12,
+      "nodeId": 73
+    },
+    {
+      "symbol": "O",
+      "frequency": 362,
+      "percentage": 0.0,
+      "code": "001110000001",
+      "bits": 12,
+      "nodeId": 55
+    },
+    {
+      "symbol": "G",
+      "frequency": 349,
+      "percentage": 0.0,
+      "code": "001110000000",
+      "bits": 12,
+      "nodeId": 48
+    },
+    {
+      "symbol": "I",
+      "frequency": 345,
+      "percentage": 0.0,
+      "code": "1101001001111",
+      "bits": 13,
+      "nodeId": 54
+    },
+    {
+      "symbol": "»",
+      "frequency": 290,
+      "percentage": 0.0,
+      "code": "1101001000001",
+      "bits": 13,
+      "nodeId": 72
+    },
+    {
+      "symbol": "x",
+      "frequency": 206,
+      "percentage": 0.0,
+      "code": "0011111000011",
+      "bits": 13,
+      "nodeId": 49
+    },
+    {
+      "symbol": "X",
+      "frequency": 174,
+      "percentage": 0.0,
+      "code": "11010010011101",
+      "bits": 14,
+      "nodeId": 70
+    },
+    {
+      "symbol": "\"",
+      "frequency": 166,
+      "percentage": 0.0,
+      "code": "11010010011100",
+      "bits": 14,
+      "nodeId": 82
+    },
+    {
+      "symbol": "J",
+      "frequency": 121,
+      "percentage": 0.0,
+      "code": "11010010000000",
+      "bits": 14,
+      "nodeId": 51
+    },
+    {
+      "symbol": "Z",
+      "frequency": 118,
+      "percentage": 0.0,
+      "code": "00111110001010",
+      "bits": 14,
+      "nodeId": 71
+    },
+    {
+      "symbol": "É",
+      "frequency": 114,
+      "percentage": 0.0,
+      "code": "00111110001001",
+      "bits": 14,
+      "nodeId": 63
+    },
+    {
+      "symbol": "-",
+      "frequency": 109,
+      "percentage": 0.0,
+      "code": "00111110001000",
+      "bits": 14,
+      "nodeId": 74
+    },
+    {
+      "symbol": "U",
+      "frequency": 90,
+      "percentage": 0.0,
+      "code": "00111110000100",
+      "bits": 14,
+      "nodeId": 57
+    },
+    {
+      "symbol": "ü",
+      "frequency": 89,
+      "percentage": 0.0,
+      "code": "110100100000011",
+      "bits": 15,
+      "nodeId": 41
+    },
+    {
+      "symbol": "(",
+      "frequency": 62,
+      "percentage": 0.0,
+      "code": "001111100010111",
+      "bits": 15,
+      "nodeId": 80
+    },
+    {
+      "symbol": ")",
+      "frequency": 62,
+      "percentage": 0.0,
+      "code": "110100100000010",
+      "bits": 15,
+      "nodeId": 81
+    },
+    {
+      "symbol": "«",
+      "frequency": 57,
+      "percentage": 0.0,
+      "code": "001111100001011",
+      "bits": 15,
+      "nodeId": 79
+    },
+    {
+      "symbol": "Á",
+      "frequency": 37,
+      "percentage": 0.0,
+      "code": "001111100001010",
+      "bits": 15,
+      "nodeId": 76
+    },
+    {
+      "symbol": "Í",
+      "frequency": 14,
+      "percentage": 0.0,
+      "code": "00111110001011001",
+      "bits": 17,
+      "nodeId": 77
+    },
+    {
+      "symbol": "1",
+      "frequency": 8,
+      "percentage": 0.0,
+      "code": "001111100010110100",
+      "bits": 18,
+      "nodeId": 58
+    },
+    {
+      "symbol": "Ú",
+      "frequency": 7,
+      "percentage": 0.0,
+      "code": "001111100010110001",
+      "bits": 18,
+      "nodeId": 84
+    },
+    {
+      "symbol": "Ó",
+      "frequency": 5,
+      "percentage": 0.0,
+      "code": "001111100010110000",
+      "bits": 18,
+      "nodeId": 64
+    },
+    {
+      "symbol": "6",
+      "frequency": 4,
+      "percentage": 0.0,
+      "code": "0011111000101101010",
+      "bits": 19,
+      "nodeId": 59
+    },
+    {
+      "symbol": "ï",
+      "frequency": 4,
+      "percentage": 0.0,
+      "code": "0011111000101101011",
+      "bits": 19,
+      "nodeId": 83
+    },
+    {
+      "symbol": "]",
+      "frequency": 2,
+      "percentage": 0.0,
+      "code": "00111110001011011000",
+      "bits": 20,
+      "nodeId": 43
+    },
+    {
+      "symbol": "0",
+      "frequency": 2,
+      "percentage": 0.0,
+      "code": "00111110001011011001",
+      "bits": 20,
+      "nodeId": 60
+    },
+    {
+      "symbol": "4",
+      "frequency": 2,
+      "percentage": 0.0,
+      "code": "00111110001011011010",
+      "bits": 20,
+      "nodeId": 61
+    },
+    {
+      "symbol": "W",
+      "frequency": 2,
+      "percentage": 0.0,
+      "code": "00111110001011011011",
+      "bits": 20,
+      "nodeId": 85
+    },
+    {
+      "symbol": "ù",
+      "frequency": 2,
+      "percentage": 0.0,
+      "code": "00111110001011011100",
+      "bits": 20,
+      "nodeId": 91
+    },
+    {
+      "symbol": "Ñ",
+      "frequency": 1,
+      "percentage": 0.0,
+      "code": "001111100010110111010",
+      "bits": 21,
+      "nodeId": 78
+    },
+    {
+      "symbol": "à",
+      "frequency": 1,
+      "percentage": 0.0,
+      "code": "001111100010110111011",
+      "bits": 21,
+      "nodeId": 86
+    },
+    {
+      "symbol": "7",
+      "frequency": 1,
+      "percentage": 0.0,
+      "code": "001111100010110111100",
+      "bits": 21,
+      "nodeId": 87
+    },
+    {
+      "symbol": "5",
+      "frequency": 1,
+      "percentage": 0.0,
+      "code": "001111100010110111101",
+      "bits": 21,
+      "nodeId": 88
+    },
+    {
+      "symbol": "2",
+      "frequency": 1,
+      "percentage": 0.0,
+      "code": "001111100010110111110",
+      "bits": 21,
+      "nodeId": 89
+    },
+    {
+      "symbol": "3",
+      "frequency": 1,
+      "percentage": 0.0,
+      "code": "001111100010110111111",
+      "bits": 21,
+      "nodeId": 90
+    }
+  ],
+  "codes": {
+    "\n": "101110",
+    "E": "11010010111",
+    "l": "11011",
+    " ": "111",
+    "i": "10110",
+    "n": "0110",
+    "g": "1001100",
+    "e": "010",
+    "o": "1010",
+    "s": "1000",
+    "h": "1001111",
+    "d": "11001",
+    "a": "000",
+    "Q": "1101001010",
+    "u": "11000",
+    "j": "11010001",
+    "t": "01111",
+    "M": "11010000010",
+    "c": "01110",
+    "p": "100101",
+    "r": "0010",
+    "C": "0011100001",
+    "v": "1001101",
+    "S": "001110001",
+    "T": "10011100000",
+    "m": "110101",
+    "R": "110100100001",
+    "y": "001101",
+    "A": "0011111010",
+    "D": "1101000000",
+    "q": "100100",
+    "B": "001111100011",
+    "é": "00111011",
+    "P": "0011111001",
+    "ó": "10011101",
+    "b": "001100",
+    "f": "00111101",
+    "z": "00111001",
+    "í": "11010011",
+    "á": "00111100",
+    ",": "101111",
+    "ü": "110100100000011",
+    "ñ": "100111001",
+    "]": "00111110001011011000",
+    "F": "100111000010",
+    "L": "11010000011",
+    "ú": "11010010001",
+    "V": "100111000011",
+    "G": "001110000000",
+    "x": "0011111000011",
+    "Y": "11010010010",
+    "J": "11010010000000",
+    ";": "110100001",
+    ".": "00111111",
+    "I": "1101001001111",
+    "O": "001110000001",
+    "N": "00111000001",
+    "U": "00111110000100",
+    "1": "001111100010110100",
+    "6": "0011111000101101010",
+    "0": "00111110001011011001",
+    "4": "00111110001011011010",
+    ":": "1001110001",
+    "É": "00111110001001",
+    "Ó": "001111100010110000",
+    "¿": "00111110110",
+    "?": "00111110111",
+    "—": "00111010",
+    "¡": "110100100110",
+    "!": "110100101100",
+    "X": "11010010011101",
+    "Z": "00111110001010",
+    "»": "1101001000001",
+    "H": "001111100000",
+    "-": "00111110001000",
+    "'": "110100101101",
+    "Á": "001111100001010",
+    "Í": "00111110001011001",
+    "Ñ": "001111100010110111010",
+    "«": "001111100001011",
+    "(": "001111100010111",
+    ")": "110100100000010",
+    "\"": "11010010011100",
+    "ï": "0011111000101101011",
+    "Ú": "001111100010110001",
+    "W": "00111110001011011011",
+    "à": "001111100010110111011",
+    "7": "001111100010110111100",
+    "5": "001111100010110111101",
+    "2": "001111100010110111110",
+    "3": "001111100010110111111",
+    "ù": "00111110001011011100"
+  },
+  "metrics": {
+    "originalBytes": 2168320,
+    "compressedBytes": 1165190,
+    "fileSizeBytes": 1166923,
+    "headerBytes": 1733,
+    "savingsPercentage": 46.2,
+    "totalBits": 9321515,
+    "paddingBits": 5,
+    "bitsPerSymbol": 4.42,
+    "entropy": 4.38,
+    "fixedBits": 16885896,
+    "comparisons": 1905,
+    "merges": 91,
+    "steps": 274,
+    "executionTimeMs": 358.36
+  },
+  "preview": {
+    "text": "En un lugar de la Mancha",
+    "tokens": [
+      {
+        "char": "E",
+        "code": "11010010111"
+      },
+      {
+        "char": "n",
+        "code": "0110"
+      },
+      {
+        "char": " ",
+        "code": "111"
+      },
+      {
+        "char": "u",
+        "code": "11000"
+      },
+      {
+        "char": "n",
+        "code": "0110"
+      },
+      {
+        "char": " ",
+        "code": "111"
+      },
+      {
+        "char": "l",
+        "code": "11011"
+      },
+      {
+        "char": "u",
+        "code": "11000"
+      },
+      {
+        "char": "g",
+        "code": "1001100"
+      },
+      {
+        "char": "a",
+        "code": "000"
+      },
+      {
+        "char": "r",
+        "code": "0010"
+      },
+      {
+        "char": " ",
+        "code": "111"
+      },
+      {
+        "char": "d",
+        "code": "11001"
+      },
+      {
+        "char": "e",
+        "code": "010"
+      },
+      {
+        "char": " ",
+        "code": "111"
+      },
+      {
+        "char": "l",
+        "code": "11011"
+      },
+      {
+        "char": "a",
+        "code": "000"
+      },
+      {
+        "char": " ",
+        "code": "111"
+      },
+      {
+        "char": "M",
+        "code": "11010000010"
+      },
+      {
+        "char": "a",
+        "code": "000"
+      },
+      {
+        "char": "n",
+        "code": "0110"
+      },
+      {
+        "char": "c",
+        "code": "01110"
+      },
+      {
+        "char": "h",
+        "code": "1001111"
+      },
+      {
+        "char": "a",
+        "code": "000"
+      }
+    ],
+    "encodedBits": "1101001011101101111100001101111101111000100110000000101111100101011111011000111110100000100000110011101001111000"
+  }
+}

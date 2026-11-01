@@ -3,7 +3,7 @@
 // se dibujan las filas que se ven (el .suf del Quijote tiene más de un
 // millón de bytes, unas 146 mil filas).
 import { mostrarSimbolo, nombrarSimbolo, numero } from "./formato.js";
-import { ErrorSuf, leerSuf } from "./suf.js";
+import { ErrorSuf, FIRMA_SUF, leerSuf } from "./suf.js";
 
 const BYTES_POR_FILA = 8;
 // Filas de más arriba y abajo de las visibles, para que al recorrer rápido
@@ -54,12 +54,13 @@ function llenarFrase(preview) {
     `texto original y ${numero(preview.encodedBits.length)} con Huffman.`;
 }
 
-function llenarEncabezado(suf, tamanoArchivo) {
-  const { encabezado, bytesEncabezado, datos, bitsDatos } = suf;
+// Tamaños del archivo y campos del encabezado: salen del .suf leído o, en el
+// modo ejemplo, de las métricas del resultado.
+function llenarEncabezado({ tamanoArchivo, bytesEncabezado, bytesDatos, bitsDatos, encabezado }) {
   en("[data-binario-resumen]").textContent =
     `${numero(tamanoArchivo)} bytes · ${numero(bitsDatos)} bits de datos`;
   en("[data-bits-encabezado]").textContent = `Encabezado · ${numero(bytesEncabezado)} bytes`;
-  en("[data-bits-datos]").textContent = `Datos · ${numero(datos.length)} bytes`;
+  en("[data-bits-datos]").textContent = `Datos · ${numero(bytesDatos)} bytes`;
   const relleno = en("[data-bits-relleno]");
   relleno.textContent = `Relleno · ${encabezado.paddingBits} ${encabezado.paddingBits === 1 ? "bit" : "bits"}`;
   relleno.hidden = encabezado.paddingBits === 0;
@@ -171,8 +172,40 @@ export function llenarBinario(resultado, bytes) {
     mostrarFalloDeFormato(error.message);
     return;
   }
-  llenarEncabezado(suf, bytes.byteLength);
+  llenarEncabezado({
+    tamanoArchivo: bytes.byteLength,
+    bytesEncabezado: suf.bytesEncabezado,
+    bytesDatos: suf.datos.length,
+    bitsDatos: suf.bitsDatos,
+    encabezado: suf.encabezado,
+  });
   prepararLista(suf);
+}
+
+// Modo ejemplo (sin backend): no hay .suf, pero el resultado trae la frase,
+// los tamaños y los campos del encabezado. Las filas de bits escritas en
+// huffman.html se quedan como ilustración.
+export function llenarBinarioDeEjemplo(resultado) {
+  if (resultado === mostrado.resultado) return;
+  mostrado = { resultado, bytes: null };
+  llenarFrase(resultado.preview);
+
+  const m = resultado.metrics;
+  llenarEncabezado({
+    tamanoArchivo: m.fileSizeBytes,
+    bytesEncabezado: m.headerBytes ?? m.fileSizeBytes - m.compressedBytes,
+    bytesDatos: m.compressedBytes,
+    bitsDatos: m.totalBits,
+    encabezado: {
+      magic: FIRMA_SUF,
+      totalCharacters: resultado.totalCharacters,
+      symbolCount: resultado.distinctSymbols,
+      paddingBits: m.paddingBits,
+      title: resultado.book?.title ?? "",
+    },
+  });
+  en("[data-bits-pie]").textContent =
+    "Bits de ilustración: los del archivo llegan con el .suf del backend.";
 }
 
 export function iniciarBinario() {
