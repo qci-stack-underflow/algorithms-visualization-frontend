@@ -66,6 +66,19 @@ function llenarLibro(numero, { titulo, autor } = datosDelLibro(numero)) {
 const tituloDeVista = (vista, datos) =>
   `${vista === "binario" ? datos.archivo : datos.titulo} · ${tituloPagina}`;
 
+// Avisa que hay un resultado en la pantalla, para que el árbol (bloque D) se
+// dibuje con sus nodes y steps, sea del backend o de ejemplo:
+//   document.addEventListener("huffman-resultado", (evento) => {
+//     evento.detail; // { libro, resultado, ejemplo }
+//   });
+// Se dispara cada vez que se abre el proceso o el binario de un libro; si
+// `resultado` es el mismo objeto que la vez anterior, no cambió nada.
+function avisarResultado(libro, resultado, ejemplo) {
+  document.dispatchEvent(
+    new CustomEvent("huffman-resultado", { detail: { libro, resultado, ejemplo } })
+  );
+}
+
 // Con datos del backend ya no aplica el aviso de "vista de ejemplo".
 // `bytesSuf` solo llega al abrir el binario.
 function mostrarResultado(numero, resultado, bytesSuf) {
@@ -79,6 +92,7 @@ function mostrarResultado(numero, resultado, bytesSuf) {
   if (rutaActual?.libro === numero) document.title = tituloDeVista(rutaActual.vista, datos);
   llenarProceso(resultado);
   if (bytesSuf) llenarBinario(resultado, bytesSuf);
+  avisarResultado(numero, resultado, false);
 }
 
 // Sin backend de Huffman: el título y el aviso se quedan como los puso
@@ -86,6 +100,7 @@ function mostrarResultado(numero, resultado, bytesSuf) {
 function mostrarEjemplo(numero, ejemplo) {
   llenarProceso(ejemplo);
   llenarBinarioDeEjemplo(ejemplo);
+  avisarResultado(numero, ejemplo, true);
 }
 
 // Cada entrada del historial guarda su scroll en history.state: Atrás y
