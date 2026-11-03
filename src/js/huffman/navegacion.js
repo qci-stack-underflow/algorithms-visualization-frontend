@@ -4,7 +4,7 @@
 import { leerRuta, rutaA } from "./rutas.js";
 import { reiniciarCarga } from "./carga.js";
 import { limpiarAvisosDeDescarga } from "./descarga.js";
-import { cargarLibro } from "./datos.js";
+import { cargarLibro, origenDe } from "./datos.js";
 import { llenarProceso } from "./proceso.js";
 import { llenarBinario, llenarBinarioDeEjemplo } from "./binario.js";
 
@@ -82,9 +82,10 @@ function avisarResultado(libro, resultado, ejemplo) {
 // Con datos del backend ya no aplica el aviso de "vista de ejemplo".
 // `bytesSuf` solo llega al abrir el binario.
 function mostrarResultado(numero, resultado, bytesSuf) {
+  const { titulo, autor } = origenDe(resultado);
   const datos = llenarLibro(numero, {
-    titulo: resultado.book?.title || `Libro #${numero}`,
-    autor: resultado.book?.author || "Autor desconocido",
+    titulo: titulo ?? `Libro #${numero}`,
+    autor: autor ?? "Autor desconocido",
   });
   document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
     aviso.hidden = true;

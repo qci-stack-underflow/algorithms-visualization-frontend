@@ -16,6 +16,16 @@ const cargarEjemplo = () => import("./ejemplo-quijote.json").then((modulo) => mo
 
 export const enModoEjemplo = () => sinRutasDeHuffman;
 
+// Título y autor del texto. El contrato los pone en `source` (libro de
+// Gutenberg o archivo subido) y conserva `book` por compatibilidad, así que
+// se lee `source` primero. Un dato que no viene queda en null.
+export function origenDe(resultado) {
+  return {
+    titulo: resultado?.source?.title || resultado?.book?.title || null,
+    autor: resultado?.source?.author || resultado?.book?.author || null,
+  };
+}
+
 // Un 404 del libro puede ser un libro que no existe o un backend sin las
 // rutas de Huffman; en el segundo caso el catálogo también da 404.
 async function faltanRutasDeHuffman() {

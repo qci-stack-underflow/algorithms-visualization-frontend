@@ -1,11 +1,21 @@
 {
+  "source": {
+    "id": 2000,
+    "title": "Don Quijote",
+    "author": "Miguel de Cervantes Saavedra",
+    "language": "Español",
+    "size": "2.2 MB",
+    "bytes": 2168320,
+    "type": "gutenberg"
+  },
   "book": {
     "id": 2000,
     "title": "Don Quijote",
     "author": "Miguel de Cervantes Saavedra",
     "language": "Español",
     "size": "2.2 MB",
-    "bytes": 2168320
+    "bytes": 2168320,
+    "type": "gutenberg"
   },
   "totalCharacters": 2110737,
   "distinctSymbols": 92,
