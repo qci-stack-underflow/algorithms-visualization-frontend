@@ -14,7 +14,6 @@ export function coloresBarras() {
     escritura: leerVariable("--bar-write"),
     pivote: leerVariable("--bar-pivot"),
     completado: leerVariable("--bar-done"),
-    etiqueta: leerVariable("--text-secondary"),
   };
 }
 

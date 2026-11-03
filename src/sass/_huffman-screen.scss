@@ -1,19 +1,40 @@
 // Pantalla de Huffman: biblioteca, proceso (árbol y frecuencias) y binario.
 
-/* Vistas: se muestran con :target; sin hash se ve la biblioteca */
+/* Vistas: js/huffman/navegacion.js deja visible solo la de la ruta actual
+   (las demás llevan el atributo hidden) */
 .vistas {
   width: 100%;
 }
 
 .vista {
-  display: none;
-  scroll-margin-top: var(--nav-h);
   padding-bottom: var(--s8);
 }
 
-.vista:target,
-.vistas:not(:has(.vista:target)) #biblioteca {
+// Primera carga directa a un libro: el script del <head> marca la vista con
+// data-ruta-inicial para que no se pinte la biblioteca mientras carga el JS.
+[data-ruta-inicial] #biblioteca {
+  display: none;
+}
+
+[data-ruta-inicial="proceso"] #proceso,
+[data-ruta-inicial="binario"] #binario {
   display: block;
+}
+
+// El título recibe el foco al cambiar de vista; no necesita el anillo.
+.vista h1:focus {
+  outline: none;
+}
+
+// Mientras no hay backend, avisa que los datos son del Quijote
+.aviso-ejemplo {
+  margin-bottom: var(--s3);
+  padding: 10px 14px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 /* Presentación de la biblioteca */
@@ -186,11 +207,26 @@
   }
 }
 
-.enlace-nota {
+.enlace-nota,
+.enlace-error {
   margin-top: 12px;
   text-align: center;
   font-size: 13px;
   color: var(--text-muted);
+}
+
+// Enlace que no es de Gutenberg o sin número: se dice en la página, sin alert
+.enlace-error {
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.enlace-libro .campo input[aria-invalid="true"] {
+  border-color: var(--danger);
+
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(168, 64, 44, 0.18);
+  }
 }
 
 /* Biblioteca de libros */
@@ -439,6 +475,134 @@
     border-color: rgba(36, 80, 214, 0.25);
     background: var(--accent-light);
     color: var(--accent);
+  }
+
+  // La fase en curso mientras se espera al backend (js/huffman/carga.js)
+  .is-activa {
+    border-color: var(--accent);
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+}
+
+.fase-punto,
+.fase-spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.fase-punto {
+  border: 1.5px solid var(--border-strong);
+}
+
+.fase-spinner {
+  border: 2px solid var(--accent-light);
+  border-top-color: var(--accent);
+  animation: fase-giro 0.8s linear infinite;
+}
+
+@keyframes fase-giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.carga-estado {
+  margin: calc(var(--s1) * -1) 0 var(--s3);
+  color: var(--text-secondary);
+  font-size: 14px;
+
+  &:empty {
+    display: none;
+  }
+}
+
+// Mientras carga o si hubo un error, no se muestran los resultados (cifras,
+// árbol, frase y bits); con un error tampoco las fases. El aviso de datos de
+// ejemplo tampoco aplica mientras no hay resultados.
+.vista[data-estado="cargando"] [data-resultado],
+.vista[data-estado="error"] [data-resultado],
+.vista[data-estado] .aviso-ejemplo,
+.vista[data-estado="error"] .fases {
+  display: none;
+}
+
+/* Error al comprimir: qué pasó y qué hacer */
+.huff-error {
+  display: flex;
+  gap: var(--s2);
+  align-items: flex-start;
+  margin-bottom: var(--s4);
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+
+  h2 {
+    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-size: 22px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  p {
+    max-width: 60ch;
+    color: var(--text-secondary);
+  }
+}
+
+// .huff-error y .btn tienen su propio display: sin esto, hidden no los ocultaría
+.huff-error[hidden],
+.huff-error-acciones [hidden] {
+  display: none;
+}
+
+.huff-error-icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--danger-light);
+  color: var(--danger);
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.huff-error-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  margin-top: var(--s2);
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .huff-error {
+    flex-direction: column;
+    padding: var(--s2);
+  }
+
+  .huff-error-acciones .btn {
+    justify-content: center;
+    width: 100%;
   }
 }
 
@@ -738,14 +902,25 @@
 }
 
 /* Tabla de letras y apariciones */
+// Todos los símbolos del libro: la tabla se recorre dentro del panel y el
+// encabezado se queda arriba.
+.tabla-letras-marco {
+  max-height: 560px;
+  overflow-y: auto;
+}
+
 .tabla-letras {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 
   th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     padding: 0 8px 8px;
     border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
     color: var(--text-muted);
     font-size: 12px;
     font-weight: 500;
@@ -754,6 +929,15 @@
     &:last-child {
       text-align: right;
     }
+  }
+
+  // Toda la fila sirve para elegir el símbolo
+  tbody tr {
+    cursor: pointer;
+  }
+
+  tbody tr:not(.is-seleccionada):hover td {
+    background: var(--bg-subtle);
   }
 
   td {
@@ -782,17 +966,75 @@
   place-items: center;
   min-width: 28px;
   height: 26px;
+  padding: 0 6px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: 14px;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
 }
 
-// Número de apariciones con una barra proporcional detrás
+// Encabezados que ordenan la tabla; la flecha indica el orden actual.
+.orden {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+
+  &::after {
+    content: "↕";
+    opacity: 0.45;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+th[aria-sort] .orden {
+  color: var(--text-primary);
+
+  &::after {
+    opacity: 1;
+  }
+}
+
+th[aria-sort="descending"] .orden::after {
+  content: "↓";
+}
+
+th[aria-sort="ascending"] .orden::after {
+  content: "↑";
+}
+
+// Número de apariciones con una barra proporcional detrás. isolation deja
+// la barra delante del fondo de la celda (fila elegida o bajo el puntero).
 .frecuencia {
   position: relative;
+  isolation: isolate;
   display: inline-block;
   min-width: 92px;
   padding: 2px 6px;
@@ -814,10 +1056,14 @@
   background: rgba(36, 80, 214, 0.18);
 }
 
+// Los símbolos más raros tienen códigos de 20 bits o más: pasan a otra
+// línea en lugar de ensanchar la tabla fuera del panel.
 .tabla-letras .codigo {
   color: var(--accent);
   font-family: var(--font-mono);
   text-align: right;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .letras-pie {
@@ -825,6 +1071,10 @@
   font-size: 13px;
   text-align: center;
   color: var(--text-muted);
+
+  &:empty {
+    display: none;
+  }
 }
 
 /* Pseudocódigo de Huffman */
@@ -881,6 +1131,34 @@
   }
 }
 
+// Resultado de la descarga: "Se descargó…" o qué falló
+.descarga-estado {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  font-size: 13px;
+
+  &:empty {
+    display: none;
+  }
+
+  &.is-error {
+    color: var(--danger);
+    font-weight: 500;
+  }
+}
+
+.descarga-estado--barra {
+  margin: calc(var(--s1) * -1) 0 var(--s3);
+  text-align: right;
+}
+
+// Mientras se descarga, el botón sigue enfocable pero no responde
+.btn[aria-disabled="true"] {
+  opacity: 0.7;
+  cursor: progress;
+  transform: none;
+}
+
 /* Vista binaria */
 .frase {
   margin-bottom: var(--s3);
@@ -894,6 +1172,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.frase-total {
+  margin-top: var(--s2);
+  color: var(--text-secondary);
+  font-size: 13px;
 }
 
 .frase-ficha {
@@ -926,24 +1210,88 @@
   gap: 6px;
 }
 
-// Bits en grupos de 8 con la posición (en bytes) a la izquierda. Se
-// desvanece al final para indicar que sigue mucho más.
-.bits-lista {
+.chip-dato--relleno {
+  border-color: rgba(168, 64, 44, 0.3);
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+// Campos del encabezado del .suf en una fila que se acomoda al ancho
+.suf-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px var(--s3);
+  margin-bottom: var(--s2);
+  font-size: 13px;
+
+  > div {
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  dt {
+    color: var(--text-muted);
+  }
+
+  dd {
+    overflow-wrap: anywhere;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+  }
+}
+
+// Bits en grupos de 8 con la posición (en bytes, dentro de los datos) a la
+// izquierda. Se recorre dentro del panel; con datos reales solo existen las
+// filas visibles (js/huffman/binario.js) y .bits-espacio da el alto total.
+.bits-ventana {
+  --alto-fila: 26px;
+
   position: relative;
-  padding: 4px 0;
-  overflow-x: auto;
+  height: min(480px, 60vh);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.bits-espacio {
+  position: relative;
+}
+
+.bits-lista {
+  padding: 4px 12px;
   list-style: none;
   font-family: var(--font-mono);
   font-size: 13px;
-  line-height: 2;
-  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
-  mask-image: linear-gradient(to bottom, #000 70%, transparent);
 
   li {
     display: flex;
     gap: var(--s3);
+    height: var(--alto-fila);
+    line-height: var(--alto-fila);
     white-space: pre;
   }
+}
+
+.bits-ventana.is-virtual .bits-lista {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-block: 0;
+  will-change: transform;
+}
+
+// Los bits que solo completan el último byte
+.bits-relleno {
+  border-radius: 3px;
+  background: var(--danger-light);
+  color: var(--danger);
 }
 
 .bits-offset {
@@ -960,6 +1308,11 @@
   font-size: 13px;
   text-align: center;
   color: var(--text-muted);
+
+  &.is-error {
+    color: var(--danger);
+    font-weight: 500;
+  }
 }
 
 /* Adaptación a pantallas pequeñas */
@@ -1047,7 +1400,15 @@
     padding: var(--s2);
   }
 
+  .tabla-letras-marco {
+    max-height: 420px;
+  }
+
   .vista-barra .btn {
     margin-left: 0;
+  }
+
+  .descarga-estado--barra {
+    text-align: left;
   }
 }

@@ -1,0 +1,224 @@
+// Navegación de la pantalla de Huffman: muestra la vista de la ruta actual
+// (biblioteca, proceso o binario), la llena con los datos del libro y cuida
+// el scroll, el foco y el historial. Las rutas se leen y arman en rutas.js.
+import { leerRuta, rutaA } from "./rutas.js";
+import { reiniciarCarga } from "./carga.js";
+import { limpiarAvisosDeDescarga } from "./descarga.js";
+import { cargarLibro, origenDe } from "./datos.js";
+import { llenarProceso } from "./proceso.js";
+import { llenarBinario, llenarBinarioDeEjemplo } from "./binario.js";
+
+// Mientras el backend no tenga /huffman, la pantalla muestra el ejemplo de
+// Don Quijote (el JSON de A1, ver datos.js); con otro libro se avisa.
+const LIBRO_DE_EJEMPLO = 2000;
+
+let tituloPagina = ""; // el <title> de huffman.html, leído al iniciar
+let rutaActual = null; // la última ruta mostrada
+let temporizadorScroll = 0;
+
+// "Pride and Prejudice" → "pride-and-prejudice.suf"
+export function nombreDeArchivo(titulo) {
+  const base = titulo
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "") // quita los acentos que NFD separó de su letra
+    .toLowerCase()
+    .replace(/['’]/g, "") // "Alice's" → "alices"
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return `${base || "libro"}.suf`;
+}
+
+// Los datos del libro salen de su tarjeta en la biblioteca (dibujada desde
+// GET /huffman/books, ver biblioteca.js). Un libro abierto por enlace que no
+// está en el catálogo se muestra con su número.
+function datosDelLibro(numero) {
+  const tarjeta = document.querySelector(`.libro[data-libro="${numero}"]`);
+  const texto = (selector) => tarjeta?.querySelector(selector)?.textContent.trim();
+  return {
+    titulo: texto(".libro-info h3") || `Libro #${numero}`,
+    autor: texto(".libro-info p") || "Autor desconocido",
+  };
+}
+
+function llenarLibro(numero, { titulo, autor } = datosDelLibro(numero)) {
+  const archivo = nombreDeArchivo(titulo);
+  const poner = (selector, texto) =>
+    document.querySelectorAll(selector).forEach((elemento) => {
+      elemento.textContent = texto;
+    });
+
+  poner("[data-libro-titulo]", titulo);
+  poner("[data-libro-autor]", autor);
+  poner("[data-libro-numero]", String(numero));
+  poner("[data-libro-archivo]", archivo);
+
+  // Los enlaces entre proceso y binario apuntan al mismo libro.
+  document.querySelectorAll("[data-ir]").forEach((enlace) => {
+    enlace.href = rutaA(enlace.dataset.ir, numero);
+  });
+  document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
+    aviso.hidden = numero === LIBRO_DE_EJEMPLO;
+  });
+
+  return { titulo, archivo };
+}
+
+const tituloDeVista = (vista, datos) =>
+  `${vista === "binario" ? datos.archivo : datos.titulo} · ${tituloPagina}`;
+
+// Avisa que hay un resultado en la pantalla, para que el árbol (bloque D) se
+// dibuje con sus nodes y steps, sea del backend o de ejemplo:
+//   document.addEventListener("huffman-resultado", (evento) => {
+//     evento.detail; // { libro, resultado, ejemplo }
+//   });
+// Se dispara cada vez que se abre el proceso o el binario de un libro; si
+// `resultado` es el mismo objeto que la vez anterior, no cambió nada.
+function avisarResultado(libro, resultado, ejemplo) {
+  document.dispatchEvent(
+    new CustomEvent("huffman-resultado", { detail: { libro, resultado, ejemplo } })
+  );
+}
+
+// Con datos del backend ya no aplica el aviso de "vista de ejemplo".
+// `bytesSuf` solo llega al abrir el binario.
+function mostrarResultado(numero, resultado, bytesSuf) {
+  const { titulo, autor } = origenDe(resultado);
+  const datos = llenarLibro(numero, {
+    titulo: titulo ?? `Libro #${numero}`,
+    autor: autor ?? "Autor desconocido",
+  });
+  document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
+    aviso.hidden = true;
+  });
+  if (rutaActual?.libro === numero) document.title = tituloDeVista(rutaActual.vista, datos);
+  llenarProceso(resultado);
+  if (bytesSuf) llenarBinario(resultado, bytesSuf);
+  avisarResultado(numero, resultado, false);
+}
+
+// Sin backend de Huffman: el título y el aviso se quedan como los puso
+// llenarLibro (el libro pedido y, si no es el Quijote, "vista de ejemplo").
+function mostrarEjemplo(numero, ejemplo) {
+  llenarProceso(ejemplo);
+  llenarBinarioDeEjemplo(ejemplo);
+  avisarResultado(numero, ejemplo, true);
+}
+
+// Cada entrada del historial guarda su scroll en history.state: Atrás y
+// Adelante regresan a donde estaba el usuario, y una entrada nueva (un
+// enlace) empieza arriba.
+function guardarScroll() {
+  try {
+    history.replaceState({ ...history.state, scrollY: window.scrollY }, "");
+  } catch {
+    // Safari limita las llamadas seguidas a replaceState; basta con la siguiente.
+  }
+}
+
+function guardarScrollAlDetenerse() {
+  clearTimeout(temporizadorScroll);
+  temporizadorScroll = setTimeout(guardarScroll, 150);
+}
+
+// Para ir a otra vista desde el JS (p. ej. el campo de enlace), igual que
+// al seguir un enlace: guarda el scroll de la vista que se deja.
+export function ir(vista, libro) {
+  guardarScroll();
+  location.hash = rutaA(vista, libro);
+}
+
+// Devuelve true si regresó a un scroll guardado.
+function ajustarScroll() {
+  const guardado = history.state?.scrollY;
+  const restaurado = typeof guardado === "number";
+  // "instant": _base.scss tiene scroll-behavior: smooth y la vista nueva
+  // se vería deslizarse desde la posición anterior.
+  window.scrollTo({ top: restaurado ? guardado : 0, behavior: "instant" });
+  return restaurado;
+}
+
+function enfocar(vista, rutaAnterior, scrollRestaurado) {
+  // Al volver a la biblioteca, el foco regresa a la tarjeta del libro que se
+  // abrió, para no recorrer de nuevo toda la página con el teclado.
+  if (vista === "biblioteca" && rutaAnterior?.libro) {
+    const tarjeta = document.querySelector(`.libro[data-libro="${rutaAnterior.libro}"]`);
+    if (tarjeta) {
+      tarjeta.focus({ preventScroll: scrollRestaurado });
+      return;
+    }
+  }
+  // Si no, el foco pasa al título para que un lector de pantalla anuncie la vista.
+  document.getElementById(vista)?.querySelector("h1")?.focus({ preventScroll: true });
+}
+
+function mostrar(ruta, esCargaInicial) {
+  const { vista, libro } = ruta;
+  const rutaAnterior = rutaActual;
+  rutaActual = ruta;
+
+  // Ya no hace falta la marca del <head> que evitaba pintar la vista equivocada.
+  document.documentElement.removeAttribute("data-ruta-inicial");
+  // Una carga, un error o una descarga del libro anterior no deben quedarse
+  // en la vista nueva.
+  reiniciarCarga();
+  limpiarAvisosDeDescarga();
+  document.querySelectorAll(".vista").forEach((seccion) => {
+    seccion.hidden = seccion.id !== vista;
+  });
+
+  document.title = libro === null ? tituloPagina : tituloDeVista(vista, llenarLibro(libro));
+
+  const scrollRestaurado = ajustarScroll();
+  // En la carga inicial el foco no se mueve.
+  if (!esCargaInicial) enfocar(vista, rutaAnterior, scrollRestaurado);
+
+  // El proceso y el binario piden sus datos al backend (o usan los ya
+  // guardados); el binario, además, los bytes del .suf.
+  if (libro !== null) {
+    cargarLibro(libro, {
+      vista,
+      alCargar: (resultado, bytesSuf) => mostrarResultado(libro, resultado, bytesSuf),
+      alUsarEjemplo: (ejemplo) => mostrarEjemplo(libro, ejemplo),
+    });
+  }
+}
+
+function alCambiarRuta(esCargaInicial) {
+  // Una ruta inválida (p. ej. #/libro/abc) lleva a la biblioteca.
+  const ruta = leerRuta(location.hash) ?? { vista: "biblioteca", libro: null };
+  const canonica = rutaA(ruta.vista, ruta.libro);
+  const sinHashEnBiblioteca = !location.hash && ruta.vista === "biblioteca";
+
+  if (location.hash !== canonica && !sinHashEnBiblioteca) {
+    // Si la ruta escrita a mano lleva a la misma vista que ya se mostraba
+    // (#/libro/2000/ desde #/libro/2000), reemplazarla dejaría dos entradas
+    // iguales y un Atrás que no hace nada: se regresa a la anterior.
+    if (!esCargaInicial && rutaActual && rutaA(rutaActual.vista, rutaActual.libro) === canonica) {
+      history.back();
+      return;
+    }
+    // #/libro/02000, #/libro/2000/ o #proceso quedan como su ruta canónica.
+    history.replaceState(history.state, "", canonica);
+  }
+  mostrar(ruta, esCargaInicial);
+}
+
+export function iniciarNavegacion() {
+  tituloPagina = document.title;
+  // El scroll de cada vista lo restaura ajustarScroll(), no el navegador.
+  history.scrollRestoration = "manual";
+
+  window.addEventListener("scroll", guardarScrollAlDetenerse, { passive: true });
+  // Antes de seguir un enlace interno, guarda el scroll en la entrada que se deja.
+  document.addEventListener(
+    "click",
+    (evento) => {
+      if (evento.target.closest?.('a[href^="#"]')) guardarScroll();
+    },
+    true
+  );
+  window.addEventListener("pagehide", guardarScroll);
+  window.addEventListener("hashchange", () => alCambiarRuta(false));
+
+  alCambiarRuta(true);
+}

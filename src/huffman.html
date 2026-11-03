@@ -13,6 +13,18 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap"
     rel="stylesheet">
   <title>Huffman · StackUnderFlow</title>
+  <script>
+    // Antes de pintar: si se abre directo un libro (#/libro/2000 o
+    // #/libro/2000/binario), marca su vista para que no se vea primero la
+    // biblioteca mientras carga js/huffman.js. Es la misma ruta que lee
+    // js/huffman/rutas.js; navegacion.js quita la marca al mostrar la vista.
+    (function () {
+      var ruta = /^#\/libro\/\d+(\/binario)?\/?$/.exec(location.hash);
+      if (ruta) {
+        document.documentElement.setAttribute("data-ruta-inicial", ruta[1] ? "binario" : "proceso");
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -33,15 +45,17 @@
         <li><a href="index.html#algoritmos">Algoritmos</a></li>
       </ul>
 
-      <a class="btn btn--dark btn--sm" href="#biblioteca" aria-current="page">Comprimir archivo</a>
+      <a class="btn btn--dark btn--sm" href="#/" aria-current="page">Comprimir archivo</a>
     </nav>
   </header>
 
   <!--
-    Esqueleto visual: todavía no se descarga ni se comprime nada.
-    Las tres vistas se muestran con :target (#biblioteca, #proceso, #binario);
-    sin hash se ve la biblioteca. Los datos de ejemplo son reales de
-    Don Quijote (Project Gutenberg #2000).
+    Las tres vistas se cambian en js/huffman/navegacion.js según la ruta
+    del hash (#/, #/libro/2000 y #/libro/2000/binario; ver rutas.js).
+    Las cifras, la tabla de letras y el binario se llenan con los datos del
+    backend (js/huffman/proceso.js y binario.js). Mientras el backend no
+    tenga /huffman se usa el ejemplo de A1 (js/huffman/ejemplo-quijote.json);
+    lo escrito aquí, de Don Quijote, solo se ve si ese JSON no carga.
   -->
   <main class="vistas">
 
@@ -51,7 +65,7 @@
         <div class="huff-glow" aria-hidden="true"></div>
         <div class="container huff-hero-inner">
           <span class="eyebrow">Algoritmo de Huffman · Voraz</span>
-          <h1 id="bibliotecaTitulo">Comprime un libro con <em>Huffman</em></h1>
+          <h1 id="bibliotecaTitulo" tabindex="-1">Comprime un libro con <em>Huffman</em></h1>
           <p class="huff-sub">
             Elige un libro de Project Gutenberg. Contaremos cuántas veces aparece
             cada letra, construiremos el árbol de Huffman y generaremos un archivo
@@ -67,26 +81,30 @@
       </div>
 
       <div class="container">
-        <div class="enlace-libro">
+        <!-- js/huffman/biblioteca.js saca el número del libro del enlace -->
+        <form class="enlace-libro" data-enlace-libro novalidate>
           <label class="campo">
             <i data-lucide="link"></i>
-            <span class="visually-hidden">Enlace del libro</span>
-            <input type="url" placeholder="https://www.gutenberg.org/ebooks/2000" autocomplete="off">
+            <span class="visually-hidden">Enlace del libro en Project Gutenberg</span>
+            <input type="url" name="enlace" placeholder="https://www.gutenberg.org/ebooks/2000" autocomplete="off"
+              aria-describedby="enlaceNota enlaceError">
           </label>
-          <button class="btn btn--primary" type="button">
+          <button class="btn btn--primary" type="submit">
             Comprimir
             <i data-lucide="arrow-right"></i>
           </button>
-        </div>
-        <p class="enlace-nota">Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
+        </form>
+        <p class="enlace-nota" id="enlaceNota" data-enlace-nota>Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
+        <p class="enlace-error" id="enlaceError" role="alert" data-enlace-error hidden></p>
 
         <div class="biblioteca-head">
           <h2>O elige uno de la biblioteca</h2>
-          <span class="biblioteca-cuenta">6 libros</span>
+          <span class="biblioteca-cuenta" data-libros-cuenta>6 libros</span>
         </div>
 
-        <div class="libros">
-          <a class="libro" href="#proceso">
+        <!-- Se reemplazan por el catálogo de GET /huffman/books si responde -->
+        <div class="libros" data-libros>
+          <a class="libro" href="#/libro/2000" data-libro="2000">
             <div class="libro-portada libro-portada--azul" aria-hidden="true">
               <span class="libro-portada-inicial">D</span>
               <span class="libro-portada-autor">Cervantes</span>
@@ -102,7 +120,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/1342" data-libro="1342">
             <div class="libro-portada libro-portada--hueso" aria-hidden="true">
               <span class="libro-portada-inicial">P</span>
               <span class="libro-portada-autor">Austen</span>
@@ -118,7 +136,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/2701" data-libro="2701">
             <div class="libro-portada libro-portada--tinta" aria-hidden="true">
               <span class="libro-portada-inicial">M</span>
               <span class="libro-portada-autor">Melville</span>
@@ -134,7 +152,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/84" data-libro="84">
             <div class="libro-portada libro-portada--hueso" aria-hidden="true">
               <span class="libro-portada-inicial">F</span>
               <span class="libro-portada-autor">Shelley</span>
@@ -150,7 +168,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/1661" data-libro="1661">
             <div class="libro-portada libro-portada--tinta" aria-hidden="true">
               <span class="libro-portada-inicial">S</span>
               <span class="libro-portada-autor">Conan Doyle</span>
@@ -166,7 +184,7 @@
             </div>
           </a>
 
-          <a class="libro" href="#proceso">
+          <a class="libro" href="#/libro/11" data-libro="11">
             <div class="libro-portada libro-portada--azul" aria-hidden="true">
               <span class="libro-portada-inicial">A</span>
               <span class="libro-portada-autor">Carroll</span>
@@ -186,57 +204,80 @@
     </section>
 
     <!-- Vista 2: árbol, frecuencias y archivo -->
-    <section class="vista" id="proceso" aria-labelledby="procesoTitulo">
+    <section class="vista" id="proceso" aria-labelledby="procesoTitulo" hidden>
       <div class="container">
         <div class="vista-barra">
-          <a class="btn-volver" href="#biblioteca">
+          <a class="btn-volver" href="#/">
             <i data-lucide="arrow-left"></i>
             Biblioteca
           </a>
           <div class="vista-libro">
-            <h1 id="procesoTitulo">Don Quijote</h1>
-            <span>Miguel de Cervantes Saavedra · Project Gutenberg #2000</span>
+            <h1 id="procesoTitulo" tabindex="-1" data-libro-titulo>Don Quijote</h1>
+            <span><span data-libro-autor>Miguel de Cervantes Saavedra</span> · Project Gutenberg #<span data-libro-numero>2000</span></span>
           </div>
         </div>
+        <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
+          Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
+        </p>
 
-        <ol class="fases" aria-label="Fases de la compresión">
-          <li class="is-hecha"><i data-lucide="check"></i>Descargar</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Contar letras</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Cola de prioridad</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Árbol</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Códigos</li>
-          <li class="is-hecha"><i data-lucide="check"></i>Archivo .suf</li>
+        <!-- Fases y errores: js/huffman/carga.js cambia su estado mientras se espera al backend -->
+        <ol class="fases" aria-label="Fases de la compresión" data-fases>
+          <li class="is-hecha" data-fase="descargar"><i data-lucide="check"></i>Descargar</li>
+          <li class="is-hecha" data-fase="contar"><i data-lucide="check"></i>Contar letras</li>
+          <li class="is-hecha" data-fase="cola"><i data-lucide="check"></i>Cola de prioridad</li>
+          <li class="is-hecha" data-fase="arbol"><i data-lucide="check"></i>Árbol</li>
+          <li class="is-hecha" data-fase="codigos"><i data-lucide="check"></i>Códigos</li>
+          <li class="is-hecha" data-fase="archivo"><i data-lucide="check"></i>Archivo .suf</li>
         </ol>
+        <p class="carga-estado" role="status" data-carga-estado></p>
 
-        <dl class="huff-metricas">
-          <div>
+        <section class="huff-error" aria-labelledby="huffErrorTitulo" data-huff-error hidden>
+          <span class="huff-error-icono" aria-hidden="true"><i data-lucide="triangle-alert"></i></span>
+          <div class="huff-error-texto">
+            <h2 id="huffErrorTitulo" tabindex="-1" data-huff-error-titulo>No se pudo comprimir el libro</h2>
+            <p data-huff-error-mensaje>Ocurrió un error inesperado.</p>
+            <div class="huff-error-acciones">
+              <a class="btn btn--dark btn--sm" href="#/">
+                <i data-lucide="arrow-left"></i>
+                Volver a la biblioteca
+              </a>
+              <button class="btn btn--ghost btn--sm" type="button" data-huff-reintentar hidden>
+                <i data-lucide="rotate-cw"></i>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <dl class="huff-metricas" data-resultado>
+          <div data-cifra="original">
             <dt>Tamaño original</dt>
             <dd>2.2 MB</dd>
             <span>2,206,001 bytes</span>
           </div>
-          <div>
+          <div data-cifra="comprimido">
             <dt>Comprimido</dt>
             <dd>1.2 MB</dd>
             <span>1,200,178 bytes</span>
           </div>
-          <div>
+          <div data-cifra="ahorro">
             <dt>Ahorro</dt>
             <dd>45.6 %</dd>
             <span>queda en 54.4 %</span>
           </div>
-          <div>
+          <div data-cifra="bits">
             <dt>Bits por letra</dt>
             <dd>4.47</dd>
             <span>entropía 4.43 · ASCII 8</span>
           </div>
-          <div>
+          <div data-cifra="simbolos">
             <dt>Símbolos distintos</dt>
             <dd>93</dd>
             <span>185 nodos en el árbol</span>
           </div>
         </dl>
 
-        <div class="proceso-grid">
+        <div class="proceso-grid" data-resultado>
           <div class="proceso-columna">
             <section class="panel panel--arbol" aria-labelledby="arbolPanelTitulo">
               <header class="panel-head">
@@ -353,105 +394,115 @@
             <section class="panel panel--letras" aria-labelledby="letrasTitulo">
               <header class="panel-head">
                 <h2 id="letrasTitulo">Letras</h2>
-                <span class="panel-cuenta">93 símbolos</span>
+                <span class="panel-cuenta" data-letras-cuenta>93 símbolos</span>
               </header>
 
+              <!-- js/huffman/tabla.js: búsqueda, orden y selección (evento simbolo-seleccionado) -->
               <label class="campo campo--compacto">
                 <i data-lucide="search"></i>
-                <span class="visually-hidden">Buscar símbolo</span>
-                <input type="search" placeholder="Buscar símbolo…" autocomplete="off">
+                <span class="visually-hidden">Buscar un símbolo, su nombre (espacio, salto) o un código</span>
+                <input type="search" placeholder="Buscar símbolo o código…" autocomplete="off"
+                  aria-controls="tablaLetras" data-letras-buscar>
               </label>
 
-              <table class="tabla-letras">
-                <thead>
-                  <tr>
-                    <th scope="col">Símbolo</th>
-                    <th scope="col">Apariciones</th>
-                    <th scope="col">Código</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="simbolo">␣</span></td>
-                    <td><span class="frecuencia" style="--w: 100.0%">354,706</span> <small>16.5 %</small></td>
-                    <td class="codigo">111</td>
-                  </tr>
-                  <tr class="is-seleccionada">
-                    <td><span class="simbolo">e</span></td>
-                    <td><span class="frecuencia" style="--w: 62.6%">221,968</span> <small>10.3 %</small></td>
-                    <td class="codigo">010</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">a</span></td>
-                    <td><span class="frecuencia" style="--w: 54.3%">192,727</span> <small>9.0 %</small></td>
-                    <td class="codigo">000</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">o</span></td>
-                    <td><span class="frecuencia" style="--w: 43.4%">154,052</span> <small>7.2 %</small></td>
-                    <td class="codigo">1010</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">s</span></td>
-                    <td><span class="frecuencia" style="--w: 34.7%">123,238</span> <small>5.7 %</small></td>
-                    <td class="codigo">0111</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">n</span></td>
-                    <td><span class="frecuencia" style="--w: 30.6%">108,449</span> <small>5.0 %</small></td>
-                    <td class="codigo">0011</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">r</span></td>
-                    <td><span class="frecuencia" style="--w: 28.4%">100,863</span> <small>4.7 %</small></td>
-                    <td class="codigo">0010</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">l</span></td>
-                    <td><span class="frecuencia" style="--w: 25.0%">88,518</span> <small>4.1 %</small></td>
-                    <td class="codigo">11010</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">d</span></td>
-                    <td><span class="frecuencia" style="--w: 24.2%">85,823</span> <small>4.0 %</small></td>
-                    <td class="codigo">11001</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">u</span></td>
-                    <td><span class="frecuencia" style="--w: 22.2%">78,689</span> <small>3.7 %</small></td>
-                    <td class="codigo">10111</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">i</span></td>
-                    <td><span class="frecuencia" style="--w: 21.9%">77,759</span> <small>3.6 %</small></td>
-                    <td class="codigo">10110</td>
-                  </tr>
-                  <tr>
-                    <td><span class="simbolo">t</span></td>
-                    <td><span class="frecuencia" style="--w: 17.3%">61,238</span> <small>2.9 %</small></td>
-                    <td class="codigo">10000</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p class="letras-pie">y 81 símbolos más</p>
+              <div class="tabla-letras-marco">
+                <table class="tabla-letras" id="tablaLetras" aria-labelledby="letrasTitulo" aria-describedby="letrasAyuda" data-letras>
+                  <thead>
+                    <tr>
+                      <th scope="col">Símbolo</th>
+                      <th scope="col" aria-sort="descending">
+                        <button class="orden" type="button" data-orden="apariciones">Apariciones</button>
+                      </th>
+                      <th scope="col">
+                        <button class="orden" type="button" data-orden="codigo">Código</button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody data-letras-filas>
+                    <tr>
+                      <td><span class="simbolo">␣</span></td>
+                      <td><span class="frecuencia" style="--w: 100.0%">354,706</span> <small>16.5 %</small></td>
+                      <td class="codigo">111</td>
+                    </tr>
+                    <tr class="is-seleccionada">
+                      <td><span class="simbolo">e</span></td>
+                      <td><span class="frecuencia" style="--w: 62.6%">221,968</span> <small>10.3 %</small></td>
+                      <td class="codigo">010</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">a</span></td>
+                      <td><span class="frecuencia" style="--w: 54.3%">192,727</span> <small>9.0 %</small></td>
+                      <td class="codigo">000</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">o</span></td>
+                      <td><span class="frecuencia" style="--w: 43.4%">154,052</span> <small>7.2 %</small></td>
+                      <td class="codigo">1010</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">s</span></td>
+                      <td><span class="frecuencia" style="--w: 34.7%">123,238</span> <small>5.7 %</small></td>
+                      <td class="codigo">0111</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">n</span></td>
+                      <td><span class="frecuencia" style="--w: 30.6%">108,449</span> <small>5.0 %</small></td>
+                      <td class="codigo">0011</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">r</span></td>
+                      <td><span class="frecuencia" style="--w: 28.4%">100,863</span> <small>4.7 %</small></td>
+                      <td class="codigo">0010</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">l</span></td>
+                      <td><span class="frecuencia" style="--w: 25.0%">88,518</span> <small>4.1 %</small></td>
+                      <td class="codigo">11010</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">d</span></td>
+                      <td><span class="frecuencia" style="--w: 24.2%">85,823</span> <small>4.0 %</small></td>
+                      <td class="codigo">11001</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">u</span></td>
+                      <td><span class="frecuencia" style="--w: 22.2%">78,689</span> <small>3.7 %</small></td>
+                      <td class="codigo">10111</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">i</span></td>
+                      <td><span class="frecuencia" style="--w: 21.9%">77,759</span> <small>3.6 %</small></td>
+                      <td class="codigo">10110</td>
+                    </tr>
+                    <tr>
+                      <td><span class="simbolo">t</span></td>
+                      <td><span class="frecuencia" style="--w: 17.3%">61,238</span> <small>2.9 %</small></td>
+                      <td class="codigo">10000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="visually-hidden" id="letrasAyuda">Elige un símbolo para ver su camino en el árbol. Las flechas arriba y abajo se mueven entre filas.</p>
+              <p class="letras-pie" aria-live="polite" data-letras-pie>y 81 símbolos más</p>
             </section>
 
             <section class="panel archivo-listo" aria-labelledby="archivoTitulo">
               <div class="archivo-icono" aria-hidden="true"><i data-lucide="file-archive"></i></div>
               <div class="archivo-texto">
                 <h2 id="archivoTitulo">Archivo listo</h2>
-                <p><code>don-quijote.suf</code> · 1.2 MB</p>
+                <p><code data-libro-archivo>don-quijote.suf</code> · <span data-archivo-tamano>1.2 MB</span></p>
               </div>
               <div class="archivo-acciones">
-                <a class="btn btn--ghost" href="#binario">
+                <a class="btn btn--ghost" href="#/libro/2000/binario" data-ir="binario">
                   <i data-lucide="eye"></i>
                   Ver binario
                 </a>
-                <button class="btn btn--primary" type="button">
+                <button class="btn btn--primary" type="button" data-descargar="descargaProceso">
                   <i data-lucide="download"></i>
-                  Descargar .suf
+                  <span data-descargar-texto>Descargar .suf</span>
                 </button>
               </div>
+              <p class="descarga-estado" id="descargaProceso" role="status" data-descarga-estado></p>
             </section>
           </div>
         </div>
@@ -459,26 +510,51 @@
     </section>
 
     <!-- Vista 3: solo binario -->
-    <section class="vista" id="binario" aria-labelledby="binarioTitulo">
+    <section class="vista" id="binario" aria-labelledby="binarioTitulo" hidden>
       <div class="container">
         <div class="vista-barra">
-          <a class="btn-volver" href="#proceso">
+          <a class="btn-volver" href="#/libro/2000" data-ir="proceso">
             <i data-lucide="arrow-left"></i>
             Volver al árbol
           </a>
           <div class="vista-libro">
-            <h1 id="binarioTitulo"><code>don-quijote.suf</code></h1>
-            <span>1,200,178 bytes · 9,595,277 bits de datos</span>
+            <h1 id="binarioTitulo" tabindex="-1"><code data-libro-archivo>don-quijote.suf</code></h1>
+            <span data-binario-resumen>1,200,178 bytes · 9,595,277 bits de datos</span>
           </div>
-          <button class="btn btn--primary" type="button">
+          <button class="btn btn--primary" type="button" data-descargar="descargaBinario">
             <i data-lucide="download"></i>
-            Descargar .suf
+            <span data-descargar-texto>Descargar .suf</span>
           </button>
         </div>
+        <p class="descarga-estado descarga-estado--barra" id="descargaBinario" role="status" data-descarga-estado></p>
+        <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
+          Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
+        </p>
 
-        <section class="panel frase" aria-labelledby="fraseTitulo">
-          <h2 id="fraseTitulo">Así se codifica «En un lugar de la Mancha»</h2>
-          <div class="frase-fichas">
+        <!-- Carga y errores: js/huffman/carga.js, igual que en el proceso -->
+        <p class="carga-estado" role="status" data-carga-estado></p>
+        <section class="huff-error" aria-labelledby="huffErrorTituloBinario" data-huff-error hidden>
+          <span class="huff-error-icono" aria-hidden="true"><i data-lucide="triangle-alert"></i></span>
+          <div class="huff-error-texto">
+            <h2 id="huffErrorTituloBinario" tabindex="-1" data-huff-error-titulo>No se pudo comprimir el libro</h2>
+            <p data-huff-error-mensaje>Ocurrió un error inesperado.</p>
+            <div class="huff-error-acciones">
+              <a class="btn btn--dark btn--sm" href="#/">
+                <i data-lucide="arrow-left"></i>
+                Volver a la biblioteca
+              </a>
+              <button class="btn btn--ghost btn--sm" type="button" data-huff-reintentar hidden>
+                <i data-lucide="rotate-cw"></i>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- js/huffman/binario.js llena la frase (preview) y los bits del .suf -->
+        <section class="panel frase" aria-labelledby="fraseTitulo" data-resultado data-frase>
+          <h2 id="fraseTitulo" data-frase-titulo>Así se codifica «En un lugar de la Mancha»</h2>
+          <div class="frase-fichas" data-frase-fichas>
             <span class="frase-ficha"><b>E</b><code>11000110111</code></span>
             <span class="frase-ficha"><b>n</b><code>0011</code></span>
             <span class="frase-ficha"><b>␣</b><code>111</code></span>
@@ -504,43 +580,60 @@
             <span class="frase-ficha"><b>h</b><code>1001011</code></span>
             <span class="frase-ficha"><b>a</b><code>000</code></span>
           </div>
+          <p class="frase-total" data-frase-total>24 caracteres: 192 bits en el texto original y 112 con Huffman.</p>
         </section>
 
-        <section class="panel bits" aria-labelledby="bitsTitulo">
+        <section class="panel bits" aria-labelledby="bitsTitulo" data-resultado>
           <header class="panel-head">
             <h2 id="bitsTitulo">Contenido del archivo</h2>
             <div class="bits-leyenda">
-              <span class="chip-dato">Encabezado · 768 bytes</span>
-              <span class="chip-dato chip-dato--acento">Datos · 1,199,410 bytes</span>
+              <span class="chip-dato" data-bits-encabezado>Encabezado · 768 bytes</span>
+              <span class="chip-dato chip-dato--acento" data-bits-datos>Datos · 1,199,410 bytes</span>
+              <span class="chip-dato chip-dato--relleno" data-bits-relleno hidden>Relleno · 0 bits</span>
             </div>
           </header>
-          <ol class="bits-lista">
-            <li><span class="bits-offset">000000</span><span class="bits-fila">10011010 01111001 10100111 10011010 01111001 10100111 11000110 11111010</span></li>
-            <li><span class="bits-offset">000008</span><span class="bits-fila">11110110 00111001 00001000 11101101 01001111 01011110 01011101 10110010</span></li>
-            <li><span class="bits-offset">000016</span><span class="bits-fila">00110101 00100010 10111110 01101000 11111110 00110101 01111011 01100010</span></li>
-            <li><span class="bits-offset">000024</span><span class="bits-fila">11010100 00010111 11001010 11111010 00011111 00010001 00000011 01101100</span></li>
-            <li><span class="bits-offset">000032</span><span class="bits-fila">10110001 00110100 11110011 01001111 00110100 11110011 01001111 00011101</span></li>
-            <li><span class="bits-offset">000040</span><span class="bits-fila">00010111 11000100 01010110 10010001 01110101 10101111 10010101 11011000</span></li>
-            <li><span class="bits-offset">000048</span><span class="bits-fila">00010100 01010010 01000001 11000001 00111111 01100000 10000001 00100101</span></li>
-            <li><span class="bits-offset">000056</span><span class="bits-fila">01100100 10000100 11010011 11001101 00111100 11010011 11001101 00111100</span></li>
-            <li><span class="bits-offset">000064</span><span class="bits-fila">11010011 11001101 00111110 00110111 11010111 10110001 11001000 01000111</span></li>
-            <li><span class="bits-offset">000072</span><span class="bits-fila">01101010 01111010 11110010 11101101 10010001 10101001 00010101 11110011</span></li>
-            <li><span class="bits-offset">000080</span><span class="bits-fila">01000111 11110001 10101011 11011011 00010110 10100000 10111110 01010111</span></li>
-            <li><span class="bits-offset">000088</span><span class="bits-fila">11010000 11111000 10001000 00011011 01100101 10001001 10100111 10011010</span></li>
-            <li><span class="bits-offset">000096</span><span class="bits-fila">01111001 10100111 11111110 01101001 11100101 00000000 01110001 00110100</span></li>
-            <li><span class="bits-offset">000104</span><span class="bits-fila">11110011 01001111 11111100 11010011 11001010 00000100 11110000 10110110</span></li>
-            <li><span class="bits-offset">000112</span><span class="bits-fila">11010100 01110110 10101111 10010101 11110100 00011111 10100010 00100001</span></li>
-            <li><span class="bits-offset">000120</span><span class="bits-fila">00000000 11110011 01001111 00110100 11111111 11001101 00111110 00110111</span></li>
-            <li><span class="bits-offset">000128</span><span class="bits-fila">11010111 11000110 00010101 10111110 01101001 11100110 10011111 11111001</span></li>
-            <li><span class="bits-offset">000136</span><span class="bits-fila">10100111 01100110 10110101 11110001 00001011 11000101 01110101 11110010</span></li>
-            <li><span class="bits-offset">000144</span><span class="bits-fila">10111011 00110001 10110001 11100010 10000010 10011010 01111001 10100111</span></li>
-            <li><span class="bits-offset">000152</span><span class="bits-fila">11111110 01101001 11011001 10010010 10010101 11010101 01001000 10101001</span></li>
-            <li><span class="bits-offset">000160</span><span class="bits-fila">10100111 10011010 01111111 11100110 10011101 10011010 11010111 11010101</span></li>
-            <li><span class="bits-offset">000168</span><span class="bits-fila">10110111 00010101 01111100 10101111 10011010 00111111 10001101 01011110</span></li>
-            <li><span class="bits-offset">000176</span><span class="bits-fila">11011000 10110101 00000101 11110010 10111110 10000111 11000100 01000000</span></li>
-            <li><span class="bits-offset">000184</span><span class="bits-fila">11011011 00101100 01001101 00111100 11010011 11001101 00111100 11010011</span></li>
-          </ol>
-          <p class="bits-pie">Mostrando los primeros 192 bytes de datos de 1,199,410</p>
+
+          <!-- Lo que dice el encabezado del .suf (ver js/huffman/suf.js) -->
+          <dl class="suf-encabezado" data-suf-encabezado hidden>
+            <div><dt>Firma</dt><dd data-suf="firma"></dd></div>
+            <div><dt>Caracteres</dt><dd data-suf="caracteres"></dd></div>
+            <div><dt>Símbolos</dt><dd data-suf="simbolos"></dd></div>
+            <div><dt>Relleno</dt><dd data-suf="relleno"></dd></div>
+            <div><dt>Título</dt><dd data-suf="titulo"></dd></div>
+          </dl>
+
+          <!-- Con datos reales solo se dibujan las filas visibles (lista virtualizada) -->
+          <div class="bits-ventana" tabindex="0" role="region" aria-label="Bits de los datos, 8 bytes por fila" data-bits-ventana>
+            <div class="bits-espacio" data-bits-espacio>
+              <ol class="bits-lista" data-bits-lista>
+                <li><span class="bits-offset">000000</span><span class="bits-fila">10011010 01111001 10100111 10011010 01111001 10100111 11000110 11111010</span></li>
+                <li><span class="bits-offset">000008</span><span class="bits-fila">11110110 00111001 00001000 11101101 01001111 01011110 01011101 10110010</span></li>
+                <li><span class="bits-offset">000016</span><span class="bits-fila">00110101 00100010 10111110 01101000 11111110 00110101 01111011 01100010</span></li>
+                <li><span class="bits-offset">000024</span><span class="bits-fila">11010100 00010111 11001010 11111010 00011111 00010001 00000011 01101100</span></li>
+                <li><span class="bits-offset">000032</span><span class="bits-fila">10110001 00110100 11110011 01001111 00110100 11110011 01001111 00011101</span></li>
+                <li><span class="bits-offset">000040</span><span class="bits-fila">00010111 11000100 01010110 10010001 01110101 10101111 10010101 11011000</span></li>
+                <li><span class="bits-offset">000048</span><span class="bits-fila">00010100 01010010 01000001 11000001 00111111 01100000 10000001 00100101</span></li>
+                <li><span class="bits-offset">000056</span><span class="bits-fila">01100100 10000100 11010011 11001101 00111100 11010011 11001101 00111100</span></li>
+                <li><span class="bits-offset">000064</span><span class="bits-fila">11010011 11001101 00111110 00110111 11010111 10110001 11001000 01000111</span></li>
+                <li><span class="bits-offset">000072</span><span class="bits-fila">01101010 01111010 11110010 11101101 10010001 10101001 00010101 11110011</span></li>
+                <li><span class="bits-offset">000080</span><span class="bits-fila">01000111 11110001 10101011 11011011 00010110 10100000 10111110 01010111</span></li>
+                <li><span class="bits-offset">000088</span><span class="bits-fila">11010000 11111000 10001000 00011011 01100101 10001001 10100111 10011010</span></li>
+                <li><span class="bits-offset">000096</span><span class="bits-fila">01111001 10100111 11111110 01101001 11100101 00000000 01110001 00110100</span></li>
+                <li><span class="bits-offset">000104</span><span class="bits-fila">11110011 01001111 11111100 11010011 11001010 00000100 11110000 10110110</span></li>
+                <li><span class="bits-offset">000112</span><span class="bits-fila">11010100 01110110 10101111 10010101 11110100 00011111 10100010 00100001</span></li>
+                <li><span class="bits-offset">000120</span><span class="bits-fila">00000000 11110011 01001111 00110100 11111111 11001101 00111110 00110111</span></li>
+                <li><span class="bits-offset">000128</span><span class="bits-fila">11010111 11000110 00010101 10111110 01101001 11100110 10011111 11111001</span></li>
+                <li><span class="bits-offset">000136</span><span class="bits-fila">10100111 01100110 10110101 11110001 00001011 11000101 01110101 11110010</span></li>
+                <li><span class="bits-offset">000144</span><span class="bits-fila">10111011 00110001 10110001 11100010 10000010 10011010 01111001 10100111</span></li>
+                <li><span class="bits-offset">000152</span><span class="bits-fila">11111110 01101001 11011001 10010010 10010101 11010101 01001000 10101001</span></li>
+                <li><span class="bits-offset">000160</span><span class="bits-fila">10100111 10011010 01111111 11100110 10011101 10011010 11010111 11010101</span></li>
+                <li><span class="bits-offset">000168</span><span class="bits-fila">10110111 00010101 01111100 10101111 10011010 00111111 10001101 01011110</span></li>
+                <li><span class="bits-offset">000176</span><span class="bits-fila">11011000 10110101 00000101 11110010 10111110 10000111 11000100 01000000</span></li>
+                <li><span class="bits-offset">000184</span><span class="bits-fila">11011011 00101100 01001101 00111100 11010011 11001101 00111100 11010011</span></li>
+              </ol>
+            </div>
+          </div>
+          <p class="bits-pie" data-bits-pie>Mostrando los primeros 192 bytes de datos de 1,199,410</p>
         </section>
       </div>
     </section>
