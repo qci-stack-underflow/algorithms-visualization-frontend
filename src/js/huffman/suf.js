@@ -157,3 +157,80 @@ export function reconstruirArbol(dictionary) {
   const rootId = visitar(raiz, "");
   return { nodes, rootId, niveles };
 }
+
+// Recupera el texto: cada bit baja por el árbol (0 a la izquierda, 1 a la
+// derecha) y al llegar a una hoja se escribe su símbolo y se vuelve a la
+// raíz. Lanza ErrorSuf si un bit no lleva a ningún nodo o si los datos
+// terminan a la mitad de un código.
+export function descomprimir(suf, arbol) {
+  const { datos, bitsDatos } = suf;
+  const { nodes, rootId } = arbol;
+  if (rootId === null) return "";
+  // Arreglos planos para que el recorrido de millones de bits sea rápido.
+  const izquierda = Int32Array.from(nodes, (nodo) => (nodo.left === null ? -1 : nodo.left));
+  const derecha = Int32Array.from(nodes, (nodo) => (nodo.right === null ? -1 : nodo.right));
+  const simbolos = nodes.map((nodo) => (nodo.isLeaf ? nodo.symbol : null));
+
+  const partes = [];
+  let actual = rootId;
+  for (let bit = 0; bit < bitsDatos; bit += 1) {
+    const uno = (datos[bit >> 3] >> (7 - (bit & 7))) & 1;
+    actual = uno ? derecha[actual] : izquierda[actual];
+    if (actual < 0) throw new ErrorSuf(`El bit ${bit} de los datos no lleva a ningún símbolo.`);
+    if (simbolos[actual] !== null) {
+      partes.push(simbolos[actual]);
+      actual = rootId;
+    }
+  }
+  if (actual !== rootId) throw new ErrorSuf("Los datos terminan a la mitad de un código.");
+  return partes.join("");
+}
+
+// Comprobaciones de integridad que no necesitan el original: el texto
+// recuperado debe tener los caracteres, las apariciones de cada símbolo y
+// el tamaño que dice el encabezado. Devuelve [{ clave, ok, detalle }].
+export function comprobarTexto(texto, suf) {
+  const { encabezado } = suf;
+  const cuenta = new Map();
+  let caracteres = 0;
+  for (const simbolo of texto) {
+    cuenta.set(simbolo, (cuenta.get(simbolo) ?? 0) + 1);
+    caracteres += 1;
+  }
+  const distintas = encabezado.dictionary.filter(({ symbol, frequency }) => cuenta.get(symbol) !== frequency);
+  const sobrantes = [...cuenta.keys()].filter((simbolo) => !encabezado.dictionary.some((e) => e.symbol === simbolo));
+  const bytes = new TextEncoder().encode(texto).length;
+  const esperados = bytesOriginales(encabezado.dictionary);
+  return [
+    { clave: "caracteres", ok: caracteres === encabezado.totalCharacters, obtenido: caracteres, esperado: encabezado.totalCharacters },
+    { clave: "frecuencias", ok: distintas.length === 0 && sobrantes.length === 0, obtenido: distintas.length + sobrantes.length, esperado: 0 },
+    { clave: "bytes", ok: bytes === esperados, obtenido: bytes, esperado: esperados },
+  ];
+}
+
+// Compara el texto recuperado con el .txt original, byte a byte. Si no son
+// iguales, prueba quitando el BOM y cambiando \r\n por \n, que es la
+// limpieza que hace el backend antes de comprimir.
+// Devuelve { identico, normalizado, primeraDiferencia, bytes }.
+export function compararConOriginal(texto, bytesOriginal) {
+  const recuperado = new TextEncoder().encode(texto);
+  const original = new Uint8Array(bytesOriginal);
+  const primeraDiferente = (a, b) => {
+    const largo = Math.min(a.length, b.length);
+    for (let i = 0; i < largo; i += 1) if (a[i] !== b[i]) return i;
+    return a.length === b.length ? -1 : largo;
+  };
+  const exacta = primeraDiferente(recuperado, original);
+  if (exacta === -1) return { identico: true, normalizado: false, primeraDiferencia: -1, bytes: original.length };
+
+  const limpio = new TextEncoder().encode(
+    new TextDecoder().decode(original).replace(/^﻿/, "").replace(/\r\n/g, "\n")
+  );
+  const normalizada = primeraDiferente(recuperado, limpio);
+  return {
+    identico: normalizada === -1,
+    normalizado: normalizada === -1,
+    primeraDiferencia: normalizada === -1 ? -1 : exacta,
+    bytes: original.length,
+  };
+}
