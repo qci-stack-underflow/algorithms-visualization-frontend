@@ -14,6 +14,34 @@ export function formatearBytes(bytes) {
   return `${(bytes / 1e6).toFixed(1)} MB`;
 }
 
+// Cuánto se redujo un archivo: bytes ahorrados (negativos si el .suf quedó
+// más grande, lo que pasa con textos muy cortos por el diccionario),
+// porcentaje de reducción y razón de compresión (original ÷ comprimido).
+export function compararTamanos(originalBytes, comprimidoBytes) {
+  const ahorro = originalBytes - comprimidoBytes;
+  return {
+    ahorro,
+    reduccion: originalBytes > 0 ? (ahorro / originalBytes) * 100 : 0,
+    razon: comprimidoBytes > 0 ? originalBytes / comprimidoBytes : 0,
+  };
+}
+
+// Las cifras de ahorro y reducción como se muestran en la página:
+// { ahorro: [valor, detalle], reduccion: [valor, detalle] }
+export function describirAhorro(originalBytes, comprimidoBytes) {
+  const { ahorro, reduccion, razon } = compararTamanos(originalBytes, comprimidoBytes);
+  if (ahorro < 0) {
+    return {
+      ahorro: [`+${formatearBytes(-ahorro)}`, `el .suf pesa ${numero(-ahorro)} bytes más`],
+      reduccion: [`${reduccion.toFixed(1)} %`, `razón ${razon.toFixed(2)} : 1`],
+    };
+  }
+  return {
+    ahorro: [formatearBytes(ahorro), `${numero(ahorro)} bytes`],
+    reduccion: [`${reduccion.toFixed(1)} %`, `razón ${razon.toFixed(2)} : 1`],
+  };
+}
+
 // Caracteres que no se ven: se muestran con un signo y se nombran para
 // los lectores de pantalla y la búsqueda.
 const INVISIBLES = {

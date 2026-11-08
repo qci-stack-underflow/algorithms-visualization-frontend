@@ -606,26 +606,26 @@
   }
 }
 
-// Cifras de la compresión
+// Cifras de la compresión. Las líneas entre cifras son el fondo que se ve
+// por el gap de 1px, así sirven igual con 6, 3 o 2 columnas.
 .huff-metricas {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
   margin-bottom: var(--s3);
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--bg-surface);
+  background: var(--border);
   box-shadow: var(--shadow-sm);
 
   > div {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
     padding: 18px 22px;
-    border-right: 1px solid var(--border);
-
-    &:last-child {
-      border-right: 0;
-    }
+    background: var(--bg-surface);
   }
 
   dt {
@@ -1319,14 +1319,6 @@ th[aria-sort="ascending"] .orden::after {
 @media (max-width: 1080px) {
   .huff-metricas {
     grid-template-columns: repeat(3, 1fr);
-
-    > div:nth-child(3) {
-      border-right: 0;
-    }
-
-    > div:nth-child(-n + 3) {
-      border-bottom: 1px solid var(--border);
-    }
   }
 }
 
@@ -1377,18 +1369,6 @@ th[aria-sort="ascending"] .orden::after {
 
     > div {
       padding: 14px 16px;
-    }
-
-    > div:nth-child(3) {
-      border-right: 1px solid var(--border);
-    }
-
-    > div:nth-child(2n) {
-      border-right: 0;
-    }
-
-    > div:nth-child(-n + 4) {
-      border-bottom: 1px solid var(--border);
     }
 
     dd {
