@@ -1412,3 +1412,72 @@ th[aria-sort="ascending"] .orden::after {
     text-align: left;
   }
 }
+/* Contenedor compacto y scrolleable para la Cola de Prioridad (D6) */
+.cola-prioridad-contenedor, 
+#cola-prioridad-container {
+  max-height: 140px; /* Limita la altura vertical para que no ocupe demasiado espacio */
+  overflow-y: auto;  /* Permite scroll vertical si hay muchas filas */
+  overflow-x: auto;  /* Permite scroll horizontal fluido */
+  padding: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+}
+
+.cola-items-grid {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las fichas bajen de línea ordenadamente o cámbialo a 'nowrap' si prefieres una sola línea horizontal continua */
+  gap: 6px;
+  align-items: center;
+}
+
+.cola-ficha {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 4px 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+
+  &.is-destacado {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+
+    .cola-simbolo {
+      color: var(--accent);
+      font-weight: 700;
+    }
+  }
+}
+
+.cola-simbolo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1px;
+}
+
+.cola-peso {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+  padding: 0 4px;
+  border-radius: 3px;
+}

@@ -22,6 +22,7 @@ export function iniciarHuffmanProceso() {
   let pasosProgresivos = [];
   let positions = new Map();
   let reproductor = null;
+  let zoomPanController = null;
 
   function procesarDatosHuffman(datosLibro) {
     const rawNodes = datosLibro?.nodes || [];
@@ -48,11 +49,32 @@ export function iniciarHuffmanProceso() {
         highlighted = [String(step.nodeId)];
       }
 
+      let lineaAsignada = 3;
+      if (step.type === 'extract-min') {
+        const esPrimeraExtraccion = index === 0 || rawSteps[index - 1].type !== 'extract-min';
+        lineaAsignada = esPrimeraExtraccion ? 4 : 5;
+      } else if (step.type === 'merge') {
+        const esInsercion = index > 0 && rawSteps[index - 1].type === 'merge';
+        lineaAsignada = esInsercion ? 6 : 7; 
+      } else if (step.type === 'assign-code' || index >= rawSteps.length - 2) {
+        lineaAsignada = 9;
+      }
+
+      let descripcionPaso = step.description;
+      if (step.type === 'merge' && step.leftId !== undefined && step.rightId !== undefined) {
+        const leftNode = nodesMap[step.leftId];
+        const rightNode = nodesMap[step.rightId];
+        const parentNode = nodesMap[step.parentId];
+        if (leftNode && rightNode && parentNode) {
+          descripcionPaso = `Une ${leftNode.weight} + ${rightNode.weight} = ${parentNode.weight}`;
+        }
+      }
+
       return {
         visibleNodes: Array.from(nodosAcumulados),
         highlightedPair: highlighted,
-        lineaPseudocodigo: step.line || 1,
-        descripcion: step.description || `Paso ${index + 1}`
+        lineaPseudocodigo: lineaAsignada,
+        descripcion: descripcionPaso || `Paso ${index + 1}`
       };
     });
 
@@ -68,90 +90,19 @@ export function iniciarHuffmanProceso() {
 
     positions = calcularLayoutArbol(nodesMap, rootId);
 
-    // =========================================================================
-    // CONTROLADOR NATIVO UNIFICADO: ZOOM (RUEDA Y BOTONES CENTRADOS) + PAN
-    // =========================================================================
-    if (svgEl && canvasContainer) {
-      const viewBoxBase = { x: 0, y: 0, w: 760, h: 330 };
-      let currentScale = 1;
-      let currentX = 0;
-      let currentY = 0;
-      let isDragging = false;
-      let startX = 0;
-      let startY = 0;
+    // Inicializar controlador de Zoom y Pan y ajustar al contenido total
+    if (svgEl && canvasContainer && !zoomPanController) {
+      zoomPanController = new ControllerZoomPan(svgEl, canvasContainer);
 
-      function actualizarViewBox() {
-        const w = viewBoxBase.w / currentScale;
-        const h = viewBoxBase.h / currentScale;
-        const x = viewBoxBase.x + currentX;
-        const y = viewBoxBase.y + currentY;
-        svgEl.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
-      }
-
-      function aplicarZoomHacia(targetScale, targetX = null, targetY = null) {
-        const newScale = Math.min(Math.max(targetScale, 0.5), 5);
-        const rect = canvasContainer.getBoundingClientRect();
-        
-        const centerX = targetX !== null ? targetX : rect.width / 2;
-        const centerY = targetY !== null ? targetY : rect.height / 2;
-
-        const viewBoxW = viewBoxBase.w / currentScale;
-        const viewBoxH = viewBoxBase.h / currentScale;
-
-        const svgX = viewBoxBase.x + currentX + (centerX / rect.width) * viewBoxW;
-        const svgY = viewBoxBase.y + currentY + (centerY / rect.height) * viewBoxH;
-
-        currentScale = newScale;
-
-        const newViewBoxW = viewBoxBase.w / currentScale;
-        const newViewBoxH = viewBoxBase.h / currentScale;
-
-        currentX = svgX - (centerX / rect.width) * newViewBoxW - viewBoxBase.x;
-        currentY = svgY - (centerY / rect.height) * newViewBoxH - viewBoxBase.y;
-
-        actualizarViewBox();
-      }
-
-      // 1. Zoom con la rueda del ratón
-      canvasContainer.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-        const rect = canvasContainer.getBoundingClientRect();
-        aplicarZoomHacia(currentScale * zoomFactor, e.clientX - rect.left, e.clientY - rect.top);
-      }, { passive: false });
-
-      // 2. Arrastre fluido (Pan) con el ratón
-      canvasContainer.style.cursor = 'grab';
-
-      canvasContainer.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        canvasContainer.style.cursor = 'grabbing';
+      let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+      positions.forEach(pos => {
+        if (pos.x < xMin) xMin = pos.x;
+        if (pos.x > xMax) xMax = pos.x;
+        if (pos.y < yMin) yMin = pos.y;
+        if (pos.y > yMax) yMax = pos.y;
       });
+      zoomPanController.fitToContent({ xMin, xMax, yMin, yMax });
 
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const rect = canvasContainer.getBoundingClientRect();
-        const dx = (e.clientX - startX) * ((viewBoxBase.w / currentScale) / rect.width);
-        const dy = (e.clientY - startY) * ((viewBoxBase.h / currentScale) / rect.height);
-
-        currentX -= dx;
-        currentY -= dy;
-        startX = e.clientX;
-        startY = e.clientY;
-
-        actualizarViewBox();
-      });
-
-      window.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          canvasContainer.style.cursor = 'grab';
-        }
-      });
-
-      // 3. Botones superiores con factor de escala preciso y sin saltos
       const btnZoomIn = document.getElementById('btn-zoom-in');
       const btnZoomOut = document.getElementById('btn-zoom-out');
       const btnZoomFit = document.getElementById('btn-zoom-fit');
@@ -160,7 +111,7 @@ export function iniciarHuffmanProceso() {
         btnZoomIn.dataset.bound = "true";
         btnZoomIn.addEventListener('click', (e) => {
           e.preventDefault();
-          aplicarZoomHacia(currentScale * 1.2);
+          zoomPanController.zoomIn();
         });
       }
 
@@ -168,7 +119,7 @@ export function iniciarHuffmanProceso() {
         btnZoomOut.dataset.bound = "true";
         btnZoomOut.addEventListener('click', (e) => {
           e.preventDefault();
-          aplicarZoomHacia(currentScale / 1.2);
+          zoomPanController.zoomOut();
         });
       }
 
@@ -176,10 +127,7 @@ export function iniciarHuffmanProceso() {
         btnZoomFit.dataset.bound = "true";
         btnZoomFit.addEventListener('click', (e) => {
           e.preventDefault();
-          currentScale = 1;
-          currentX = 0;
-          currentY = 0;
-          actualizarViewBox();
+          zoomPanController.fitToContent();
         });
       }
     }
@@ -194,12 +142,21 @@ export function iniciarHuffmanProceso() {
           // 1. Renderizar Árbol SVG
           renderizarArbolSVG(svgEl, nodesMap, positions, state.visibleNodes, state.highlightedPair);
           
-          // 2. Renderizar Pseudocódigo (D7)
+          // 2. Enfoque automático síncrono sobre el nodo activo
+          if (zoomPanController && state.highlightedPair && state.highlightedPair.length > 0) {
+            const targetId = state.highlightedPair[state.highlightedPair.length - 1];
+            const pos = positions.get(String(targetId)) || positions.get(targetId);
+            if (pos) {
+              zoomPanController.centerOn(pos.x, pos.y);
+            }
+          }
+
+          // 3. Renderizar Pseudocódigo sincronizado
           if (state.lineaPseudocodigo !== undefined) {
-            renderizarPseudocodigo(document.getElementById('pseudocode-container'), state.lineaPseudocodigo, state.descripcion);
+            renderizarPseudocodigo(document.querySelector('.code-panel'), state.lineaPseudocodigo, state.descripcion);
           }
           
-          // 3. Renderizar Cola de Prioridad Visible con Simulación Dinámica (D6)
+          // 4. Renderizar Cola de Prioridad
           const contenedorCola = document.getElementById('cola-prioridad-container');
           if (contenedorCola) {
             let colaSimulada = Object.values(nodesMap)
