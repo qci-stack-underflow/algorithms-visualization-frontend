@@ -1,69 +1,247 @@
+// src/js/huffman/main.js
 import { calcularLayoutArbol } from './arbol/layout.js';
 import { renderizarArbolSVG } from './arbol/render-svg.js';
 import { ControllerZoomPan } from './arbol/zoom-pan.js';
-import { generarPasosHuffman } from './arbol/pasos-huffman.js';
 import { ReproductorPasos } from './reproductor/reproductor-pasos.js';
 import { renderizarColaPrioridad } from './componentes/cola-prioridad.js';
 import { renderizarPseudocodigo } from './componentes/pseudocodigo.js';
 import { actualizarIndicadorFases, verificarMovimientoReducido, actualizarDescripcionLectorPantalla } from './componentes/accesibilidad-fases.js';
+import { obtenerHuffman } from '../api.js';
+import ejemploQuijote from './ejemplo-quijote.json';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const svgEl = document.getElementById('arbol-svg');
+export function iniciarHuffmanProceso() {
+  const svgEl = document.querySelector('.arbol-svg');
   const canvasContainer = document.getElementById('canvas-container');
   const srAnnouncer = document.getElementById('sr-announcer');
+  const arbolNotaEl = document.querySelector('.arbol-nota');
 
-  // Escuchar los eventos globales disparados por la página (Bloque C / Sistema)
+  if (!svgEl) return;
+
   let nodesMap = {};
   let rootId = null;
-  let pasos = [];
+  let pasosProgresivos = [];
   let positions = new Map();
-  let zoomController = null;
   let reproductor = null;
 
-  document.addEventListener('huffman-resultado', (evento) => {
-    const { libro, resultado, ejemplo } = evento.detail;
-    // Usar datos reales del evento o respaldo del ejemplo A1 con las cifras corregidas
-    nodesMap = resultado?.nodes || ejemplo?.nodes || {};
-    rootId = resultado?.rootId || ejemplo?.rootId;
+  function procesarDatosHuffman(datosLibro) {
+    const rawNodes = datosLibro?.nodes || [];
+    rootId = datosLibro?.rootId;
     
-    const frecuencias = resultado?.frequencies || { 'e': 100, 'a': 80, 'o': 60, 's': 50, 'r': 40, 'n': 30, 'd': 20, 'l': 10 };
+    nodesMap = {};
+    rawNodes.forEach(node => {
+      nodesMap[node.id] = node;
+    });
+
+    const rawSteps = datosLibro?.steps || [];
     
-    const huffmanData = generarPasosHuffman(frecuencias);
-    pasos = huffmanData.pasos;
-    if (!nodesMap || Object.keys(nodesMap).length === 0) {
-      nodesMap = huffmanData.nodesMap;
-      rootId = huffmanData.rootId;
+    let nodosAcumulados = new Set();
+    pasosProgresivos = rawSteps.map((step, index) => {
+      if (step.nodeId !== undefined) nodosAcumulados.add(String(step.nodeId));
+      if (step.leftId !== undefined) nodosAcumulados.add(String(step.leftId));
+      if (step.rightId !== undefined) nodosAcumulados.add(String(step.rightId));
+      if (step.parentId !== undefined) nodosAcumulados.add(String(step.parentId));
+
+      let highlighted = [];
+      if (step.leftId !== undefined && step.rightId !== undefined) {
+        highlighted = [String(step.leftId), String(step.rightId)];
+      } else if (step.nodeId !== undefined) {
+        highlighted = [String(step.nodeId)];
+      }
+
+      return {
+        visibleNodes: Array.from(nodosAcumulados),
+        highlightedPair: highlighted,
+        lineaPseudocodigo: step.line || 1,
+        descripcion: step.description || `Paso ${index + 1}`
+      };
+    });
+
+    if (pasosProgresivos.length === 0) {
+      const allIds = Object.keys(nodesMap);
+      pasosProgresivos = allIds.map((id, idx) => ({
+        visibleNodes: allIds.slice(0, idx + 1),
+        highlightedPair: [id],
+        lineaPseudocodigo: 3,
+        descripcion: `Construyendo nodo ${id}`
+      }));
     }
 
     positions = calcularLayoutArbol(nodesMap, rootId);
 
-    if (!zoomController && svgEl && canvasContainer) {
-      zoomController = new ControllerZoomPan(svgEl, canvasContainer);
-      let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-      positions.forEach(pos => {
-        if (pos.x < xMin) xMin = pos.x;
-        if (pos.x > xMax) xMax = pos.x;
-        if (pos.y < yMin) yMin = pos.y;
-        if (pos.y > yMax) yMax = pos.y;
+    // =========================================================================
+    // CONTROLADOR NATIVO UNIFICADO: ZOOM (RUEDA Y BOTONES CENTRADOS) + PAN
+    // =========================================================================
+    if (svgEl && canvasContainer) {
+      const viewBoxBase = { x: 0, y: 0, w: 760, h: 330 };
+      let currentScale = 1;
+      let currentX = 0;
+      let currentY = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+
+      function actualizarViewBox() {
+        const w = viewBoxBase.w / currentScale;
+        const h = viewBoxBase.h / currentScale;
+        const x = viewBoxBase.x + currentX;
+        const y = viewBoxBase.y + currentY;
+        svgEl.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+      }
+
+      function aplicarZoomHacia(targetScale, targetX = null, targetY = null) {
+        const newScale = Math.min(Math.max(targetScale, 0.5), 5);
+        const rect = canvasContainer.getBoundingClientRect();
+        
+        const centerX = targetX !== null ? targetX : rect.width / 2;
+        const centerY = targetY !== null ? targetY : rect.height / 2;
+
+        const viewBoxW = viewBoxBase.w / currentScale;
+        const viewBoxH = viewBoxBase.h / currentScale;
+
+        const svgX = viewBoxBase.x + currentX + (centerX / rect.width) * viewBoxW;
+        const svgY = viewBoxBase.y + currentY + (centerY / rect.height) * viewBoxH;
+
+        currentScale = newScale;
+
+        const newViewBoxW = viewBoxBase.w / currentScale;
+        const newViewBoxH = viewBoxBase.h / currentScale;
+
+        currentX = svgX - (centerX / rect.width) * newViewBoxW - viewBoxBase.x;
+        currentY = svgY - (centerY / rect.height) * newViewBoxH - viewBoxBase.y;
+
+        actualizarViewBox();
+      }
+
+      // 1. Zoom con la rueda del ratón
+      canvasContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+        const rect = canvasContainer.getBoundingClientRect();
+        aplicarZoomHacia(currentScale * zoomFactor, e.clientX - rect.left, e.clientY - rect.top);
+      }, { passive: false });
+
+      // 2. Arrastre fluido (Pan) con el ratón
+      canvasContainer.style.cursor = 'grab';
+
+      canvasContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        canvasContainer.style.cursor = 'grabbing';
       });
-      zoomController.fitToContent({ xMin, xMax, yMin, yMax });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const rect = canvasContainer.getBoundingClientRect();
+        const dx = (e.clientX - startX) * ((viewBoxBase.w / currentScale) / rect.width);
+        const dy = (e.clientY - startY) * ((viewBoxBase.h / currentScale) / rect.height);
+
+        currentX -= dx;
+        currentY -= dy;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        actualizarViewBox();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          canvasContainer.style.cursor = 'grab';
+        }
+      });
+
+      // 3. Botones superiores con factor de escala preciso y sin saltos
+      const btnZoomIn = document.getElementById('btn-zoom-in');
+      const btnZoomOut = document.getElementById('btn-zoom-out');
+      const btnZoomFit = document.getElementById('btn-zoom-fit');
+
+      if (btnZoomIn && !btnZoomIn.dataset.bound) {
+        btnZoomIn.dataset.bound = "true";
+        btnZoomIn.addEventListener('click', (e) => {
+          e.preventDefault();
+          aplicarZoomHacia(currentScale * 1.2);
+        });
+      }
+
+      if (btnZoomOut && !btnZoomOut.dataset.bound) {
+        btnZoomOut.dataset.bound = "true";
+        btnZoomOut.addEventListener('click', (e) => {
+          e.preventDefault();
+          aplicarZoomHacia(currentScale / 1.2);
+        });
+      }
+
+      if (btnZoomFit && !btnZoomFit.dataset.bound) {
+        btnZoomFit.dataset.bound = "true";
+        btnZoomFit.addEventListener('click', (e) => {
+          e.preventDefault();
+          currentScale = 1;
+          currentX = 0;
+          currentY = 0;
+          actualizarViewBox();
+        });
+      }
     }
 
     if (!reproductor) {
       reproductor = new ReproductorPasos({
-        totalPasos: pasos.length,
+        totalPasos: pasosProgresivos.length,
         onPasoChange: (pasoIdx) => {
-          const state = pasos[pasoIdx];
+          const state = pasosProgresivos[pasoIdx];
           if (!state) return;
 
+          // 1. Renderizar Árbol SVG
           renderizarArbolSVG(svgEl, nodesMap, positions, state.visibleNodes, state.highlightedPair);
-          renderizarColaPrioridad(document.getElementById('pqueue-container'), nodesMap, state.priorityQueue, state.highlightedPair);
-          renderizarPseudocodigo(document.getElementById('pseudocode-container'), state.lineaPseudocodigo, state.descripcion);
-          actualizarIndicadorFases(document.getElementById('fases-container'), state.fase);
-          actualizarDescripcionLectorPantalla(srAnnouncer, state, pasos.length);
+          
+          // 2. Renderizar Pseudocódigo (D7)
+          if (state.lineaPseudocodigo !== undefined) {
+            renderizarPseudocodigo(document.getElementById('pseudocode-container'), state.lineaPseudocodigo, state.descripcion);
+          }
+          
+          // 3. Renderizar Cola de Prioridad Visible con Simulación Dinámica (D6)
+          const contenedorCola = document.getElementById('cola-prioridad-container');
+          if (contenedorCola) {
+            let colaSimulada = Object.values(nodesMap)
+              .filter(n => n.isLeaf)
+              .map(n => ({ id: String(n.id), symbol: n.symbol, weight: n.weight }));
+
+            for (let i = 0; i <= pasoIdx && i < rawSteps.length; i++) {
+              const step = rawSteps[i];
+              if (step.type === 'merge' && step.leftId !== undefined && step.rightId !== undefined) {
+                const leftStr = String(step.leftId);
+                const rightStr = String(step.rightId);
+                
+                colaSimulada = colaSimulada.filter(n => n.id !== leftStr && n.id !== rightStr);
+                
+                if (nodesMap[step.parentId]) {
+                  const pNode = nodesMap[step.parentId];
+                  colaSimulada.push({
+                    id: String(pNode.id),
+                    symbol: pNode.symbol || null,
+                    weight: pNode.weight
+                  });
+                }
+              }
+            }
+
+            renderizarColaPrioridad(contenedorCola, colaSimulada, state.highlightedPair);
+          }
+
+          actualizarDescripcionLectorPantalla(srAnnouncer, state, pasosProgresivos.length);
+
+          if (srAnnouncer) {
+            srAnnouncer.textContent = `${pasoIdx + 1} / ${pasosProgresivos.length}`;
+          }
+          if (arbolNotaEl) {
+            arbolNotaEl.innerHTML = `Construcción dinámica · Paso ${pasoIdx + 1} de ${pasosProgresivos.length} · ${state.descripcion}`;
+          }
 
           const progressBar = document.getElementById('progress-bar');
-          if (progressBar) progressBar.value = pasoIdx;
+          if (progressBar) {
+            progressBar.max = Math.max(0, pasosProgresivos.length - 1);
+            progressBar.value = pasoIdx;
+          }
         },
         onPlayStateChange: (isPlaying) => {
           const btnPlay = document.getElementById('btn-play');
@@ -73,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const progressBar = document.getElementById('progress-bar');
       if (progressBar) {
-        progressBar.max = pasos.length - 1;
         progressBar.addEventListener('input', (e) => reproductor.goToPaso(parseInt(e.target.value, 10)));
       }
 
@@ -83,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
         reproductor.goToStart();
       }
 
-      // Enlazar botones de control
       document.getElementById('btn-play')?.addEventListener('click', () => reproductor.togglePlay());
       document.getElementById('btn-prev')?.addEventListener('click', () => reproductor.previousStep());
       document.getElementById('btn-next')?.addEventListener('click', () => reproductor.nextStep());
@@ -91,33 +267,39 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('btn-end')?.addEventListener('click', () => reproductor.goToEnd());
       document.getElementById('speed-select')?.addEventListener('change', (e) => reproductor.setSpeed(parseFloat(e.target.value)));
     } else {
-      reproductor.setTotalPasos(pasos.length);
+      reproductor.setTotalPasos(pasosProgresivos.length);
     }
+  }
+
+  document.addEventListener('huffman-resultado', (evento) => {
+    const { resultado, ejemplo } = evento.detail;
+    procesarDatosHuffman(resultado || ejemplo || {});
   });
 
-  // Escuchar selección de símbolos desde la tabla (C5 -> D2)
   document.addEventListener('simbolo-seleccionado', (evento) => {
-    const detalle = evento.detail; // { symbol, code, nodeId } o null
+    const detalle = evento.detail;
     if (!svgEl || !nodesMap || positions.size === 0) return;
 
     let targetNodeId = detalle?.nodeId;
     if (!targetNodeId && detalle?.symbol) {
-      // Buscar la hoja correspondiente al símbolo
       targetNodeId = Object.values(nodesMap).find(n => n.isLeaf && n.symbol === detalle.symbol)?.id;
     }
 
-    // Calcular camino desde la raíz hasta el nodo hoja seleccionado
     const path = [];
     let curr = targetNodeId;
     while (curr) {
       path.push(curr);
-      // Buscar padre ascendente en el mapa de nodos
       const parent = Object.values(nodesMap).find(n => n.left === curr || n.right === curr);
       curr = parent ? parent.id : null;
     }
 
-    // Renderizar con el camino resaltado actual
-    const currentState = pasos[reproductor?.currentPaso || 0] || { visibleNodes: Object.keys(nodesMap) };
+    const currentState = pasosProgresivos[reproductor?.currentPaso || 0] || { visibleNodes: Object.keys(nodesMap) };
     renderizarArbolSVG(svgEl, nodesMap, positions, currentState.visibleNodes, path);
   });
-});
+
+  procesarDatosHuffman(ejemploQuijote);
+
+  obtenerHuffman(2000).then((resultado) => {
+    if (resultado) procesarDatosHuffman(resultado);
+  }).catch(() => {});
+}

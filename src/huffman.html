@@ -283,65 +283,20 @@
               <header class="panel-head">
                 <h2 id="arbolPanelTitulo">Árbol de Huffman</h2>
                 <div class="panel-acciones">
-                  <button class="icono-btn" type="button" aria-label="Acercar"><i data-lucide="zoom-in"></i></button>
-                  <button class="icono-btn" type="button" aria-label="Alejar"><i data-lucide="zoom-out"></i></button>
-                  <button class="icono-btn" type="button" aria-label="Ajustar a la pantalla"><i data-lucide="maximize-2"></i></button>
+                  <button class="icono-btn" id="btn-zoom-in" type="button" aria-label="Acercar"><i data-lucide="zoom-in"></i></button>
+                  <button class="icono-btn" id="btn-zoom-out" type="button" aria-label="Alejar"><i data-lucide="zoom-out"></i></button>
+                  <button class="icono-btn" id="btn-zoom-fit" type="button" aria-label="Ajustar a la pantalla"><i data-lucide="maximize-2"></i></button>
                 </div>
               </header>
 
-              <div class="arbol-lienzo">
+              <div class="arbol-lienzo" id="canvas-container">
                 <svg class="arbol-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arbolTitulo arbolDesc">
                   <title id="arbolTitulo">Árbol de Huffman de Don Quijote</title>
-                  <desc id="arbolDesc">Primeros niveles del árbol. Está resaltado el camino de la letra e: 0, 1, 0.</desc>
-                  <g class="arbol-aristas">
-                    <line class="arbol-arista" x1="102" y1="222" x2="56" y2="260" />
-                    <line class="arbol-arista" x1="102" y1="222" x2="148" y2="260" />
-                    <line class="arbol-arista is-ruta" x1="286" y1="222" x2="240" y2="260" />
-                    <line class="arbol-arista" x1="286" y1="222" x2="332" y2="260" />
-                    <line class="arbol-arista" x1="470" y1="222" x2="424" y2="260" />
-                    <line class="arbol-arista" x1="470" y1="222" x2="516" y2="260" />
-                    <line class="arbol-arista" x1="654" y1="222" x2="608" y2="260" />
-                    <line class="arbol-arista" x1="654" y1="222" x2="700" y2="260" />
-                    <line class="arbol-arista" x1="194" y1="142" x2="102" y2="178" />
-                    <line class="arbol-arista is-ruta" x1="194" y1="142" x2="286" y2="178" />
-                    <line class="arbol-arista" x1="562" y1="142" x2="470" y2="178" />
-                    <line class="arbol-arista" x1="562" y1="142" x2="654" y2="178" />
-                    <line class="arbol-arista is-ruta" x1="378" y1="62" x2="194" y2="98" />
-                    <line class="arbol-arista" x1="378" y1="62" x2="562" y2="98" />
-                  </g>
-                  <g class="arbol-bits">
-                    <text class="arbol-bit" x="69" y="241">0</text>
-                    <text class="arbol-bit" x="135" y="241">1</text>
-                    <text class="arbol-bit is-ruta" x="253" y="241">0</text>
-                    <text class="arbol-bit" x="319" y="241">1</text>
-                    <text class="arbol-bit" x="437" y="241">0</text>
-                    <text class="arbol-bit" x="503" y="241">1</text>
-                    <text class="arbol-bit" x="621" y="241">0</text>
-                    <text class="arbol-bit" x="687" y="241">1</text>
-                    <text class="arbol-bit" x="138" y="160">0</text>
-                    <text class="arbol-bit is-ruta" x="250" y="160">1</text>
-                    <text class="arbol-bit" x="506" y="160">0</text>
-                    <text class="arbol-bit" x="618" y="160">1</text>
-                    <text class="arbol-bit is-ruta" x="276" y="80">0</text>
-                    <text class="arbol-bit" x="480" y="80">1</text>
-                  </g>
-                  <g class="arbol-nodos">
-                    <g class="arbol-hoja" transform="translate(56 282)"><rect x="-28" y="-22" width="56" height="44" rx="10" /><text class="arbol-simbolo" y="-2">a</text><text class="arbol-peso" y="14">192,727</text></g>
-                    <g class="arbol-nodo" transform="translate(148 282)"><circle r="22" /><text class="arbol-peso" y="4">209 K</text><path class="arbol-subarbol" d="M -14 34 L 14 34 L 0 22 Z" /></g>
-                    <g class="arbol-hoja is-ruta" transform="translate(240 282)"><rect x="-28" y="-22" width="56" height="44" rx="10" /><text class="arbol-simbolo" y="-2">e</text><text class="arbol-peso" y="14">221,968</text></g>
-                    <g class="arbol-nodo" transform="translate(332 282)"><circle r="22" /><text class="arbol-peso" y="4">238 K</text><path class="arbol-subarbol" d="M -14 34 L 14 34 L 0 22 Z" /></g>
-                    <g class="arbol-nodo" transform="translate(424 282)"><circle r="22" /><text class="arbol-peso" y="4">272 K</text><path class="arbol-subarbol" d="M -14 34 L 14 34 L 0 22 Z" /></g>
-                    <g class="arbol-nodo" transform="translate(516 282)"><circle r="22" /><text class="arbol-peso" y="4">310 K</text><path class="arbol-subarbol" d="M -14 34 L 14 34 L 0 22 Z" /></g>
-                    <g class="arbol-nodo" transform="translate(608 282)"><circle r="22" /><text class="arbol-peso" y="4">349 K</text><path class="arbol-subarbol" d="M -14 34 L 14 34 L 0 22 Z" /></g>
-                    <g class="arbol-hoja" transform="translate(700 282)"><rect x="-28" y="-22" width="56" height="44" rx="10" /><text class="arbol-simbolo" y="-2">␣</text><text class="arbol-peso" y="14">354,706</text></g>
-                    <g class="arbol-nodo" transform="translate(102 200)"><circle r="22" /><text class="arbol-peso" y="4">402 K</text></g>
-                    <g class="arbol-nodo is-ruta" transform="translate(286 200)"><circle r="22" /><text class="arbol-peso" y="4">460 K</text></g>
-                    <g class="arbol-nodo" transform="translate(470 200)"><circle r="22" /><text class="arbol-peso" y="4">583 K</text></g>
-                    <g class="arbol-nodo" transform="translate(654 200)"><circle r="22" /><text class="arbol-peso" y="4">704 K</text></g>
-                    <g class="arbol-nodo is-ruta" transform="translate(194 120)"><circle r="22" /><text class="arbol-peso" y="4">862 K</text></g>
-                    <g class="arbol-nodo" transform="translate(562 120)"><circle r="22" /><text class="arbol-peso" y="4">1.29 M</text></g>
-                    <g class="arbol-nodo is-ruta" transform="translate(378 40)"><circle r="22" /><text class="arbol-peso" y="4">2.15 M</text></g>
-                  </g>
+                  <desc id="arbolDesc">Construcción paso a paso del árbol de Huffman.</desc>
+                  <!-- Contenedores limpios y requeridos por el renderizador -->
+                  <g class="arbol-aristas"></g>
+                  <g class="arbol-bits"></g>
+                  <g class="arbol-nodos"></g>
                 </svg>
               </div>
               <p class="arbol-nota">
@@ -350,20 +305,34 @@
 
               <div class="reproductor">
                 <div class="reproductor-botones">
-                  <button class="icono-btn" type="button" aria-label="Ir al inicio"><i data-lucide="skip-back"></i></button>
-                  <button class="icono-btn" type="button" aria-label="Paso anterior"><i data-lucide="step-back"></i></button>
-                  <button class="icono-btn icono-btn--principal" type="button" aria-label="Reproducir"><i data-lucide="play"></i></button>
-                  <button class="icono-btn" type="button" aria-label="Paso siguiente"><i data-lucide="step-forward"></i></button>
-                  <button class="icono-btn" type="button" aria-label="Ir al final"><i data-lucide="skip-forward"></i></button>
+                  <button class="icono-btn" id="btn-start" type="button" aria-label="Ir al inicio"><i data-lucide="skip-back"></i></button>
+                  <button class="icono-btn" id="btn-prev" type="button" aria-label="Paso anterior"><i data-lucide="step-back"></i></button>
+                  <button class="icono-btn icono-btn--principal" id="btn-play" type="button" aria-label="Reproducir"><i data-lucide="play"></i></button>
+                  <button class="icono-btn" id="btn-next" type="button" aria-label="Paso siguiente"><i data-lucide="step-forward"></i></button>
+                  <button class="icono-btn" id="btn-end" type="button" aria-label="Ir al final"><i data-lucide="skip-forward"></i></button>
                 </div>
-                <div class="reproductor-progreso" aria-hidden="true"><span style="--p: 100%"></span></div>
-                <span class="reproductor-paso">277 / 277</span>
+                <div class="reproductor-progreso">
+                  <input type="range" id="progress-bar" min="0" value="0" style="width: 100%; cursor: pointer;" />
+                </div>
+                <span class="reproductor-paso" id="sr-announcer">1 / 277</span>
                 <div class="velocidades" role="radiogroup" aria-label="Velocidad">
-                  <button type="button" role="radio" aria-checked="false">0.5x</button>
-                  <button class="is-activa" type="button" role="radio" aria-checked="true">1x</button>
-                  <button type="button" role="radio" aria-checked="false">2x</button>
-                  <button type="button" role="radio" aria-checked="false">8x</button>
+                  <select id="speed-select" style="background: transparent; border: none; color: inherit; font: inherit;">
+                    <option value="0.5">0.5x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="2">2x</option>
+                    <option value="8">8x</option>
+                  </select>
                 </div>
+              </div>
+            </section>
+
+            <section class="panel panel--cola" aria-labelledby="colaTitulo">
+              <header class="panel-head">
+                <h2 id="colaTitulo">Cola de Prioridad (Q)</h2>
+                <span class="panel-cuenta" data-cola-cuenta>Dinámica</span>
+              </header>
+              <div id="cola-prioridad-container" class="cola-prioridad-contenedor" style="overflow-x: auto; padding: 10px 0;">
+                <!-- Se llena dinámicamente con renderizarColaPrioridad -->
               </div>
             </section>
 

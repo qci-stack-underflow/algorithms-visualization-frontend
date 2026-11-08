@@ -13,32 +13,17 @@ const LINEAS_HUFFMAN = [
   { line: 8, text: 'AsignarCodigos(raíz, "")' }
 ];
 
-export function renderizarPseudocodigo(container, activeLineIndex, descripcionPaso) {
-  container.innerHTML = '';
+// src/js/huffman/componentes/pseudocodigo.js
+export function renderizarPseudocodigo(contenedor, lineaActiva, descripcion) {
+  if (!contenedor) return; // Evita el error de TypeError si el contenedor no existe en el DOM
 
-  const list = document.createElement('ol');
-  list.className = 'pseudocode-list';
-
-  LINEAS_HUFFMAN.forEach((item) => {
-    const li = document.createElement('li');
-    li.className = `pseudocode-line ${item.line === activeLineIndex ? 'highlight' : ''}`;
-
-    const lineNum = document.createElement('span');
-    lineNum.className = 'line-num';
-    lineNum.textContent = item.line;
-
-    const code = document.createElement('code');
-    code.textContent = item.text;
-
-    li.appendChild(lineNum);
-    li.appendChild(code);
-    list.appendChild(li);
+  // Lógica de renderizado del pseudocodigo
+  const lineas = contenedor.querySelectorAll('li');
+  lineas.forEach((li, idx) => {
+    if (idx + 1 === lineaActiva) {
+      li.classList.add('is-active');
+    } else {
+      li.classList.remove('is-active');
+    }
   });
-
-  const descBox = document.createElement('div');
-  descBox.className = 'step-description-box';
-  descBox.textContent = descripcionPaso || '';
-
-  container.appendChild(list);
-  container.appendChild(descBox);
 }
