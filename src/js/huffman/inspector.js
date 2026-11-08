@@ -1,10 +1,21 @@
-// Inspector de archivos .suf (requerimientos, sección 7): se carga solo el
-// archivo comprimido, sin el .txt original, y se muestra su estructura. Todo
-// se lee en el navegador con suf.js; el archivo no se sube a ningún lado.
+// Inspector de archivos .suf (requerimientos, secciones 7 y 8): se carga solo
+// el archivo comprimido, sin el .txt original, y se muestra su estructura.
+// Después, a petición del usuario, se descomprime, se comprueba la
+// integridad y se descarga el texto. Todo pasa en el navegador con suf.js;
+// el archivo no se sube a ningún lado.
 // Al terminar se dispara `suf-inspeccionado` en document con
 // { nombre, encabezado, nodes, rootId }, para que el árbol (bloque D) pueda
 // dibujar el árbol reconstruido.
-import { bytesOriginales, ErrorSuf, leerSuf, reconstruirArbol } from "./suf.js";
+import {
+  bytesOriginales,
+  compararConOriginal,
+  comprobarTexto,
+  descomprimir,
+  ErrorSuf,
+  leerSuf,
+  reconstruirArbol,
+} from "./suf.js";
+import { guardarArchivo } from "./descarga.js";
 import { describirAhorro, formatearBytes, mostrarSimbolo, nombrarSimbolo, numero } from "./formato.js";
 import { prefiereMenosMovimiento } from "../inicio.js";
 
@@ -23,6 +34,10 @@ const NOMBRES_DE_SECCION = {
 };
 
 const en = (selector) => document.querySelector(`#inspector ${selector}`);
+
+// El archivo abierto y, después de descomprimir, su texto.
+let abierto = null; // { nombre, suf, arbol }
+let recuperado = null; // texto
 
 function elemento(etiqueta, clase, texto) {
   const nodo = document.createElement(etiqueta);
@@ -179,6 +194,8 @@ async function abrir(archivo) {
   llenarArbol(arbol, suf.encabezado.symbolCount);
   llenarMuestra(suf);
 
+  abierto = { nombre: archivo.name, suf, arbol };
+  reiniciarDescompresion();
   estado.textContent = "Se lee en tu navegador; no se sube a ningún servidor.";
   en("[data-insp-resultado]").hidden = false;
   en("[data-insp-nombre]").focus({ preventScroll: true });
@@ -194,9 +211,109 @@ async function abrir(archivo) {
   );
 }
 
+// --- Descomprimir y comprobar la integridad (sección 8) -------------------
+
+const TEXTO_DE_COMPROBACION = {
+  caracteres: (c) => `${numero(c.obtenido)} caracteres recuperados; el encabezado dice ${numero(c.esperado)}`,
+  frecuencias: (c) =>
+    c.ok
+      ? "Las apariciones de cada símbolo coinciden con el diccionario"
+      : `${plural(c.obtenido, "símbolo no coincide", "símbolos no coinciden")} con el diccionario`,
+  bytes: (c) => `${numero(c.obtenido)} bytes en UTF-8; el tamaño original calculado es ${numero(c.esperado)}`,
+};
+
+function reiniciarDescompresion() {
+  recuperado = null;
+  en("[data-insp-recuperado]").hidden = true;
+  en("[data-insp-texto]").value = "";
+  en("[data-insp-descomprimir-estado]").textContent = "";
+  en("[data-insp-comparacion]").textContent = "";
+  en("[data-insp-descomprimir]").removeAttribute("aria-disabled");
+}
+
+function comprobacion(ok, texto) {
+  const li = elemento("li", ok ? "is-ok" : "is-falla", texto);
+  li.prepend(elemento("span", "visually-hidden", ok ? "Correcto: " : "Falla: "));
+  return li;
+}
+
+async function huella(texto) {
+  if (!globalThis.crypto?.subtle) return null;
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function alDescomprimir() {
+  const boton = en("[data-insp-descomprimir]");
+  if (!abierto || boton.getAttribute("aria-disabled") === "true") return;
+  const estado = en("[data-insp-descomprimir-estado]");
+  boton.setAttribute("aria-disabled", "true");
+  estado.textContent = "Descomprimiendo…";
+  // Un cuadro para que se vea el mensaje antes del trabajo pesado.
+  await new Promise((resolver) => setTimeout(resolver, 30));
+
+  const inicio = performance.now();
+  try {
+    recuperado = descomprimir(abierto.suf, abierto.arbol);
+  } catch (error) {
+    if (!(error instanceof ErrorSuf)) console.error(error);
+    estado.textContent = `No se pudo descomprimir. ${error instanceof ErrorSuf ? error.message : ""}`.trim();
+    boton.removeAttribute("aria-disabled");
+    return;
+  }
+  const milisegundos = Math.round(performance.now() - inicio);
+
+  const comprobaciones = comprobarTexto(recuperado, abierto.suf);
+  const lista = comprobaciones.map((c) => comprobacion(c.ok, TEXTO_DE_COMPROBACION[c.clave](c)));
+  const sha = await huella(recuperado);
+  if (sha) lista.push(elemento("li", "is-dato", `SHA-256 del texto: ${sha}`));
+  en("[data-insp-comprobaciones]").replaceChildren(...lista);
+
+  const todoBien = comprobaciones.every((c) => c.ok);
+  estado.textContent = todoBien
+    ? `Texto recuperado en ${numero(milisegundos)} ms; coincide con el encabezado.`
+    : "El texto recuperado no coincide con el encabezado: el archivo puede estar dañado.";
+  en("[data-insp-texto]").value = recuperado;
+  en("[data-insp-recuperado]").hidden = false;
+  boton.removeAttribute("aria-disabled");
+}
+
+// "don-quijote.suf" → "don-quijote.txt"
+const nombreDeTexto = (nombre) => `${nombre.replace(/\.[^.]*$/, "") || "recuperado"}.txt`;
+
+function alDescargarTexto() {
+  if (recuperado === null) return;
+  guardarArchivo(new TextEncoder().encode(recuperado), nombreDeTexto(abierto.nombre), "text/plain;charset=utf-8");
+}
+
+async function alCompararOriginal(archivo) {
+  if (!archivo || recuperado === null) return;
+  const salida = en("[data-insp-comparacion]");
+  const r = compararConOriginal(recuperado, await archivo.arrayBuffer());
+  salida.classList.toggle("is-falla", !r.identico);
+  if (r.identico && !r.normalizado) {
+    salida.textContent = `Idéntico a ${archivo.name}: los ${numero(r.bytes)} bytes coinciden uno a uno.`;
+  } else if (r.identico) {
+    salida.textContent =
+      `Idéntico a ${archivo.name} después de quitar el BOM y cambiar \\r\\n por \\n, ` +
+      "la misma limpieza que hace el backend antes de comprimir.";
+  } else {
+    salida.textContent =
+      `No es igual a ${archivo.name}: la primera diferencia está en el byte ${numero(r.primeraDiferencia)}. ` +
+      "Si es un libro de Gutenberg, el original incluye la licencia que el backend quita antes de comprimir.";
+  }
+}
+
 export function iniciarInspector() {
   const zona = en("[data-insp-zona]");
   if (!zona) return;
+  en("[data-insp-descomprimir]").addEventListener("click", alDescomprimir);
+  en("[data-insp-descargar-txt]").addEventListener("click", alDescargarTexto);
+  const original = en("[data-insp-original]");
+  original.addEventListener("change", () => {
+    alCompararOriginal(original.files[0]);
+    original.value = "";
+  });
   const entrada = zona.querySelector("input[type=file]");
 
   entrada.addEventListener("change", () => {

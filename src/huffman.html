@@ -727,6 +727,36 @@
             <ol class="bits-lista insp-bits" data-insp-bits></ol>
             <p class="bits-pie" data-insp-bits-pie></p>
           </section>
+
+          <!-- Descomprimir y comprobar la integridad (requerimientos, sección 8) -->
+          <section class="panel insp-panel" aria-labelledby="inspDescomprimirTitulo">
+            <h2 id="inspDescomprimirTitulo">Descomprimir</h2>
+            <p class="insp-texto">
+              Recupera el texto con el diccionario y los datos, y comprueba que coincide con lo que dice el
+              encabezado: caracteres, apariciones de cada símbolo y tamaño.
+            </p>
+            <div class="insp-acciones">
+              <button class="btn btn--primary" type="button" data-insp-descomprimir>Descomprimir</button>
+            </div>
+            <p class="insp-estado" role="status" data-insp-descomprimir-estado></p>
+
+            <div class="insp-recuperado" data-insp-recuperado hidden>
+              <ul class="insp-comprobaciones" data-insp-comprobaciones></ul>
+              <label class="insp-etiqueta" for="inspTexto">Texto recuperado</label>
+              <textarea class="insp-texto-recuperado" id="inspTexto" readonly spellcheck="false" data-insp-texto></textarea>
+              <div class="insp-acciones">
+                <button class="btn btn--ghost" type="button" data-insp-descargar-txt>
+                  <i data-lucide="download"></i>
+                  Descargar .txt
+                </button>
+                <label class="btn btn--ghost insp-comparar">
+                  <input class="visually-hidden" type="file" accept=".txt,text/plain" data-insp-original>
+                  Comparar con el .txt original
+                </label>
+              </div>
+              <p class="insp-estado" role="status" data-insp-comparacion></p>
+            </div>
+          </section>
         </div>
       </div>
     </section>

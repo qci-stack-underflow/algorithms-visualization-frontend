@@ -7,8 +7,8 @@ import { enModoEjemplo } from "./datos.js";
 import { leerRuta } from "./rutas.js";
 import { formatearBytes } from "./formato.js";
 
-function guardarArchivo(bytes, nombre) {
-  const url = URL.createObjectURL(new Blob([bytes], { type: "application/octet-stream" }));
+export function guardarArchivo(bytes, nombre, tipo = "application/octet-stream") {
+  const url = URL.createObjectURL(new Blob([bytes], { type: tipo }));
   const enlace = document.createElement("a");
   enlace.href = url;
   enlace.download = nombre;
