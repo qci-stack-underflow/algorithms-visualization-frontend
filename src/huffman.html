@@ -15,13 +15,15 @@
   <title>Huffman · StackUnderFlow</title>
   <script>
     // Antes de pintar: si se abre directo un libro (#/libro/2000 o
-    // #/libro/2000/binario), marca su vista para que no se vea primero la
-    // biblioteca mientras carga js/huffman.js. Es la misma ruta que lee
-    // js/huffman/rutas.js; navegacion.js quita la marca al mostrar la vista.
+    // #/libro/2000/binario) o el inspector (#/inspector), marca su vista para
+    // que no se vea primero la biblioteca mientras carga js/huffman.js. Es la
+    // misma ruta que lee js/huffman/rutas.js; navegacion.js quita la marca al
+    // mostrar la vista.
     (function () {
-      var ruta = /^#\/libro\/\d+(\/binario)?\/?$/.exec(location.hash);
+      var ruta = /^#\/(?:libro\/\d+(\/binario)?|(inspector))\/?$/.exec(location.hash);
       if (ruta) {
-        document.documentElement.setAttribute("data-ruta-inicial", ruta[1] ? "binario" : "proceso");
+        var vista = ruta[2] ? "inspector" : ruta[1] ? "binario" : "proceso";
+        document.documentElement.setAttribute("data-ruta-inicial", vista);
       }
     })();
   </script>
@@ -96,6 +98,7 @@
         </form>
         <p class="enlace-nota" id="enlaceNota" data-enlace-nota>Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
         <p class="enlace-error" id="enlaceError" role="alert" data-enlace-error hidden></p>
+        <p class="enlace-nota">¿Ya tienes un archivo .suf? <a href="#/inspector">Ábrelo en el inspector</a>.</p>
 
         <div class="biblioteca-head">
           <h2>O elige uno de la biblioteca</h2>
@@ -640,6 +643,91 @@
           </div>
           <p class="bits-pie" data-bits-pie>Mostrando los primeros 192 bytes de datos de 1,199,410</p>
         </section>
+      </div>
+    </section>
+
+    <!-- Vista 4: inspector de archivos .suf (js/huffman/inspector.js) -->
+    <section class="vista" id="inspector" aria-labelledby="inspectorTitulo" hidden>
+      <div class="container">
+        <div class="vista-barra">
+          <a class="btn-volver" href="#/">
+            <i data-lucide="arrow-left"></i>
+            Biblioteca
+          </a>
+          <div class="vista-libro">
+            <h1 id="inspectorTitulo" tabindex="-1">Inspector de archivos .suf</h1>
+            <span>Examina un archivo comprimido sin tener el texto original.</span>
+          </div>
+        </div>
+
+        <label class="insp-zona" data-insp-zona>
+          <input class="visually-hidden" type="file" accept=".suf" data-insp-archivo>
+          <span class="archivo-icono" aria-hidden="true"><i data-lucide="file-archive"></i></span>
+          <span class="insp-zona-titulo">Elige un archivo .suf o suéltalo aquí</span>
+          <span class="insp-zona-nota" data-insp-estado>Se lee en tu navegador; no se sube a ningún servidor.</span>
+        </label>
+        <p class="insp-error" role="alert" data-insp-error hidden></p>
+
+        <div class="insp-resultado" data-insp-resultado hidden>
+          <header class="insp-archivo">
+            <h2 tabindex="-1" data-insp-nombre></h2>
+            <span data-insp-formato></span>
+          </header>
+
+          <dl class="huff-metricas">
+            <div data-insp-cifra="original"><dt>Tamaño original</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="comprimido"><dt>Comprimido</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="ahorro"><dt>Ahorro</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="reduccion"><dt>Reducción</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="simbolos"><dt>Símbolos distintos</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="bits"><dt>Bits codificados</dt><dd></dd><span></span></div>
+          </dl>
+
+          <section class="panel insp-panel" aria-labelledby="inspEstructuraTitulo">
+            <h2 id="inspEstructuraTitulo">Estructura del archivo</h2>
+            <div class="insp-tabla-marco">
+              <table class="insp-estructura">
+                <thead>
+                  <tr>
+                    <th scope="col">Sección</th>
+                    <th scope="col">Empieza en el byte</th>
+                    <th scope="col">Bytes</th>
+                  </tr>
+                </thead>
+                <tbody data-insp-estructura></tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="insp-columnas">
+            <section class="panel insp-panel" aria-labelledby="inspDiccionarioTitulo">
+              <h2 id="inspDiccionarioTitulo">Diccionario: apariciones y códigos</h2>
+              <div class="tabla-letras-marco">
+                <table class="tabla-letras insp-diccionario">
+                  <thead>
+                    <tr>
+                      <th scope="col">Símbolo</th>
+                      <th scope="col">Apariciones</th>
+                      <th scope="col">Código</th>
+                    </tr>
+                  </thead>
+                  <tbody data-insp-diccionario></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel insp-panel" aria-labelledby="inspArbolTitulo">
+              <h2 id="inspArbolTitulo">Árbol reconstruido</h2>
+              <p class="insp-texto" data-insp-arbol></p>
+            </section>
+          </div>
+
+          <section class="panel insp-panel" aria-labelledby="inspBitsTitulo">
+            <h2 id="inspBitsTitulo">Datos comprimidos</h2>
+            <ol class="bits-lista insp-bits" data-insp-bits></ol>
+            <p class="bits-pie" data-insp-bits-pie></p>
+          </section>
+        </div>
       </div>
     </section>
   </main>

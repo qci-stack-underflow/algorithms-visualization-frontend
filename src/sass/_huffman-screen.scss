@@ -17,7 +17,8 @@
 }
 
 [data-ruta-inicial="proceso"] #proceso,
-[data-ruta-inicial="binario"] #binario {
+[data-ruta-inicial="binario"] #binario,
+[data-ruta-inicial="inspector"] #inspector {
   display: block;
 }
 
@@ -1315,6 +1316,167 @@ th[aria-sort="ascending"] .orden::after {
   }
 }
 
+/* Inspector de archivos .suf */
+.insp-zona {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin-bottom: var(--s3);
+  padding: var(--s4) var(--s3);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover,
+  &.is-arrastrando {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+.insp-zona-titulo {
+  font-weight: 600;
+}
+
+.insp-zona-nota {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.insp-error {
+  margin: calc(var(--s1) * -1) 0 var(--s3);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+// Una columna que no crece con el contenido: las tablas y los bits se
+// recorren dentro de su marco en lugar de ensanchar la página.
+.insp-resultado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s3);
+
+  .huff-metricas {
+    margin-bottom: 0;
+  }
+}
+
+.insp-archivo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px var(--s2);
+
+  h2 {
+    overflow-wrap: anywhere;
+    font-family: var(--font-mono);
+    font-size: 22px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  span {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+}
+
+.insp-panel h2 {
+  margin-bottom: var(--s2);
+}
+
+.insp-tabla-marco {
+  overflow-x: auto;
+}
+
+.insp-estructura {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th,
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--bg-muted);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    border-bottom-color: var(--border);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  tbody th {
+    font-weight: 600;
+
+    small {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 400;
+    }
+  }
+}
+
+.insp-numero {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.insp-columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s3);
+}
+
+// En el inspector la tabla solo se lee: los símbolos no son botones.
+.insp-diccionario {
+  tbody tr {
+    cursor: default;
+  }
+
+  .simbolo {
+    cursor: default;
+  }
+}
+
+.insp-texto {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.insp-bits {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+
+  li {
+    height: 26px;
+    line-height: 26px;
+  }
+}
+
 /* Adaptación a pantallas pequeñas */
 @media (max-width: 1080px) {
   .huff-metricas {
@@ -1348,6 +1510,10 @@ th[aria-sort="ascending"] .orden::after {
 
   .archivo-listo {
     order: 4;
+  }
+
+  .insp-columnas {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
