@@ -21,7 +21,8 @@ export function guardarArchivo(bytes, nombre, tipo = "application/octet-stream")
 }
 
 function mensajeDeFallo(error) {
-  if (enModoEjemplo()) {
+  // 501: el backend ya tiene la ruta, pero todavía no genera el archivo.
+  if (enModoEjemplo() || error.estado === 501) {
     return "La descarga estará disponible cuando el backend comprima los libros.";
   }
   if (error.estado === 0) {
