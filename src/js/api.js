@@ -105,6 +105,20 @@ export async function obtenerLibros() {
   return recordar(guardados.libros, "catalogo", () => solicitar("/huffman/books"));
 }
 
+// GET /huffman/books/search?q=… → BookInfo[] (backend#52). Se acepta también
+// { result: BookInfo[] }; cualquier otra respuesta da null, como si la
+// búsqueda no estuviera disponible. Cada búsqueda se guarda.
+const busquedas = new Map();
+export async function buscarLibros(consulta) {
+  const q = consulta.trim();
+  return recordar(busquedas, q.toLowerCase(), async () => {
+    const respuesta = await solicitar(`/huffman/books/search?q=${encodeURIComponent(q)}`);
+    if (Array.isArray(respuesta)) return respuesta;
+    if (Array.isArray(respuesta?.result)) return respuesta.result;
+    return null;
+  });
+}
+
 // GET /huffman/books/:id → HuffmanResult (frecuencias, árbol, pasos, códigos y métricas)
 export async function obtenerHuffman(id) {
   const numero = numeroDeLibro(id);
