@@ -1316,6 +1316,92 @@ th[aria-sort="ascending"] .orden::after {
   }
 }
 
+/* Buscar en Project Gutenberg */
+.buscar {
+  margin-top: var(--s6);
+}
+
+.buscar-titulo {
+  margin-bottom: var(--s2);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 700;
+  text-align: center;
+}
+
+.buscar-estado {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: center;
+
+  &:empty {
+    display: none;
+  }
+
+  &.is-error {
+    color: var(--danger);
+    font-weight: 500;
+  }
+}
+
+.buscar-resultados {
+  margin-top: var(--s3);
+
+  &:empty {
+    display: none;
+  }
+}
+
+/* Subir un .txt propio */
+.subir-zona {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  max-width: 720px;
+  margin: var(--s3) auto 0;
+  padding: var(--s2) var(--s3);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover,
+  &.is-arrastrando {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+.subir-titulo {
+  font-weight: 600;
+}
+
+.subir-nota {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+// Resultado de comparar el .suf descomprimido con el .txt subido
+.archivo-integridad {
+  color: var(--sym-c-fg);
+  font-size: 13px;
+
+  &.is-falla {
+    color: var(--danger);
+    font-weight: 500;
+  }
+}
+
 /* Inspector de archivos .suf */
 .insp-zona {
   display: grid;
