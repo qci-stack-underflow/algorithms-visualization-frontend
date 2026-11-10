@@ -2,6 +2,7 @@
 // de enlace abre cualquier libro de Project Gutenberg por su número.
 import { obtenerLibros } from "../api.js";
 import { ir } from "./navegacion.js";
+import { prepararSubida, validarArchivo } from "./subida.js";
 import { rutaA } from "./rutas.js";
 
 const COLORES_PORTADA = ["azul", "hueso", "tinta"];
@@ -140,10 +141,44 @@ function iniciarEnlace() {
   });
 }
 
+// Subir un .txt propio: se elige o se suelta en la zona, se valida aquí y
+// se abre #/archivo, donde subida.js lo envía al backend.
+function iniciarSubida() {
+  const zona = document.querySelector("[data-subir-zona]");
+  if (!zona) return;
+  const entrada = zona.querySelector("input[type=file]");
+  const error = document.querySelector("[data-subir-error]");
+
+  const usar = (archivo) => {
+    const problema = validarArchivo(archivo);
+    error.textContent = problema ?? "";
+    error.hidden = !problema;
+    if (problema) return;
+    prepararSubida(archivo);
+    ir("proceso", null, true);
+  };
+
+  entrada.addEventListener("change", () => {
+    usar(entrada.files[0]);
+    entrada.value = "";
+  });
+  zona.addEventListener("dragover", (evento) => {
+    evento.preventDefault();
+    zona.classList.add("is-arrastrando");
+  });
+  zona.addEventListener("dragleave", () => zona.classList.remove("is-arrastrando"));
+  zona.addEventListener("drop", (evento) => {
+    evento.preventDefault();
+    zona.classList.remove("is-arrastrando");
+    usar(evento.dataTransfer.files[0]);
+  });
+}
+
 // Si el catálogo no llega (por ejemplo, el backend todavía no tiene las rutas
 // de Huffman), se quedan las tarjetas escritas en huffman.html.
 export async function iniciarBiblioteca() {
   iniciarEnlace();
+  iniciarSubida();
   try {
     dibujarLibros(await obtenerLibros());
   } catch {
