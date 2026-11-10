@@ -120,6 +120,42 @@ export function huffmanListo(id) {
   return huffmanListos.has(Number(id));
 }
 
+// Separa la respuesta binaria de POST /huffman/compress/file (opción B de
+// backend#53): uint32 big-endian con el largo n del JSON, n bytes del
+// HuffmanResult en UTF-8 y después el archivo .suf completo.
+export function separarRespuestaDeArchivo(buffer) {
+  const incompleta = () => new ErrorApi("La respuesta del backend está incompleta.", -1);
+  if (buffer.byteLength < 4) throw incompleta();
+  const largo = new DataView(buffer).getUint32(0);
+  if (4 + largo > buffer.byteLength) throw incompleta();
+  let resultado;
+  try {
+    resultado = JSON.parse(new TextDecoder().decode(new Uint8Array(buffer, 4, largo)));
+  } catch {
+    throw new ErrorApi("La respuesta del backend no trae un resultado válido.", -1);
+  }
+  return { resultado, bytesSuf: buffer.slice(4 + largo) };
+}
+
+// POST /huffman/compress/file (multipart, campo "file") → { resultado, bytesSuf }
+export async function comprimirArchivo(archivo) {
+  const formulario = new FormData();
+  formulario.append("file", archivo);
+  formulario.append("title", archivo.name.replace(/\.txt$/i, ""));
+
+  let respuesta;
+  try {
+    respuesta = await fetch(`${API_URL}/huffman/compress/file`, { method: "POST", body: formulario });
+  } catch {
+    throw new ErrorApi("No se pudo conectar con el backend.", 0);
+  }
+  if (!respuesta.ok) {
+    const datos = await respuesta.json().catch(() => null);
+    throw new ErrorApi(datos?.message || `Error ${respuesta.status} del backend.`, respuesta.status);
+  }
+  return separarRespuestaDeArchivo(await respuesta.arrayBuffer());
+}
+
 // GET /huffman/books/:id/file → ArrayBuffer con el archivo .suf
 export async function descargarSuf(id) {
   const numero = numeroDeLibro(id);
