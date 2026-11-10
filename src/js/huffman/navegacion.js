@@ -5,6 +5,8 @@ import { leerRuta, rutaA } from "./rutas.js";
 import { reiniciarCarga } from "./carga.js";
 import { limpiarAvisosDeDescarga } from "./descarga.js";
 import { cargarLibro, origenDe } from "./datos.js";
+import { cargarArchivo } from "./subida.js";
+import { formatearBytes, numero as conComas } from "./formato.js";
 import { llenarProceso } from "./proceso.js";
 import { llenarBinario, llenarBinarioDeEjemplo } from "./binario.js";
 
@@ -56,11 +58,88 @@ function llenarLibro(numero, { titulo, autor } = datosDelLibro(numero)) {
   document.querySelectorAll("[data-ir]").forEach((enlace) => {
     enlace.href = rutaA(enlace.dataset.ir, numero);
   });
+  mostrarOrigen(true);
   document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
     aviso.hidden = numero === LIBRO_DE_EJEMPLO;
   });
 
   return { titulo, archivo };
+}
+
+// "· Project Gutenberg #N" solo aplica a los libros; la integridad, solo a
+// los archivos subidos.
+function mostrarOrigen(esLibro) {
+  document.querySelectorAll("[data-origen-gutenberg]").forEach((origen) => {
+    origen.hidden = !esLibro;
+  });
+  if (esLibro) {
+    document.querySelectorAll("[data-integridad]").forEach((integridad) => {
+      integridad.hidden = true;
+    });
+  }
+}
+
+// Título, nombre del .suf y enlaces para un .txt subido.
+function llenarDeArchivo(titulo, nombre) {
+  const archivo = nombreDeArchivo(titulo);
+  const poner = (selector, texto) =>
+    document.querySelectorAll(selector).forEach((elemento) => {
+      elemento.textContent = texto;
+    });
+  poner("[data-libro-titulo]", titulo);
+  poner("[data-libro-autor]", `Archivo subido: ${nombre}`);
+  poner("[data-libro-archivo]", archivo);
+  document.querySelectorAll("[data-ir]").forEach((enlace) => {
+    enlace.href = rutaA(enlace.dataset.ir, null, true);
+  });
+  document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
+    aviso.hidden = true;
+  });
+  mostrarOrigen(false);
+  return { titulo, archivo };
+}
+
+// Resultado de comparar el .suf descomprimido con el archivo subido.
+function textoDeIntegridad({ identico, normalizado, primeraDiferencia, bytes, error }, nombre) {
+  if (error) return { ok: false, texto: `No se pudo comprobar la integridad: ${error}` };
+  if (identico && !normalizado) {
+    return {
+      ok: true,
+      texto: `Integridad: el .suf se descomprimió en tu navegador y es idéntico a ${nombre}, byte a byte (${conComas(bytes)} bytes).`,
+    };
+  }
+  if (identico) {
+    return {
+      ok: true,
+      texto:
+        `Integridad: el .suf se descomprimió en tu navegador y es idéntico a ${nombre} después de quitar el BOM ` +
+        "y cambiar \\r\\n por \\n, la limpieza que hace el servidor antes de comprimir.",
+    };
+  }
+  return {
+    ok: false,
+    texto: `El .suf descomprimido no coincide con ${nombre}: la primera diferencia está en el byte ${conComas(primeraDiferencia)}.`,
+  };
+}
+
+function mostrarSubido(subido) {
+  const { resultado, bytesSuf, integridad, nombre } = subido;
+  const titulo = origenDe(resultado).titulo ?? nombre.replace(/\.txt$/i, "");
+  const datos = llenarDeArchivo(titulo, nombre);
+  if (rutaActual?.archivo) document.title = tituloDeVista(rutaActual.vista, datos);
+  llenarProceso(resultado);
+  llenarBinario(resultado, bytesSuf);
+  // El tamaño del .suf es el de los bytes recibidos.
+  document.querySelectorAll("[data-archivo-tamano]").forEach((tamano) => {
+    tamano.textContent = formatearBytes(bytesSuf.byteLength);
+  });
+  const { ok, texto } = textoDeIntegridad(integridad, nombre);
+  document.querySelectorAll("[data-integridad]").forEach((elemento) => {
+    elemento.textContent = texto;
+    elemento.classList.toggle("is-falla", !ok);
+    elemento.hidden = false;
+  });
+  avisarResultado(null, resultado, false);
 }
 
 const tituloDeVista = (vista, datos) =>
@@ -122,9 +201,9 @@ function guardarScrollAlDetenerse() {
 
 // Para ir a otra vista desde el JS (p. ej. el campo de enlace), igual que
 // al seguir un enlace: guarda el scroll de la vista que se deja.
-export function ir(vista, libro) {
+export function ir(vista, libro, archivo = false) {
   guardarScroll();
-  location.hash = rutaA(vista, libro);
+  location.hash = rutaA(vista, libro, archivo);
 }
 
 // Devuelve true si regresó a un scroll guardado.
@@ -166,11 +245,21 @@ function mostrar(ruta, esCargaInicial) {
     seccion.hidden = seccion.id !== vista;
   });
 
-  document.title = libro === null ? tituloPagina : tituloDeVista(vista, llenarLibro(libro));
+  if (ruta.archivo) {
+    document.title = `Archivo subido · ${tituloPagina}`;
+  } else {
+    document.title = libro === null ? tituloPagina : tituloDeVista(vista, llenarLibro(libro));
+  }
 
   const scrollRestaurado = ajustarScroll();
   // En la carga inicial el foco no se mueve.
   if (!esCargaInicial) enfocar(vista, rutaAnterior, scrollRestaurado);
+
+  // Un .txt subido ya trae su resultado y su .suf (o los está esperando).
+  if (ruta.archivo) {
+    cargarArchivo(vista, mostrarSubido);
+    return;
+  }
 
   // El proceso y el binario piden sus datos al backend (o usan los ya
   // guardados); el binario, además, los bytes del .suf.
@@ -186,14 +275,14 @@ function mostrar(ruta, esCargaInicial) {
 function alCambiarRuta(esCargaInicial) {
   // Una ruta inválida (p. ej. #/libro/abc) lleva a la biblioteca.
   const ruta = leerRuta(location.hash) ?? { vista: "biblioteca", libro: null };
-  const canonica = rutaA(ruta.vista, ruta.libro);
+  const canonica = rutaA(ruta.vista, ruta.libro, ruta.archivo);
   const sinHashEnBiblioteca = !location.hash && ruta.vista === "biblioteca";
 
   if (location.hash !== canonica && !sinHashEnBiblioteca) {
     // Si la ruta escrita a mano lleva a la misma vista que ya se mostraba
     // (#/libro/2000/ desde #/libro/2000), reemplazarla dejaría dos entradas
     // iguales y un Atrás que no hace nada: se regresa a la anterior.
-    if (!esCargaInicial && rutaActual && rutaA(rutaActual.vista, rutaActual.libro) === canonica) {
+    if (!esCargaInicial && rutaActual && rutaA(rutaActual.vista, rutaActual.libro, rutaActual.archivo) === canonica) {
       history.back();
       return;
     }

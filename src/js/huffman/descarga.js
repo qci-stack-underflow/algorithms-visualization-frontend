@@ -6,6 +6,7 @@ import { descargarSuf } from "../api.js";
 import { enModoEjemplo } from "./datos.js";
 import { leerRuta } from "./rutas.js";
 import { formatearBytes } from "./formato.js";
+import { archivoSubido } from "./subida.js";
 
 export function guardarArchivo(bytes, nombre, tipo = "application/octet-stream") {
   const url = URL.createObjectURL(new Blob([bytes], { type: tipo }));
@@ -33,8 +34,11 @@ function mensajeDeFallo(error) {
 async function descargar(boton) {
   // aria-disabled en lugar de disabled: así el botón no pierde el foco.
   if (boton.getAttribute("aria-disabled") === "true") return;
-  const libro = leerRuta(location.hash)?.libro;
-  if (!libro) return;
+  // Un .txt subido ya trae su .suf; un libro lo pide al backend.
+  const ruta = leerRuta(location.hash);
+  const libro = ruta?.libro;
+  const subido = ruta?.archivo ? archivoSubido() : null;
+  if (!libro && !subido) return;
 
   const estado = document.getElementById(boton.dataset.descargar);
   const texto = boton.querySelector("[data-descargar-texto]");
@@ -47,7 +51,7 @@ async function descargar(boton) {
   estado.textContent = "";
   estado.classList.remove("is-error");
   try {
-    const bytes = await descargarSuf(libro);
+    const bytes = subido ? subido.bytesSuf : await descargarSuf(libro);
     guardarArchivo(bytes, nombre);
     estado.textContent = `Se descargó ${nombre} (${formatearBytes(bytes.byteLength)}).`;
   } catch (error) {
