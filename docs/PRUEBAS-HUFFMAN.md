@@ -2,7 +2,9 @@
 
 Evidencias de las pruebas mínimas de la sección 12 de los requerimientos y de la comprobación de integridad de la sección 8, en la parte que hace el frontend: leer un archivo `.suf`, inspeccionarlo, descomprimirlo y comprobar que el texto recuperado es idéntico al original.
 
-> **Estado al 8 de noviembre de 2026.** El backend todavía no publica los endpoints de `/huffman`, así que la aplicación aún no comprime textos. Los archivos `.suf` de estas pruebas se generaron con un script de prueba que sigue el formato SUF1 de `docs/FORMATO-HUFFMAN.md` del backend, con la misma regla de desempate. Cuando el compresor esté publicado, las pruebas se repiten con archivos generados por la aplicación (ver [Pendiente](#pendiente)).
+> **Estado al 9 de noviembre de 2026.** El compresor del backend ya existe, pero en ramas que todavía no se publican; la aplicación publicada sigue en modo ejemplo.
+> - **Pruebas 1 a 3:** los archivos `.suf` se generaron con un script de prueba que sigue el formato SUF1 de `docs/FORMATO-HUFFMAN.md` del backend. Se comprobó que los dos compresores del backend (ramas `arcamp0130/feature/huffman-compressor` y `alesspiz/feature/huffman-endpoints`) generan esos mismos archivos **byte a byte**, así que las cifras son las que da la aplicación.
+> - **[Flujo completo](#flujo-completo-con-el-compresor-del-backend):** se probó en local con el backend real.
 
 Todas las pruebas se hicieron en la aplicación publicada (https://stack-underflow-frontend-algviz.vercel.app/huffman.html#/inspector), con Chromium.
 
@@ -71,13 +73,27 @@ Además, la descompresión falla si un bit no lleva a ningún nodo o si los dato
 
 ![Descompresión y comprobaciones](capturas/huffman-descompresion.png)
 
+## Flujo completo con el compresor del backend
+
+Se levantó en local el backend de la rama `alesspiz/feature/huffman-endpoints` (commit `1bb12e5`, que descarga el libro de Gutenberg en vivo) y se conectó el frontend con `VITE_API_URL=http://localhost:3001`. Así se recorre `pg2000.txt → don-quijote.suf → recuperado.txt` con la aplicación:
+
+| Paso | Resultado |
+|---|---|
+| Biblioteca | Las 6 tarjetas salen de `GET /huffman/books` |
+| Proceso de Don Quijote | Datos reales en 1.7 s: 2,168,287 → 1,166,906 bytes, 1,001,381 ahorrados (46.2 %), 92 símbolos, 183 nodos |
+| Binario | Encabezado leído del `.suf` del backend: 1,733 bytes de encabezado, 1,165,173 de datos y 1 bit de relleno |
+| Descargar `.suf` | `don-quijote.suf` de 1,166,906 bytes, igual a `metrics.fileSizeBytes` |
+| Inspector con ese archivo | Las 3 comprobaciones bien. Texto recuperado en 181 ms con SHA-256 `70bec2fa…a5606c8aa`, **el mismo del texto limpio original**: el ciclo comprimir → descomprimir devuelve exactamente el texto |
+
+![Proceso de Don Quijote con datos del backend](capturas/huffman-real-proceso.png)
+
 ## 4. Archivo no utilizado durante el desarrollo
 
-**Pendiente.** Requiere subir un `.txt` y comprimirlo (C11, #63), que depende del endpoint `POST /huffman/compress/file` del backend.
+**Pendiente.** La pantalla para subir un `.txt` ya está lista y probada con un backend simulado (C11, PR #74). Falta el endpoint `POST /huffman/compress/file` del backend para probarla con el compresor real.
 
 ## Pendiente
 
-Cuando el backend publique la compresión, se repiten las pruebas 1 a 3 con el flujo completo `original.txt → .suf (generado por la aplicación) → recuperado.txt` y se agrega la prueba 4 con un `.txt` nuevo.
+Cuando el backend esté publicado, se repite el flujo completo en producción y se agrega la prueba 4 con un `.txt` nuevo subido desde la aplicación.
 
 ## Cómo repetir las pruebas
 

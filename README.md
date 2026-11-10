@@ -179,6 +179,17 @@ Muestra además el SHA-256 del texto, y si se tiene el `.txt` original, lo compa
 | Edwin | Motor de animación (reproducción de pasos, velocidad, reinicio y colores de las barras) |
 | Alessandra | Diseño de la interfaz: pantalla de inicio, búsqueda y filtro, tarjetas, visualizador, panel de opciones, modo comparar, gráfica y tarjetas de métricas |
 
+### Responsabilidades en el compresor Huffman
+
+El trabajo se dividió en cuatro bloques en el [tablero](https://github.com/orgs/qci-stack-underflow/projects/1), cada uno con sus tareas:
+
+| Bloque | Responsable | Contenido |
+|---|---|---|
+| A · Algoritmo y formato `.suf` | Arath | Contrato y JSON de ejemplo, frecuencias, min-heap, árbol con sus pasos, códigos y empaquetado de bits, escritura y lectura del `.suf`, métricas y pruebas del algoritmo |
+| B · Libros, endpoints y despliegue | Alessandra | Catálogo, cliente de Project Gutenberg, limpieza del texto, copias locales, endpoints de `/huffman`, errores, límites de Vercel, pruebas e2e y documentación del backend |
+| C · Datos, biblioteca y vista binaria | Salvador | Rutas y navegación de la pantalla, cliente de la API, carga y errores, biblioteca y enlace de Gutenberg, búsqueda, subida de `.txt`, cifras y tabla de letras, descarga y vista binaria del `.suf`, inspector, descompresión e integridad, documentación del frontend |
+| D · Árbol, animación y pseudocódigo | Edwin | Posición y dibujo del árbol, zoom, reproductor de pasos, cola de prioridad, pseudocódigo sincronizado y fases |
+
 ## Uso de IA
 
 | Herramienta | Para qué se usó |
