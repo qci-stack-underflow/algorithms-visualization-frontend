@@ -1,0 +1,113 @@
+// Vistas previas de las tarjetas de grafos del inicio (js/vista-grafos.js).
+
+.mini-grafo {
+  --mini-color: var(--accent);
+  --mini-fondo: var(--accent-light);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 0 14px;
+  transition: opacity 0.3s ease;
+
+  &.is-resetting {
+    opacity: 0;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+  }
+
+  line {
+    stroke: var(--border-strong);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    transition:
+      stroke 0.35s ease,
+      stroke-width 0.35s ease;
+
+    &.is-on {
+      stroke: var(--mini-color);
+      stroke-width: 3.2;
+    }
+  }
+
+  circle {
+    fill: var(--bg-surface);
+    stroke: var(--border-strong);
+    stroke-width: 1.4;
+    transition:
+      fill 0.35s ease,
+      stroke 0.35s ease;
+
+    &.is-on {
+      fill: var(--mini-fondo);
+      stroke: var(--mini-color);
+    }
+  }
+}
+
+// El árbol usa el verde de "definitivo", igual que en la pantalla de grafos.
+.mini-grafo--arbol {
+  --mini-color: var(--bar-done);
+  --mini-fondo: var(--sym-c-bg);
+}
+
+.mini-grafo-nombre,
+.mini-grafo-peso {
+  font-family: var(--font-mono);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.mini-grafo-nombre {
+  fill: var(--text-primary);
+  font-size: 9px;
+  font-weight: 500;
+}
+
+// El contorno del color del fondo separa el número de la línea que cruza.
+.mini-grafo-peso {
+  fill: var(--text-muted);
+  font-size: 8px;
+  paint-order: stroke;
+  stroke: var(--bg-subtle);
+  stroke-width: 4px;
+}
+
+.mini-grafo-pie {
+  display: grid;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+
+  span {
+    grid-area: 1 / 1;
+    text-align: center;
+    transition: opacity 0.35s ease;
+  }
+
+  b {
+    font-weight: 500;
+    color: var(--mini-color);
+  }
+}
+
+.mini-grafo-despues {
+  opacity: 0;
+}
+
+.mini-grafo.is-listo {
+  .mini-grafo-antes {
+    opacity: 0;
+  }
+
+  .mini-grafo-despues {
+    opacity: 1;
+  }
+}
