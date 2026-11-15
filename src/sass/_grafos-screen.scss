@@ -1,0 +1,1151 @@
+// Pantalla de grafos: pestañas de algoritmo, opciones, dibujo del grafo,
+// reproductor, pseudocódigo y tablas de estado.
+// Todas las clases propias empiezan con "gr-" para no chocar con las de
+// otras pantallas.
+
+// Colores del dibujo. Salen de los mismos tokens que las barras de los
+// ordenamientos: ámbar = se revisa, verde = definitivo, azul = acento.
+.grafos {
+  --gr-nodo: var(--bg-surface);
+  --gr-nodo-borde: var(--border-strong);
+  --gr-frontera: var(--accent);
+  --gr-frontera-fondo: var(--accent-light);
+  --gr-cerrado: var(--bar-done);
+  --gr-cerrado-fondo: var(--sym-c-bg);
+  --gr-cerrado-texto: var(--sym-c-fg);
+  --gr-foco: var(--bar-compare);
+  --gr-rechazo: var(--bar-swap);
+  --gr-arista: #b9b1a1;
+  --gr-lienzo: var(--bg-subtle);
+
+  width: 100%;
+  padding-bottom: var(--s8);
+}
+
+/* Barra superior */
+.gr-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  padding: var(--s4) 0 var(--s3);
+}
+
+.gr-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  font-size: 14px;
+  font-weight: 500;
+  transition: border-color 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+.gr-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3.4vw, 38px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+
+    em {
+      font-weight: 700;
+      color: var(--accent);
+    }
+  }
+}
+
+/* Pestañas de algoritmo */
+.gr-pestanas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
+}
+
+.gr-pestana {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  b {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  span {
+    font-size: 12.5px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  &[aria-selected="true"] {
+    border-color: var(--border);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+
+    b {
+      color: var(--accent);
+    }
+  }
+}
+
+.gr-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: var(--s3) 0 var(--s2);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.gr-chip {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.gr-chip--mono {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+/* Opciones de la ejecución */
+.gr-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s2);
+  padding: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.gr-campo {
+  display: flex;
+  flex: 1 1 110px;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+
+  &[hidden] {
+    display: none;
+  }
+
+  > span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  select,
+  input,
+  textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-size: 14px;
+
+    &:hover {
+      border-color: var(--text-muted);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+  }
+}
+
+.gr-campo--ancho {
+  flex: 2 1 190px;
+}
+
+.gr-campo--corto {
+  flex: 0 0 76px;
+}
+
+.gr-azar {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: auto;
+
+  .btn {
+    height: 38px;
+  }
+}
+
+.gr-nota {
+  margin: 10px 2px var(--s3);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.gr-error {
+  margin: 0 0 var(--s2);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--danger-light);
+  color: var(--danger);
+  font-size: 14px;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+/* Dos columnas: grafo y resultado | pseudocódigo y estado */
+.gr-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  align-items: start;
+  gap: var(--s3);
+
+  .code-panel {
+    flex: none;
+    max-width: none;
+  }
+}
+
+.gr-columna {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.gr-panel {
+  min-width: 0;
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+
+  h2 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  h3 {
+    margin: var(--s2) 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.gr-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: var(--s2);
+}
+
+.gr-panel-cuenta {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Control de dos o más opciones (clic en un nodo, velocidad) */
+.gr-segmento {
+  display: flex;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+
+  button {
+    padding: 5px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .is-activa {
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    color: var(--text-primary);
+  }
+}
+
+.gr-clic {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+/* Dibujo del grafo (SVG) */
+.gr-lienzo {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--accent-glow), transparent 60%),
+    var(--gr-lienzo);
+}
+
+.gr-svg {
+  display: block;
+  width: 100%;
+  // En pantallas angostas el dibujo conserva un tamaño legible y el marco
+  // se desplaza de lado.
+  min-width: 560px;
+  height: auto;
+}
+
+// Aristas
+.gr-arista line {
+  stroke: var(--gr-arista);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition:
+    stroke 0.2s ease,
+    stroke-width 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.gr-arista[data-estado="candidata"] line {
+  stroke: var(--gr-frontera);
+  stroke-width: 3.5;
+  stroke-dasharray: 2 9;
+}
+
+.gr-arista[data-estado="arbol"] line {
+  stroke: var(--gr-cerrado);
+  stroke-width: 5;
+}
+
+.gr-arista[data-estado="descartada"] line {
+  stroke-width: 2;
+  stroke-dasharray: 5 7;
+  opacity: 0.55;
+}
+
+.gr-arista.is-ruta line {
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+
+// La arista del paso actual va encima de cualquier otro estado.
+.gr-arista.is-foco line {
+  stroke: var(--gr-foco);
+  stroke-width: 7;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+
+.gr-svg[data-tipo="relajar"] .gr-arista.is-foco line {
+  stroke: var(--gr-frontera);
+}
+
+.gr-svg[data-tipo="extraer"] .gr-arista.is-foco line,
+.gr-svg[data-tipo="aceptar"] .gr-arista.is-foco line {
+  stroke: var(--gr-cerrado);
+}
+
+.gr-svg[data-tipo="rechazar"] .gr-arista.is-foco line {
+  stroke: var(--gr-rechazo);
+}
+
+// Peso de la arista
+.gr-peso {
+  rect {
+    fill: var(--gr-lienzo);
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+
+  text {
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 500;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  &[data-estado="descartada"] {
+    opacity: 0.55;
+  }
+
+  &[data-estado="arbol"] rect,
+  &.is-ruta rect,
+  &.is-foco rect {
+    fill: var(--bg-surface);
+    stroke: var(--border-strong);
+  }
+
+  &.is-foco,
+  &.is-ruta {
+    opacity: 1;
+  }
+}
+
+// Nodos
+.gr-nodo {
+  cursor: default;
+
+  &[role="button"] {
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  .gr-nodo-circulo {
+    fill: var(--gr-nodo);
+    stroke: var(--gr-nodo-borde);
+    stroke-width: 2.5;
+    transition:
+      fill 0.2s ease,
+      stroke 0.2s ease;
+  }
+
+  .gr-nodo-nombre {
+    fill: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 24px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+
+  // Halo del nodo que se procesa en este paso
+  .gr-nodo-halo {
+    fill: none;
+    stroke: var(--gr-foco);
+    stroke-width: 4;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  // Anillo de teclado
+  .gr-nodo-foco {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-dasharray: 4 4;
+    opacity: 0;
+  }
+
+  &:focus-visible .gr-nodo-foco {
+    opacity: 1;
+  }
+
+  &[role="button"]:hover .gr-nodo-circulo {
+    stroke-width: 4;
+  }
+
+  &[data-estado="frontera"] .gr-nodo-circulo {
+    fill: var(--gr-frontera-fondo);
+    stroke: var(--gr-frontera);
+  }
+
+  &[data-estado="cerrado"] {
+    .gr-nodo-circulo {
+      fill: var(--gr-cerrado-fondo);
+      stroke: var(--gr-cerrado);
+    }
+
+    .gr-nodo-nombre {
+      fill: var(--gr-cerrado-texto);
+    }
+  }
+
+  &.is-ruta {
+    .gr-nodo-circulo {
+      fill: var(--accent);
+      stroke: var(--accent);
+    }
+
+    .gr-nodo-nombre {
+      fill: var(--accent-fg);
+    }
+  }
+
+  &.is-foco .gr-nodo-halo {
+    opacity: 1;
+  }
+
+  &.is-vecino .gr-nodo-halo {
+    opacity: 1;
+    stroke-dasharray: 5 6;
+  }
+}
+
+// Etiqueta "origen" / "destino" sobre el nodo
+.gr-nodo-papel {
+  rect {
+    fill: var(--text-primary);
+  }
+
+  text {
+    fill: var(--bg-surface);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}
+
+// Valor bajo el nodo (dist, f o clave)
+.gr-nodo-valor {
+  rect {
+    fill: var(--bg-surface);
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+
+  text {
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 500;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  &.is-vacio text {
+    fill: var(--text-muted);
+  }
+
+  &.is-cambio rect {
+    fill: var(--accent-light);
+    stroke: var(--accent);
+  }
+}
+
+/* Lo que hace el paso actual, bajo el dibujo */
+.gr-pie {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 42px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary);
+
+  .swatch {
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+}
+
+/* Leyenda del dibujo */
+.gr-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 12px;
+  list-style: none;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}
+
+.gr-muestra {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--gr-nodo-borde);
+  border-radius: 50%;
+  background: var(--gr-nodo);
+}
+
+.gr-muestra--frontera {
+  border-color: var(--gr-frontera);
+  background: var(--gr-frontera-fondo);
+}
+
+.gr-muestra--cerrado {
+  border-color: var(--gr-cerrado);
+  background: var(--gr-cerrado-fondo);
+}
+
+.gr-muestra--linea {
+  width: 22px;
+  height: 0;
+  border: 0;
+  border-top: 4px solid var(--gr-arista);
+  border-radius: 0;
+  background: none;
+}
+
+.gr-muestra--candidata {
+  border-top: 4px dotted var(--gr-frontera);
+}
+
+.gr-muestra--arbol {
+  border-top-color: var(--gr-cerrado);
+}
+
+.gr-muestra--foco {
+  border-top-color: var(--gr-foco);
+}
+
+.gr-muestra--ruta {
+  border-top: 6px solid var(--accent);
+}
+
+.gr-muestra--descartada {
+  border-top: 2px dashed var(--gr-arista);
+}
+
+.gr-valor-nota {
+  margin: 8px 0 var(--s2);
+  font-size: 12.5px;
+  color: var(--text-muted);
+
+  &:empty {
+    margin: 0 0 var(--s2);
+  }
+}
+
+/* Reproductor de pasos */
+.gr-reproductor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding-top: var(--s2);
+  border-top: 1px solid var(--border);
+}
+
+.gr-reproductor-botones {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gr-boton-icono {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+.gr-boton-icono--principal {
+  width: 44px;
+  height: 44px;
+  border-color: var(--accent);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 6px 20px var(--accent-glow);
+  color: var(--accent-fg);
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent-hover);
+    background: var(--accent-hover);
+    color: var(--accent-fg);
+  }
+}
+
+.gr-progreso {
+  flex: 1;
+  min-width: 120px;
+  height: 20px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.gr-reproductor-paso {
+  min-width: 64px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.gr-atajos {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+
+  kbd {
+    padding: 1px 6px;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    background: var(--bg-subtle);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-secondary);
+  }
+}
+
+/* Pseudocódigo: la descripción del paso puede ocupar dos líneas */
+.grafos .code-step {
+  align-items: flex-start;
+  min-height: 62px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+
+  .swatch {
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+}
+
+.gr-paso--frontera {
+  background: var(--gr-frontera);
+}
+
+.gr-paso--cerrado {
+  background: var(--gr-cerrado);
+}
+
+.gr-paso--foco {
+  background: var(--gr-foco);
+}
+
+.gr-paso--rechazo {
+  background: var(--gr-rechazo);
+}
+
+.gr-paso--neutro {
+  background: var(--text-muted);
+}
+
+/* Tablas de estado y de resultado */
+.gr-tabla-marco {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  &:has(table:empty) {
+    display: none;
+  }
+}
+
+.gr-tabla-marco--alta {
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.gr-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+
+  th,
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  th:first-child,
+  td:first-child {
+    text-align: left;
+  }
+
+  tbody th {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  td {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  // Fila del nodo o la arista que se procesa en este paso
+  tr.is-foco > * {
+    background: #fbf3df;
+  }
+
+  tr.is-vecino > * {
+    background: var(--bg-subtle);
+  }
+
+  td.is-cambio {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  td.is-vacio,
+  tr.is-pendiente td {
+    color: var(--text-muted);
+  }
+
+  td.is-texto {
+    font-family: var(--font-body);
+  }
+}
+
+// Punto de color con el estado del nodo, junto a su nombre
+.gr-punto {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border: 2px solid var(--gr-nodo-borde);
+  border-radius: 50%;
+  background: var(--gr-nodo);
+  vertical-align: -1px;
+
+  &[data-estado="frontera"] {
+    border-color: var(--gr-frontera);
+    background: var(--gr-frontera-fondo);
+  }
+
+  &[data-estado="cerrado"] {
+    border-color: var(--gr-cerrado);
+    background: var(--gr-cerrado);
+  }
+}
+
+.gr-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+
+  &[data-estado="arbol"] {
+    color: var(--gr-cerrado-texto);
+    font-weight: 500;
+  }
+
+  &[data-estado="descartada"] {
+    color: var(--danger);
+  }
+
+  &[data-estado="pendiente"] {
+    color: var(--text-muted);
+  }
+}
+
+// Cola de prioridad y conjuntos: fichas en fila
+.gr-fichas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 34px;
+  margin-bottom: 4px;
+  list-style: none;
+}
+
+.gr-ficha {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  font-size: 13.5px;
+  font-weight: 600;
+
+  span {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  // El primero de la cola es el siguiente en salir
+  &.is-siguiente {
+    border-color: var(--gr-frontera);
+    background: var(--gr-frontera-fondo);
+  }
+
+  &.is-cambio {
+    border-color: var(--gr-cerrado);
+    background: var(--gr-cerrado-fondo);
+  }
+}
+
+.gr-fichas-vacio {
+  align-self: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.gr-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--text-secondary);
+
+  b {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    // Cifras alineadas: las de estilo antiguo de Playfair confunden 0 con o.
+    font-variant-numeric: lining-nums;
+    color: var(--text-primary);
+  }
+}
+
+/* Resultado */
+.gr-resultado {
+  margin-bottom: var(--s2);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+
+  b {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .gr-ruta {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+}
+
+.gr-tabla--comparar {
+  th.is-actual,
+  td.is-actual {
+    background: var(--accent-light);
+  }
+
+  thead th.is-actual {
+    color: var(--accent);
+  }
+
+  td.is-mejor {
+    font-weight: 600;
+  }
+}
+
+.gr-comparacion-nota {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+
+  &:empty {
+    display: none;
+  }
+}
+
+/* Grafo escrito a mano */
+.gr-propio {
+  margin-top: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+
+  summary {
+    padding: 14px var(--s3);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .gr-nota {
+    margin: 10px 0 var(--s2);
+  }
+}
+
+.gr-propio-cuerpo {
+  max-width: 560px;
+  padding: 0 var(--s3) var(--s3);
+}
+
+/* Adaptación a pantallas pequeñas */
+// En una sola columna el orden es grafo, pseudocódigo, estado y resultado:
+// las columnas se "disuelven" para poder intercalar sus paneles.
+@media (max-width: 1040px) {
+  .gr-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gr-columna {
+    display: contents;
+  }
+
+  .gr-columna:first-child > :first-child {
+    order: 1;
+  }
+
+  .gr-columna:last-child > * {
+    order: 2;
+  }
+
+  .gr-columna:first-child > :last-child {
+    order: 3;
+  }
+}
+
+@media (max-width: 720px) {
+  .gr-pestanas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gr-azar {
+    width: 100%;
+    margin-left: 0;
+
+    .btn {
+      flex: 1;
+    }
+  }
+
+  .gr-panel {
+    padding: var(--s2);
+  }
+
+  .gr-propio summary {
+    padding: 14px var(--s2);
+  }
+
+  .gr-propio-cuerpo {
+    padding: 0 var(--s2) var(--s2);
+  }
+}
+
+@media (max-width: 480px) {
+  .gr-campo {
+    flex: 1 1 100%;
+  }
+
+  .gr-campo--corto {
+    flex: 0 0 76px;
+  }
+
+  .gr-reproductor-botones {
+    width: 100%;
+    justify-content: center;
+  }
+}
