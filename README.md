@@ -1,6 +1,6 @@
 # Stack Underflow — Visualizador web de algoritmos
 
-Aplicación web para visualizar, ejecutar y comparar ocho algoritmos de ordenamiento paso a paso, y para comprimir libros con el **algoritmo de Huffman**, inspeccionar el archivo comprimido (`.suf`) y descomprimirlo (ver [Compresor Huffman](#compresor-huffman)).
+Aplicación web para visualizar, ejecutar y comparar ocho algoritmos de ordenamiento paso a paso, y para comprimir libros con el **algoritmo de Huffman**, inspeccionar el archivo comprimido (`.suf`) y descomprimirlo (ver [Compresor Huffman](#compresor-huffman)). También muestra paso a paso cuatro algoritmos de grafos: Dijkstra, A\*, Prim y Kruskal (ver [Algoritmos de grafos](#algoritmos-de-grafos)).
 
 Este repositorio contiene el **frontend** (página web). El backend está en [algorithms-visualization-backend](https://github.com/qci-stack-underflow/algorithms-visualization-backend).
 
@@ -157,6 +157,28 @@ Cuando el backend tenga las rutas, se usan sus datos sin cambiar nada en el fron
 ![Proceso de Huffman con Don Quijote](docs/capturas/huffman-proceso.png)
 
 ![Inspector de archivos .suf](docs/capturas/huffman-inspector.png)
+
+## Algoritmos de grafos
+
+Pantalla aparte (`grafos.html`, tarjetas **Caminos más cortos** y **Árbol de expansión mínima** del inicio) con cuatro algoritmos sobre un grafo ponderado no dirigido. Se calcula todo en el navegador: no usa el backend ni comparte código con las otras pantallas.
+
+| Algoritmo | Ruta | Problema | Complejidad |
+|---|---|---|---|
+| Dijkstra | `#/dijkstra` | Camino más corto desde un origen | O((V + E) log V) |
+| A\* | `#/a-estrella` | Camino más corto entre dos nodos, guiado por una heurística | O((V + E) log V) |
+| Prim | `#/prim` | Árbol de expansión mínima, haciendo crecer un árbol | O(E log V) |
+| Kruskal | `#/kruskal` | Árbol de expansión mínima, eligiendo aristas | O(E log E) |
+
+En cada paso se ve el grafo con el estado de sus nodos y aristas, la línea del pseudocódigo que se ejecuta y lo que el algoritmo tiene en memoria (cola de prioridad y tabla por nodo, o conjuntos y aristas ordenadas). El reproductor avanza y retrocede, también con el teclado.
+
+- **Grafos:** cuatro ejemplos (clásico, mapa, cuadrícula y uno no conexo), grafos al azar de 4 a 14 nodos y grafos escritos a mano, una arista por línea.
+- **Comparación:** sobre el mismo grafo, Dijkstra se compara con A\* y Prim con Kruskal. En el mapa de ejemplo, A\* cierra 7 nodos y Dijkstra 12 para llegar al mismo costo.
+- **Heurística de A\*:** distancia en línea recta o Manhattan en el dibujo, llevada a las unidades de los pesos con una escala que la hace consistente, así que A\* siempre da el camino más corto.
+- **Pruebas:** `pnpm test` ejecuta 121 pruebas con el ejecutor de Node, que comparan los cuatro algoritmos contra Floyd–Warshall y fuerza bruta en cientos de grafos al azar.
+
+El detalle (uso, heurística, formato de los pasos, comprobación a mano y pruebas) está en [`docs/GRAFOS.md`](docs/GRAFOS.md).
+
+![A* en el mapa de ejemplo](docs/capturas/grafos-a-estrella.png)
 
 ## Deployment
 
