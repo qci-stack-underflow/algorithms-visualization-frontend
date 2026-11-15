@@ -152,6 +152,53 @@
   animation-delay: -3.4s;
 }
 
+// Contenido de una tarjeta del carrusel: sale hacia la izquierda y la
+// siguiente entra desde la derecha. La tarjeta (.hero-card) sigue flotando.
+.hero-card-cuerpo {
+  display: flex;
+  flex-direction: column;
+  transition:
+    opacity 0.32s ease,
+    transform 0.32s ease;
+
+  &.is-saliendo {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+
+  &.is-entrando {
+    opacity: 0;
+    transform: translateX(14px);
+    transition: none;
+  }
+}
+
+// Todas las tarjetas miden lo mismo, así cambiar una no mueve la página
+// (el asterisco de "A*" hace la cabeza 1 px más alta si no se fija).
+.hero-card-cuerpo .hero-card-head {
+  align-items: center;
+  height: 22px;
+}
+
+.hero-card-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 168px;
+
+  .mini-mapa {
+    height: 100%;
+  }
+
+  .mini-bars {
+    height: 132px;
+  }
+
+  .code-table td {
+    padding: 8px 0;
+  }
+}
+
 .hero-card-head {
   display: flex;
   align-items: baseline;
@@ -185,6 +232,11 @@
   color: var(--accent);
 }
 
+.pill--verde {
+  background: var(--sym-c-bg);
+  color: var(--sym-c-fg);
+}
+
 .mini-bars {
   display: flex;
   align-items: flex-end;
@@ -201,6 +253,18 @@
 
   &.is-compare {
     background: var(--bar-compare);
+  }
+
+  &.is-swap {
+    background: var(--bar-swap);
+  }
+
+  &.is-write {
+    background: var(--bar-write);
+  }
+
+  &.is-pivot {
+    background: var(--bar-pivot);
   }
 }
 
@@ -356,6 +420,49 @@
 
   100% {
     stroke-dashoffset: 1;
+  }
+}
+
+// Kruskal: las aristas del árbol aparecen en el orden en que se aceptan.
+.mini-mapa--arbol {
+  line {
+    stroke-dasharray: 5 5;
+    opacity: 0.8;
+  }
+
+  .is-arbol {
+    stroke: var(--bar-done);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    opacity: 1;
+    animation: trazar-arista 6s ease-out infinite backwards;
+    animation-delay: calc(var(--i) * 0.45s);
+  }
+
+  circle {
+    fill: var(--sym-c-bg);
+    stroke: var(--bar-done);
+  }
+
+  text {
+    fill: var(--sym-c-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}
+
+@keyframes trazar-arista {
+  0% {
+    stroke-dashoffset: 1;
+  }
+
+  12%,
+  100% {
+    stroke-dashoffset: 0;
   }
 }
 
@@ -967,7 +1074,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mini-mapa-ruta {
+  .mini-mapa-ruta,
+  .mini-mapa--arbol .is-arbol {
     animation: none;
   }
 }

@@ -6,6 +6,7 @@ import { dibujarIconos, iniciarDetallesVisuales } from "./inicio.js";
 import { convertirPasos } from "./pasos.js";
 import { mostrarPseudocodigo, resaltarPaso } from "./pseudocodigo.js";
 import { coloresSeries, leerVariable } from "./tema.js";
+import { iniciarCarrusel } from "./carrusel-inicio.js";
 import { crearVistaPreviaArbol, crearVistaPreviaCamino } from "./vista-grafos.js";
 import { crearVistaPreviaHuffman } from "./vista-huffman.js";
 // Lista de algoritmos
@@ -719,6 +720,7 @@ function cambiarVelocidad(evento) {
 // Inicialización de Event Listeners e inicio de interfaz
 document.addEventListener("DOMContentLoaded", () => {
   iniciarDetallesVisuales();
+  iniciarCarrusel();
   filtrarAlgoritmos(); // dibuja los dos bloques de tarjetas
 
   // Vincular eventos a inputs/botones del DOM para evitar inline 'onclick' u 'onchange'

@@ -245,6 +245,7 @@ Todo el código generado con apoyo de IA fue revisado y probado por el equipo, q
 | `src/index.html` | Estructura de la pantalla de inicio y del visualizador |
 | `src/sass/` | Estilos (SASS) |
 | `src/js/script.js` | Lógica de la interfaz: tarjetas, búsqueda y filtro, panel de opciones, modo comparar, gráfica y tarjetas de métricas, vista previa de las tarjetas |
+| `src/js/carrusel-inicio.js` | Carrusel de las tarjetas de la presentación: cambia una tarjeta cada 3.5 s; la del centro siempre es de grafos o de Huffman y las de los lados pueden ser cualquiera de las siete (en `<template data-tarjeta>` dentro de `index.html`) |
 | `src/js/api.js` | Cliente de la API: `POST /algorithms/:id/run` (un algoritmo) y `POST /algorithms/compare` (dos o más) |
 | `src/js/pasos.js` | Adaptador: convierte los pasos del backend (`compare`, `swap`, `write`, `pivot`, `sorted`) al formato `{ tipo, indices, arrayState }` del motor, reconstruyendo el arreglo a partir de `input` |
 | `src/js/animador.js` | `MotorAnimacion`: reproduce los pasos con `setInterval`, permite cambiar la velocidad y reiniciar, y colorea las barras |
