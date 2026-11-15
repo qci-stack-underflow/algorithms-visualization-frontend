@@ -32,7 +32,7 @@ export function describirAhorro(originalBytes, comprimidoBytes) {
   const { ahorro, reduccion, razon } = compararTamanos(originalBytes, comprimidoBytes);
   if (ahorro < 0) {
     return {
-      ahorro: [`+${formatearBytes(-ahorro)}`, `el .suf pesa ${numero(-ahorro)} bytes más`],
+      ahorro: [`−${formatearBytes(-ahorro)}`, `el .suf pesa ${numero(-ahorro)} bytes más`],
       reduccion: [`${reduccion.toFixed(1)} %`, `razón ${razon.toFixed(2)} : 1`],
     };
   }
