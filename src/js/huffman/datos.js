@@ -27,13 +27,16 @@ export function origenDe(resultado) {
 }
 
 // Un 404 del libro puede ser un libro que no existe o un backend sin las
-// rutas de Huffman; en el segundo caso el catálogo también da 404.
-async function faltanRutasDeHuffman() {
+// rutas de Huffman; en el segundo caso el catálogo también da 404. Un 501
+// es una ruta que el backend ya declara pero todavía no implementa.
+async function faltanRutasDeHuffman(error) {
+  if (error.estado === 501) return true;
+  if (error.estado !== 404) return false;
   try {
     await obtenerLibros();
     return false;
-  } catch (error) {
-    return error.estado === 404;
+  } catch (errorDelCatalogo) {
+    return errorDelCatalogo.estado === 404;
   }
 }
 
@@ -92,7 +95,7 @@ export async function cargarLibro(numero, opciones = {}) {
     await terminarCarga(vista);
     return datos[0];
   } catch (error) {
-    if (error.estado === 404 && (await faltanRutasDeHuffman())) {
+    if (await faltanRutasDeHuffman(error)) {
       sinRutasDeHuffman = true;
       if (sigueAbierto(numero)) await usarEjemplo(numero, alUsarEjemplo, vista);
       return null;
