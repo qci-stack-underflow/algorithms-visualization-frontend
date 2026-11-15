@@ -5,6 +5,7 @@ Evidencias de las pruebas mínimas de la sección 12 de los requerimientos y de 
 > **Estado al 9 de noviembre de 2026.** El compresor del backend ya existe, pero en ramas que todavía no se publican; la aplicación publicada sigue en modo ejemplo.
 > - **Pruebas 1 a 3:** los archivos `.suf` se generaron con un script de prueba que sigue el formato SUF1 de `docs/FORMATO-HUFFMAN.md` del backend. Se comprobó que los dos compresores del backend (ramas `arcamp0130/feature/huffman-compressor` y `alesspiz/feature/huffman-endpoints`) generan esos mismos archivos **byte a byte**, así que las cifras son las que da la aplicación.
 > - **[Flujo completo](#flujo-completo-con-el-compresor-del-backend):** se probó en local con el backend real.
+> - **Prueba 4:** se hizo con la subida en modo ejemplo, que comprime en el navegador con una copia del compresor del backend que da los mismos bytes.
 
 Todas las pruebas se hicieron en la aplicación publicada (https://stack-underflow-frontend-algviz.vercel.app/huffman.html#/inspector), con Chromium.
 
@@ -89,11 +90,29 @@ Se levantó en local el backend de la rama `alesspiz/feature/huffman-endpoints` 
 
 ## 4. Archivo no utilizado durante el desarrollo
 
-**Pendiente.** La pantalla para subir un `.txt` ya está lista y probada con un backend simulado (C11, PR #74). Falta el endpoint `POST /huffman/compress/file` del backend para probarla con el compresor real.
+Archivo: *La Celestina* de Fernando de Rojas (Gutenberg #1619), `pg1619.txt` tal como se descarga, con la licencia, el BOM y los `\r\n`: 707,816 bytes, SHA-256 `3229d2ad5fdb1442a94cf53c88c63d7514b035b9cf814519dd617ea73e6c5567`. No se había usado en ninguna prueba.
+
+Se subió en la biblioteca, en la zona **Sube un archivo .txt**, con la aplicación en local (Chromium) y un backend que responde 404 a todo, igual que el publicado hoy. Como el backend todavía no tiene `POST /huffman/compress/file`, la aplicación lo comprimió en el navegador (modo ejemplo, `src/js/huffman/compresor.js`) y lo avisó en la vista.
+
+| Dato | Valor |
+|---|---|
+| Original | 707,816 bytes, 97 símbolos distintos |
+| Archivo `.suf` | 416,521 bytes |
+| Ahorro | 291,295 bytes, **41.2 %** de reducción, razón 1.70 : 1 |
+| Bits por letra | 4.69, con una entropía de 4.66 |
+| Árbol | 193 nodos |
+| Tiempo | 1.1 s desde que se elige el archivo hasta ver el resultado, con la comprobación incluida |
+| Integridad | "el .suf se descomprimió en tu navegador y es idéntico a la-celestina.txt, byte a byte (707,816 bytes)" |
+
+![Subida de La Celestina en modo ejemplo](capturas/huffman-prueba4.png)
+
+![Integridad del archivo subido](capturas/huffman-prueba4-integridad.png)
+
+**Mismo resultado que el backend.** `compresor.js` es una copia del compresor del bloque A (rama `arcamp0130/feature/huffman-compressor`, `99a4e31`). Se compararon los dos con seis textos: `aabccc`, un solo símbolo, dos símbolos, emojis con BOM y `\r\n`, 200,000 caracteres con 84 símbolos de varios alfabetos y `pg2000.txt` completo. En los seis, el `.suf` es idéntico byte a byte y el `HuffmanResult` también (nodos, pasos, códigos, tabla y métricas, menos el tiempo de ejecución). Así, el resultado de la prueba 4 es el mismo que dará el backend cuando publique la ruta.
 
 ## Pendiente
 
-Cuando el backend esté publicado, se repite el flujo completo en producción y se agrega la prueba 4 con un `.txt` nuevo subido desde la aplicación.
+Cuando el backend esté publicado, se repite el flujo completo en producción, con libros y con un `.txt` subido, para comprobar que se usan sus rutas (sin el aviso de modo ejemplo).
 
 ## Cómo repetir las pruebas
 
