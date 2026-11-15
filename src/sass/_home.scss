@@ -299,6 +299,190 @@
   font-weight: 500;
 }
 
+/* Mapa de la tarjeta central: la ruta de A* se dibuja sola */
+.mini-mapa {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(120% 90% at 50% 0%, var(--accent-glow), transparent 62%),
+    var(--bg-subtle);
+
+  line {
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+
+  circle {
+    fill: var(--bg-surface);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+
+  .is-cerrado {
+    fill: var(--sym-c-bg);
+    stroke: var(--bar-done);
+  }
+
+  .is-ruta {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+}
+
+.mini-mapa-ruta {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: trazar-ruta 6s ease-in-out infinite;
+}
+
+// La ruta crece del origen al destino, se queda y vuelve a empezar.
+@keyframes trazar-ruta {
+  0%,
+  8% {
+    stroke-dashoffset: 1;
+  }
+
+  45%,
+  92% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 1;
+  }
+}
+
+.mini-mapa-letra {
+  fill: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-anchor: middle;
+}
+
+/* Tres caminos para empezar */
+.section--compacta {
+  padding: var(--s6) 0 var(--s5);
+}
+
+.rutas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s3);
+}
+
+.ruta {
+  --tinta: var(--accent);
+  --tinta-fondo: var(--accent-light);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.25s ease;
+
+  h3 {
+    margin-top: 6px;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--tinta);
+    box-shadow:
+      0 0 0 4px var(--tinta-fondo),
+      var(--shadow-md);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:hover .ruta-enlace svg,
+  &:focus-visible .ruta-enlace svg {
+    transform: translateX(3px);
+  }
+}
+
+// Un tono por familia, de la misma paleta de las vistas: ámbar para las
+// barras, verde para los grafos y azul para la compresión.
+.ruta:has(.ruta-icono--ordenar) {
+  --tinta: var(--sym-b-fg);
+  --tinta-fondo: var(--sym-b-bg);
+}
+
+.ruta:has(.ruta-icono--grafos) {
+  --tinta: var(--sym-c-fg);
+  --tinta-fondo: var(--sym-c-bg);
+}
+
+.ruta-icono {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--tinta-fondo);
+  color: var(--tinta);
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.ruta-cuenta {
+  position: absolute;
+  top: var(--s4);
+  right: var(--s4);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.ruta-enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  color: var(--tinta);
+  font-size: 15px;
+  font-weight: 500;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+}
+
 /* Cifras */
 .stats {
   display: grid;
@@ -771,6 +955,20 @@
   .hero-card--left,
   .hero-card--right {
     display: none;
+  }
+}
+
+@media (max-width: 960px) {
+  .rutas {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mini-mapa-ruta {
+    animation: none;
   }
 }
 

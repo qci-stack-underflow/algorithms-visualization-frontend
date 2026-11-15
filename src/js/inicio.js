@@ -6,6 +6,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
+  ChartColumn,
   Check,
   Download,
   Eye,
@@ -20,6 +21,7 @@ import {
   StepBack,
   StepForward,
   TriangleAlert,
+  Waypoints,
   ZoomIn,
   ZoomOut,
 } from "lucide";
@@ -29,6 +31,7 @@ const ICONOS = {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
+  ChartColumn,
   Check,
   Download,
   Eye,
@@ -43,6 +46,7 @@ const ICONOS = {
   StepBack,
   StepForward,
   TriangleAlert,
+  Waypoints,
   ZoomIn,
   ZoomOut,
 };
