@@ -20,9 +20,9 @@
     // misma ruta que lee js/huffman/rutas.js; navegacion.js quita la marca al
     // mostrar la vista.
     (function () {
-      var ruta = /^#\/(?:libro\/\d+(\/binario)?|(inspector))\/?$/.exec(location.hash);
+      var ruta = /^#\/(?:libro\/\d+(\/binario)?|(inspector)|archivo(\/binario)?)\/?$/.exec(location.hash);
       if (ruta) {
-        var vista = ruta[2] ? "inspector" : ruta[1] ? "binario" : "proceso";
+        var vista = ruta[2] ? "inspector" : ruta[1] || ruta[3] ? "binario" : "proceso";
         document.documentElement.setAttribute("data-ruta-inicial", vista);
       }
     })();
@@ -98,6 +98,13 @@
         </form>
         <p class="enlace-nota" id="enlaceNota" data-enlace-nota>Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
         <p class="enlace-error" id="enlaceError" role="alert" data-enlace-error hidden></p>
+        <!-- Subir un .txt propio (js/huffman/subida.js) -->
+        <label class="subir-zona" data-subir-zona>
+          <input class="visually-hidden" type="file" accept=".txt,text/plain" data-subir-archivo>
+          <span class="subir-titulo">¿Tienes tu propio texto? Sube un archivo .txt</span>
+          <span class="subir-nota">Texto plano en UTF-8, hasta 4 MB. Se comprime en el servidor y se comprueba en tu navegador.</span>
+        </label>
+        <p class="enlace-error" role="alert" data-subir-error hidden></p>
         <p class="enlace-nota">¿Ya tienes un archivo .suf? <a href="#/inspector">Ábrelo en el inspector</a>.</p>
 
         <div class="biblioteca-head">
@@ -216,7 +223,7 @@
           </a>
           <div class="vista-libro">
             <h1 id="procesoTitulo" tabindex="-1" data-libro-titulo>Don Quijote</h1>
-            <span><span data-libro-autor>Miguel de Cervantes Saavedra</span> · Project Gutenberg #<span data-libro-numero>2000</span></span>
+            <span><span data-libro-autor>Miguel de Cervantes Saavedra</span><span data-origen-gutenberg> · Project Gutenberg #<span data-libro-numero>2000</span></span></span>
           </div>
         </div>
         <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
@@ -499,6 +506,7 @@
               <div class="archivo-texto">
                 <h2 id="archivoTitulo">Archivo listo</h2>
                 <p><code data-libro-archivo>don-quijote.suf</code> · <span data-archivo-tamano>1.2 MB</span></p>
+                <p class="archivo-integridad" data-integridad hidden></p>
               </div>
               <div class="archivo-acciones">
                 <a class="btn btn--ghost" href="#/libro/2000/binario" data-ir="binario">

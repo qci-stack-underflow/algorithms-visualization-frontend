@@ -46,7 +46,40 @@ const ERROR_INESPERADO = {
   reintentar: true,
 };
 
-export function mensajeDeError(estado) {
+// Mensajes cuando lo que se comprime es un .txt subido (subida.js).
+const ERRORES_DE_ARCHIVO = {
+  400: {
+    titulo: "El archivo no es válido",
+    texto: "Debe ser un archivo de texto plano (.txt) en UTF-8. Revisa el archivo y vuelve a subirlo.",
+    reintentar: false,
+  },
+  413: {
+    titulo: "El archivo es demasiado grande",
+    texto: "Supera el tamaño máximo que se puede subir (4 MB). Prueba con un texto más corto.",
+    reintentar: false,
+  },
+  501: {
+    titulo: "Todavía no se pueden comprimir archivos",
+    texto: "El servidor aún no tiene esta función. Mientras tanto, elige un libro de la biblioteca.",
+    reintentar: false,
+  },
+  0: ERRORES[0],
+  "sin-archivo": {
+    titulo: "Vuelve a subir el archivo",
+    texto: "El archivo subido solo se conserva mientras la página está abierta. Elígelo otra vez en la biblioteca.",
+    reintentar: false,
+  },
+};
+
+const ERROR_INESPERADO_DE_ARCHIVO = {
+  titulo: "No se pudo comprimir el archivo",
+  texto: "Ocurrió un error inesperado en el servidor. Intenta de nuevo en unos momentos.",
+  reintentar: true,
+};
+
+// `de` es "libro" (Gutenberg) o "archivo" (un .txt subido).
+export function mensajeDeError(estado, de = "libro") {
+  if (de === "archivo") return ERRORES_DE_ARCHIVO[estado] ?? ERROR_INESPERADO_DE_ARCHIVO;
   return ERRORES[estado] ?? ERROR_INESPERADO;
 }
 
@@ -106,12 +139,12 @@ function ocultarError(vista) {
 
 // El backend descarga y comprime en una sola respuesta, así que mientras
 // llega solo se marca la primera fase como en curso.
-export function mostrarCarga(vista = "proceso") {
+export function mostrarCarga(vista = "proceso", texto = TEXTO_DE_CARGA[vista]) {
   cancelarTemporizadores();
   ocultarError(vista);
   seccion(vista).dataset.estado = "cargando";
   pintarFases(vista, 0);
-  ponerEstado(vista, TEXTO_DE_CARGA[vista] ?? TEXTO_DE_CARGA.proceso);
+  ponerEstado(vista, texto ?? TEXTO_DE_CARGA.proceso);
 }
 
 // Marca las fases que faltan, en orden, y vuelve a mostrar los resultados.
@@ -147,9 +180,9 @@ export function terminarCarga(vista = "proceso") {
 
 // Muestra qué falló y qué hacer. El botón Reintentar solo aparece si tiene
 // sentido para ese error y se recibe la función que repite la petición.
-export function mostrarError(estado, alReintentar, vista = "proceso") {
+export function mostrarError(estado, alReintentar, vista = "proceso", de = "libro") {
   cancelarTemporizadores();
-  const { titulo, texto, reintentar } = mensajeDeError(estado);
+  const { titulo, texto, reintentar } = mensajeDeError(estado, de);
   seccion(vista).dataset.estado = "error";
   ponerEstado(vista, "");
 

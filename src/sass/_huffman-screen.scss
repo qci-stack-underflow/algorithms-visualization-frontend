@@ -1316,6 +1316,55 @@ th[aria-sort="ascending"] .orden::after {
   }
 }
 
+/* Subir un .txt propio */
+.subir-zona {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  max-width: 720px;
+  margin: var(--s3) auto 0;
+  padding: var(--s2) var(--s3);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover,
+  &.is-arrastrando {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+.subir-titulo {
+  font-weight: 600;
+}
+
+.subir-nota {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+// Resultado de comparar el .suf descomprimido con el .txt subido
+.archivo-integridad {
+  color: var(--sym-c-fg);
+  font-size: 13px;
+
+  &.is-falla {
+    color: var(--danger);
+    font-weight: 500;
+  }
+}
+
 /* Inspector de archivos .suf */
 .insp-zona {
   display: grid;
