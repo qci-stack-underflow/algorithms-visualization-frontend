@@ -93,7 +93,7 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 
 ## Uso de la aplicación
 
-1. En la pantalla de inicio, cada tarjeta muestra una animación corta de su algoritmo. Se puede **buscar** por nombre o **filtrar** por complejidad.
+1. La pantalla de inicio presenta las tres familias de algoritmos (ordenar, grafos y compresión); **Ver ordenamientos** lleva al catálogo, donde cada tarjeta muestra una animación corta de su algoritmo. Se puede **buscar** por nombre o **filtrar** por complejidad.
 2. Al hacer clic en una tarjeta se abre el **visualizador**.
 3. En el panel **Options** se genera un arreglo aleatorio (**Elements**, máximo 50) o se escribe uno propio (**Custom Elements** + **Insert**).
 4. Se elige la velocidad (**Speed**).
@@ -123,7 +123,7 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 
 ## Compresor Huffman
 
-Pantalla aparte (`huffman.html`, botón **Comprimir archivo**) para la actividad integradora *Huffman Web Compressor*: elegir un libro de Project Gutenberg, ver cómo Huffman cuenta las letras, construye el árbol y asigna los códigos, y obtener un archivo comprimido con formato propio, `.suf` (Stack Under Flow).
+Pantalla aparte (`huffman.html`, **Compresión** en la barra de navegación o **Comprimir un libro** en el inicio) para la actividad integradora *Huffman Web Compressor*: elegir un libro de Project Gutenberg, ver cómo Huffman cuenta las letras, construye el árbol y asigna los códigos, y obtener un archivo comprimido con formato propio, `.suf` (Stack Under Flow).
 
 **Flujo:** elegir un libro (catálogo, búsqueda o enlace) o subir un `.txt` → proceso (cifras, tabla de letras, árbol) → archivo `.suf` (ver los bits o descargarlo) → inspector (examinar, descomprimir y comprobar la integridad).
 
@@ -160,7 +160,7 @@ Cuando el backend tenga las rutas, se usan sus datos sin cambiar nada en el fron
 
 ## Algoritmos de grafos
 
-Pantalla aparte (`grafos.html`, tarjetas **Caminos más cortos** y **Árbol de expansión mínima** del inicio) con cuatro algoritmos sobre un grafo ponderado no dirigido. Se calcula todo en el navegador: no usa el backend ni comparte código con las otras pantallas.
+Pantalla aparte (`grafos.html`, **Grafos** en la barra de navegación, **Recorrer un grafo** en el inicio o las tarjetas **Caminos más cortos** y **Árbol de expansión mínima**) con cuatro algoritmos sobre un grafo ponderado no dirigido. Se calcula todo en el navegador: no usa el backend ni comparte código con las otras pantallas.
 
 | Algoritmo | Ruta | Problema | Complejidad |
 |---|---|---|---|
@@ -245,6 +245,7 @@ Todo el código generado con apoyo de IA fue revisado y probado por el equipo, q
 | `src/index.html` | Estructura de la pantalla de inicio y del visualizador |
 | `src/sass/` | Estilos (SASS) |
 | `src/js/script.js` | Lógica de la interfaz: tarjetas, búsqueda y filtro, panel de opciones, modo comparar, gráfica y tarjetas de métricas, vista previa de las tarjetas |
+| `src/js/carrusel-inicio.js` | Carrusel de las tarjetas de la presentación: cambia una tarjeta cada 3.5 s; la del centro siempre es de grafos o de Huffman y las de los lados pueden ser cualquiera de las siete (en `<template data-tarjeta>` dentro de `index.html`) |
 | `src/js/api.js` | Cliente de la API: `POST /algorithms/:id/run` (un algoritmo) y `POST /algorithms/compare` (dos o más) |
 | `src/js/pasos.js` | Adaptador: convierte los pasos del backend (`compare`, `swap`, `write`, `pivot`, `sorted`) al formato `{ tipo, indices, arrayState }` del motor, reconstruyendo el arreglo a partir de `input` |
 | `src/js/animador.js` | `MotorAnimacion`: reproduce los pasos con `setInterval`, permite cambiar la velocidad y reiniciar, y colorea las barras |
