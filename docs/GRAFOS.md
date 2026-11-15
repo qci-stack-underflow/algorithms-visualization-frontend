@@ -192,7 +192,7 @@ Son 121 pruebas en `pruebas/grafos/`. Las más importantes comparan cada algorit
 
 También se revisa que cada paso sea una foto completa y coherente con la anterior (un nodo cerrado no se vuelve a abrir, la cola tiene justo los nodos de la frontera y en orden, cada paso apunta a una línea que existe y tiene su frase), los grafos de ejemplo, el generador (500 semillas: siempre conexo y legible), el lector de grafos escritos a mano y la dirección de la página.
 
-Como control, se introdujeron ocho errores a propósito en los algoritmos y las estructuras (por ejemplo, ordenar las aristas al revés o comparar con la distancia acumulada en Prim), y las pruebas detectaron los ocho.
+Como control, se introdujeron siete errores a propósito en los algoritmos y las estructuras (por ejemplo, ordenar las aristas al revés o comparar con la distancia acumulada en Prim), y las pruebas detectaron los siete.
 
 **En el navegador.** Con Chromium se recorrió la pantalla como lo haría una persona: 81 comprobaciones del reproductor, el teclado, las pestañas, la elección de origen y destino, los grafos de ejemplo, al azar y escritos a mano, las heurísticas y las direcciones. Pasan todas, sin errores en la consola, y no hay desplazamiento horizontal a 390, 768 ni 1040 px de ancho.
 
