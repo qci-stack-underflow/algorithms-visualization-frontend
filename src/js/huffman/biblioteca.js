@@ -152,6 +152,17 @@ function mensajeDeBusqueda(error) {
   return "La búsqueda no está disponible por ahora. Elige un libro de la biblioteca o pega su enlace.";
 }
 
+// Estados con los que el backend dice que todavía no tiene la búsqueda: sin
+// la ruta (404, 405) o con la ruta declarada pero sin implementar (501).
+const SIN_BUSQUEDA_EN_EL_BACKEND = new Set([404, 405, 501]);
+
+// La lista de ejemplo se descarga solo si hace falta. Devuelve los libros
+// encontrados y cuántos hay en la lista.
+async function buscarDeEjemplo(consulta) {
+  const { buscarEnEjemplo, TOTAL_DE_LIBROS_DE_EJEMPLO } = await import("./ejemplo-libros.js");
+  return { libros: buscarEnEjemplo(consulta), total: TOTAL_DE_LIBROS_DE_EJEMPLO };
+}
+
 // Buscar en Project Gutenberg (requerimientos, sección 2B): las coincidencias
 // se dibujan con las mismas tarjetas del catálogo y abren #/libro/N.
 function iniciarBusqueda() {
@@ -181,17 +192,23 @@ function iniciarBusqueda() {
     boton.setAttribute("aria-disabled", "true");
     avisar(`Buscando «${consulta}» en Project Gutenberg…`);
     try {
-      const libros = await buscarLibros(consulta);
+      let libros = await buscarLibros(consulta).catch((error) => {
+        if (SIN_BUSQUEDA_EN_EL_BACKEND.has(error.estado)) return null;
+        throw error;
+      });
+      // Sin búsqueda en el backend: se busca en la lista de ejemplo.
+      let totalDeEjemplo = 0;
+      if (libros === null) ({ libros, total: totalDeEjemplo } = await buscarDeEjemplo(consulta));
       if (esta !== ultima) return;
-      if (libros === null) {
+      const donde = totalDeEjemplo
+        ? ` en la lista de ejemplo de ${totalDeEjemplo} libros (la búsqueda en todo Project Gutenberg llegará con el servidor)`
+        : "";
+      if (libros.length === 0) {
         resultados.replaceChildren();
-        avisar(mensajeDeBusqueda({}), true);
-      } else if (libros.length === 0) {
-        resultados.replaceChildren();
-        avisar(`No se encontraron libros para «${consulta}». Prueba con otro título o autor.`);
+        avisar(`No se encontraron libros para «${consulta}»${donde}. Prueba con otro título o autor, o pega el enlace del libro.`);
       } else {
         resultados.replaceChildren(...libros.map(crearTarjeta));
-        avisar(`${numero(libros.length)} ${libros.length === 1 ? "libro encontrado" : "libros encontrados"} para «${consulta}».`);
+        avisar(`${numero(libros.length)} ${libros.length === 1 ? "libro encontrado" : "libros encontrados"} para «${consulta}»${donde}.`);
       }
     } catch (error) {
       if (esta !== ultima) return;

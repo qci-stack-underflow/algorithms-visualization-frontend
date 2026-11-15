@@ -62,6 +62,7 @@ function llenarLibro(numero, { titulo, autor } = datosDelLibro(numero)) {
   document.querySelectorAll("[data-aviso-ejemplo]").forEach((aviso) => {
     aviso.hidden = numero === LIBRO_DE_EJEMPLO;
   });
+  mostrarAvisoLocal(false);
 
   return { titulo, archivo };
 }
@@ -77,6 +78,14 @@ function mostrarOrigen(esLibro) {
       integridad.hidden = true;
     });
   }
+}
+
+// Aviso de que un .txt subido se comprimió en el navegador porque el backend
+// todavía no tiene la subida (ver subida.js).
+function mostrarAvisoLocal(visible) {
+  document.querySelectorAll("[data-aviso-local]").forEach((aviso) => {
+    aviso.hidden = !visible;
+  });
 }
 
 // Título, nombre del .suf y enlaces para un .txt subido.
@@ -123,9 +132,10 @@ function textoDeIntegridad({ identico, normalizado, primeraDiferencia, bytes, er
 }
 
 function mostrarSubido(subido) {
-  const { resultado, bytesSuf, integridad, nombre } = subido;
+  const { resultado, bytesSuf, integridad, nombre, local } = subido;
   const titulo = origenDe(resultado).titulo ?? nombre.replace(/\.txt$/i, "");
   const datos = llenarDeArchivo(titulo, nombre);
+  mostrarAvisoLocal(local);
   if (rutaActual?.archivo) document.title = tituloDeVista(rutaActual.vista, datos);
   llenarProceso(resultado);
   llenarBinario(resultado, bytesSuf);

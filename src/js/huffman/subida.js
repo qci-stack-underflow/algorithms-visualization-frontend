@@ -1,10 +1,13 @@
 // Subir un .txt propio (requerimientos, sección 2A): se valida en el
 // navegador, se envía a POST /huffman/compress/file y, al recibir el
 // resultado y el .suf, se descomprime el .suf aquí mismo y se compara con el
-// archivo subido (integridad, sección 8). El resultado vive solo mientras la
-// página siga abierta, en las rutas #/archivo y #/archivo/binario.
+// archivo subido (integridad, sección 8). Mientras el backend no tenga esa
+// ruta, el archivo se comprime en el navegador (modo ejemplo, compresor.js).
+// El resultado vive solo mientras la página siga abierta, en las rutas
+// #/archivo y #/archivo/binario.
 import { comprimirArchivo } from "../api.js";
 import { mostrarCarga, mostrarError, terminarCarga } from "./carga.js";
+import { comprimirEnNavegador, leerTexto } from "./compresor.js";
 import { formatearBytes } from "./formato.js";
 import { leerRuta } from "./rutas.js";
 import { compararConOriginal, descomprimir, leerSuf, reconstruirArbol } from "./suf.js";
@@ -50,9 +53,26 @@ function comprobarIntegridad(original, bytesSuf) {
 
 const sigueAbierto = () => leerRuta(location.hash)?.archivo === true;
 
+// Estados con los que el backend dice que todavía no tiene la subida: sin la
+// ruta (404, 405) o con la ruta declarada pero sin implementar (501).
+const SIN_SUBIDA_EN_EL_BACKEND = new Set([404, 405, 501]);
+
+// Comprime en el backend y, si todavía no tiene la subida, en el navegador
+// con la misma implementación (compresor.js); `local` dice cuál se usó.
+async function comprimir(archivo, original) {
+  try {
+    return { ...(await comprimirArchivo(archivo)), local: false };
+  } catch (error) {
+    if (!SIN_SUBIDA_EN_EL_BACKEND.has(error.estado)) throw error;
+    const titulo = archivo.name.replace(/\.txt$/i, "");
+    const datos = { titulo, archivo: { nombre: archivo.name, bytes: original.byteLength } };
+    return { ...comprimirEnNavegador(leerTexto(original), datos), local: true };
+  }
+}
+
 // Llena la vista con el archivo subido. `alCargar(subido)` recibe
-// { nombre, resultado, bytesSuf, integridad }; si todavía no hay respuesta,
-// se muestra la carga y los errores de carga.js.
+// { nombre, resultado, bytesSuf, local, integridad }; si todavía no hay
+// respuesta, se muestra la carga y los errores de carga.js.
 export async function cargarArchivo(vista, alCargar) {
   if (subido) {
     alCargar(subido);
@@ -66,14 +86,13 @@ export async function cargarArchivo(vista, alCargar) {
   const archivo = pendiente;
   mostrarCarga(vista, `Subiendo ${archivo.name} y comprimiéndolo…`);
   try {
-    const [original, { resultado, bytesSuf }] = await Promise.all([
-      archivo.arrayBuffer(),
-      comprimirArchivo(archivo),
-    ]);
+    const original = await archivo.arrayBuffer();
+    const { resultado, bytesSuf, local } = await comprimir(archivo, original);
     subido = {
       nombre: archivo.name,
       resultado,
       bytesSuf,
+      local,
       integridad: comprobarIntegridad(original, bytesSuf),
     };
     pendiente = null;

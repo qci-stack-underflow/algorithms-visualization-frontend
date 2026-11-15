@@ -167,6 +167,10 @@ export async function comprimirArchivo(archivo) {
     const datos = await respuesta.json().catch(() => null);
     throw new ErrorApi(datos?.message || `Error ${respuesta.status} del backend.`, respuesta.status);
   }
+  // Una ruta que todavía es un esqueleto responde texto: se trata como 501.
+  if (!respuesta.headers.get("Content-Type")?.includes("application/octet-stream")) {
+    throw new ErrorApi("El backend todavía no comprime archivos.", 501);
+  }
   return separarRespuestaDeArchivo(await respuesta.arrayBuffer());
 }
 

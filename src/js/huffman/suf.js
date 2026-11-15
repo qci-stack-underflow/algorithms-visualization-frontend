@@ -28,7 +28,9 @@ export class ErrorSuf extends Error {
 export function leerSuf(buffer) {
   const bytes = new Uint8Array(buffer);
   const vista = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const utf8 = new TextDecoder("utf-8", { fatal: true });
+  // ignoreBOM: un símbolo U+FEFF (el BOM de un .txt) es un símbolo más; sin
+  // esta opción el decodificador lo quita y queda un símbolo vacío.
+  const utf8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
   let posicion = 0;
 
   const tomar = (cuantos) => {

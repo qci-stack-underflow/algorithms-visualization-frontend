@@ -125,16 +125,17 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 
 Pantalla aparte (`huffman.html`, botón **Comprimir archivo**) para la actividad integradora *Huffman Web Compressor*: elegir un libro de Project Gutenberg, ver cómo Huffman cuenta las letras, construye el árbol y asigna los códigos, y obtener un archivo comprimido con formato propio, `.suf` (Stack Under Flow).
 
-**Flujo:** elegir un libro → proceso (cifras, tabla de letras, árbol) → archivo `.suf` (ver los bits o descargarlo) → inspector (examinar, descomprimir y comprobar la integridad).
+**Flujo:** elegir un libro (catálogo, búsqueda o enlace) o subir un `.txt` → proceso (cifras, tabla de letras, árbol) → archivo `.suf` (ver los bits o descargarlo) → inspector (examinar, descomprimir y comprobar la integridad).
 
 | Vista | Ruta | Qué muestra |
 |---|---|---|
-| Biblioteca | `#/` | Catálogo de libros y campo para pegar un enlace de Gutenberg (`/ebooks/2000`, `/cache/epub/2000/…`) |
+| Biblioteca | `#/` | Catálogo de libros, búsqueda en Project Gutenberg, campo para pegar un enlace (`/ebooks/2000`, `/cache/epub/2000/…`) y zona para subir un `.txt` (hasta 4 MB) |
+| Archivo subido | `#/archivo`, `#/archivo/binario` | Lo mismo que el proceso y el binario, para el `.txt` subido, más la comprobación de integridad: el `.suf` recibido se descomprime en el navegador y se compara byte a byte con el archivo |
 | Proceso | `#/libro/2000` | Tamaño original y comprimido, bytes ahorrados, reducción y razón de compresión, bits por letra con la entropía, tabla de todos los símbolos (ordenable, con búsqueda y los invisibles visibles: ␣ ↵ ⇥), árbol y pseudocódigo |
 | Binario | `#/libro/2000/binario` | Encabezado del `.suf`, cómo se codifica una frase de ejemplo y todos los bits de los datos en una lista virtualizada (solo se dibujan las filas visibles), con los bits de relleno marcados |
 | Inspector | `#/inspector` | Se carga solo un `.suf`, sin el texto original, y se ve su estructura byte a byte, el diccionario, el árbol reconstruido y una muestra de los bits. **Descomprimir** recupera el texto en el navegador, comprueba la integridad y permite descargarlo como `.txt` |
 
-**Formato `.suf`.** Firma `SUF1`, total de caracteres, bits de relleno, número de símbolos, título, un diccionario con el símbolo, sus apariciones y su código, y los datos comprimidos. Está documentado byte a byte en `docs/FORMATO-HUFFMAN.md` del backend (en revisión en el PR [backend#51](https://github.com/qci-stack-underflow/algorithms-visualization-backend/pull/51)).
+**Formato `.suf`.** Firma `SUF1`, total de caracteres, bits de relleno, número de símbolos, título, un diccionario con el símbolo, sus apariciones y su código, y los datos comprimidos. Está documentado byte a byte en `docs/FORMATO-HUFFMAN.md` del backend.
 
 **Integridad.** Al descomprimir, el inspector comprueba, sin el original:
 - que los caracteres recuperados sean los que dice el encabezado;
@@ -144,9 +145,14 @@ Pantalla aparte (`huffman.html`, botón **Comprimir archivo**) para la actividad
 
 Muestra además el SHA-256 del texto, y si se tiene el `.txt` original, lo compara byte a byte.
 
-**Modo ejemplo.** Mientras el backend no publique las rutas de `/huffman`, el proceso y el binario usan el resultado de ejemplo de Don Quijote (`src/js/huffman/ejemplo-quijote.json`, copia de `docs/ejemplos/huffman-quijote.json` del backend) y avisan con otro libro que es una vista de ejemplo. Cuando el backend tenga las rutas, se usan sus datos sin cambiar nada en el frontend. El inspector y la descompresión no dependen del backend.
+**Modo ejemplo.** Mientras el backend no publique las rutas de `/huffman` (responde 404, 405 o 501, o una ruta que todavía es un esqueleto), la pantalla sigue funcionando:
+- **Libros:** el proceso y el binario usan el resultado de ejemplo de Don Quijote (`src/js/huffman/ejemplo-quijote.json`, copia de `docs/ejemplos/huffman-quijote.json` del backend) y, con otro libro, avisan que es una vista de ejemplo.
+- **Búsqueda:** se busca en una lista de 30 libros de Gutenberg (`src/js/huffman/ejemplo-libros.js`), sin acentos ni mayúsculas, y el mensaje lo indica.
+- **Subida:** el `.txt` se comprime en el navegador con `src/js/huffman/compresor.js`, una copia fiel del compresor del backend (bloque A): con los mismos textos genera el mismo `HuffmanResult` y el mismo `.suf` byte a byte. La vista lo avisa.
 
-**Pruebas:** [`docs/PRUEBAS-HUFFMAN.md`](docs/PRUEBAS-HUFFMAN.md) tiene las pruebas mínimas (texto pequeño, libro de Gutenberg e integridad), con capturas.
+Cuando el backend tenga las rutas, se usan sus datos sin cambiar nada en el frontend. El inspector y la descompresión no dependen del backend.
+
+**Pruebas:** [`docs/PRUEBAS-HUFFMAN.md`](docs/PRUEBAS-HUFFMAN.md) tiene las cuatro pruebas mínimas (texto pequeño, libro de Gutenberg, integridad y un archivo no usado durante el desarrollo), con capturas.
 
 ![Proceso de Huffman con Don Quijote](docs/capturas/huffman-proceso.png)
 
@@ -239,24 +245,27 @@ La dirección del backend se toma de `VITE_API_URL`; si no está definida, se us
 |---|---|
 | `src/huffman.html` | Las cuatro vistas: biblioteca, proceso, binario e inspector |
 | `src/js/huffman.js` | Punto de entrada: inicia la tabla, la navegación, la biblioteca, las descargas, el binario y el inspector |
-| `src/js/huffman/rutas.js` | Lee y arma las rutas del hash (`#/`, `#/libro/N`, `#/libro/N/binario`, `#/inspector`) |
+| `src/js/huffman/rutas.js` | Lee y arma las rutas del hash (`#/`, `#/libro/N`, `#/libro/N/binario`, `#/inspector`, `#/archivo`, `#/archivo/binario`) |
 | `src/js/huffman/navegacion.js` | Muestra la vista de la ruta, cuida el scroll, el foco y el historial, y pide los datos del libro |
 | `src/js/huffman/datos.js` | `cargarLibro`: pide el resultado (y el `.suf` en el binario) mostrando la carga y los errores; modo ejemplo si el backend no tiene `/huffman` |
-| `src/js/huffman/carga.js` | Fases de la carga y un mensaje para cada error del backend (400, 404, 413, 504, sin conexión) |
-| `src/js/huffman/biblioteca.js` | Tarjetas desde `GET /huffman/books` y lectura del enlace de Gutenberg |
+| `src/js/huffman/carga.js` | Fases de la carga y un mensaje para cada error del backend (400, 404, 413, 501, 504, sin conexión), de un libro o de un archivo subido |
+| `src/js/huffman/biblioteca.js` | Tarjetas desde `GET /huffman/books`, búsqueda (`GET /huffman/books/search`), lectura del enlace de Gutenberg y zona de subida |
+| `src/js/huffman/subida.js` | Valida el `.txt`, lo envía a `POST /huffman/compress/file` (o lo comprime en el navegador en modo ejemplo) y comprueba la integridad del `.suf` recibido |
+| `src/js/huffman/compresor.js` | Compresor de Huffman en el navegador para el modo ejemplo de la subida, idéntico al del backend |
+| `src/js/huffman/ejemplo-libros.js` | Lista de 30 libros de Gutenberg para la búsqueda en modo ejemplo |
 | `src/js/huffman/proceso.js`, `tabla.js` | Cifras de la compresión y tabla de letras (orden, búsqueda y evento `simbolo-seleccionado` para el árbol) |
 | `src/js/huffman/descarga.js` | Descarga del `.suf` con un `Blob` |
 | `src/js/huffman/suf.js` | Lectura del `.suf` (`leerSuf`), tamaño original, árbol reconstruido, `descomprimir` y comprobaciones de integridad |
 | `src/js/huffman/binario.js` | Vista binaria con la lista virtualizada de bits |
 | `src/js/huffman/inspector.js` | Inspector: cargar, examinar, descomprimir, descargar y comparar |
 | `src/js/huffman/formato.js` | Números, tamaños (KB/MB), ahorro y símbolos invisibles |
-| `src/js/api.js` | También `obtenerLibros`, `obtenerHuffman` y `descargarSuf`, con caché por libro |
+| `src/js/api.js` | También `obtenerLibros`, `buscarLibros`, `obtenerHuffman`, `descargarSuf` (con caché por libro) y `comprimirArchivo` |
 
 Eventos para el árbol (bloque D): `huffman-resultado` (`{ libro, resultado, ejemplo }`, cada vez que se llena el proceso o el binario), `simbolo-seleccionado` (`{ symbol, code, nodeId }` o `null`) y `suf-inspeccionado` (`{ nombre, encabezado, nodes, rootId }` desde el inspector).
 
 ## Limitaciones conocidas
 
-- **Compresión:** el backend todavía no publica las rutas de `/huffman`. La pantalla de Huffman funciona en modo ejemplo (Don Quijote) y aún no comprime textos nuevos; la descarga del `.suf` desde un libro espera a esos endpoints.
-- **Búsqueda en Gutenberg y subida de `.txt`:** pendientes (C10 y C11); dependen de las decisiones de [backend#52](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/52) y [backend#53](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/53).
+- **Compresión de libros:** el backend todavía no publica las rutas de `/huffman`. Los libros se muestran en modo ejemplo (Don Quijote) y la descarga del `.suf` de un libro espera a esos endpoints; un `.txt` subido sí se comprime, en el navegador (ver *Modo ejemplo*).
+- **Búsqueda en Gutenberg:** hasta que exista `GET /huffman/books/search` ([backend#52](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/52)) solo encuentra los 30 libros de la lista de ejemplo.
 - **Árbol:** el dibujo animado del árbol (bloque D) está en desarrollo. El inspector reconstruye el árbol y lo resume, pero aún no lo dibuja.
 - **Despliegues de prueba de Vercel:** no tienen `VITE_API_URL`, así que los ordenamientos solo funcionan en producción y en local.
