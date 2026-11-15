@@ -107,6 +107,22 @@
         <p class="enlace-error" role="alert" data-subir-error hidden></p>
         <p class="enlace-nota">¿Ya tienes un archivo .suf? <a href="#/inspector">Ábrelo en el inspector</a>.</p>
 
+        <!-- Buscar en Project Gutenberg (js/huffman/biblioteca.js) -->
+        <section class="buscar" aria-labelledby="buscarTitulo">
+          <h2 class="buscar-titulo" id="buscarTitulo">Busca cualquier libro de Project Gutenberg</h2>
+          <form class="enlace-libro" role="search" data-buscar-libro novalidate>
+            <label class="campo">
+              <i data-lucide="search"></i>
+              <span class="visually-hidden">Título, autor o palabra clave</span>
+              <input type="search" name="q" placeholder="Título, autor o palabra clave" autocomplete="off"
+                aria-describedby="busquedaEstado">
+            </label>
+            <button class="btn btn--primary" type="submit">Buscar</button>
+          </form>
+          <p class="buscar-estado" id="busquedaEstado" role="status" data-busqueda-estado></p>
+          <div class="libros buscar-resultados" data-busqueda-resultados></div>
+        </section>
+
         <div class="biblioteca-head">
           <h2>O elige uno de la biblioteca</h2>
           <span class="biblioteca-cuenta" data-libros-cuenta>6 libros</span>

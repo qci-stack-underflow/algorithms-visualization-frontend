@@ -1,6 +1,8 @@
-// Vista de la biblioteca: las tarjetas salen de GET /huffman/books y el campo
-// de enlace abre cualquier libro de Project Gutenberg por su número.
-import { obtenerLibros } from "../api.js";
+// Vista de la biblioteca: las tarjetas salen de GET /huffman/books, la
+// búsqueda encuentra otros libros de Project Gutenberg y el campo de enlace
+// abre cualquiera por su número.
+import { buscarLibros, obtenerLibros } from "../api.js";
+import { numero } from "./formato.js";
 import { ir } from "./navegacion.js";
 import { prepararSubida, validarArchivo } from "./subida.js";
 import { rutaA } from "./rutas.js";
@@ -141,6 +143,66 @@ function iniciarEnlace() {
   });
 }
 
+// Qué decir cuando la búsqueda falla, según el estado HTTP.
+function mensajeDeBusqueda(error) {
+  if (error.estado === 0) return "No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.";
+  if (error.estado === 502) {
+    return "El servicio de búsqueda no respondió. Intenta de nuevo en un momento o pega el enlace del libro.";
+  }
+  return "La búsqueda no está disponible por ahora. Elige un libro de la biblioteca o pega su enlace.";
+}
+
+// Buscar en Project Gutenberg (requerimientos, sección 2B): las coincidencias
+// se dibujan con las mismas tarjetas del catálogo y abren #/libro/N.
+function iniciarBusqueda() {
+  const formulario = document.querySelector("[data-buscar-libro]");
+  if (!formulario) return;
+  const campo = formulario.querySelector("input");
+  const boton = formulario.querySelector("button");
+  const estado = document.querySelector("[data-busqueda-estado]");
+  const resultados = document.querySelector("[data-busqueda-resultados]");
+  let ultima = 0; // solo se muestra la respuesta de la búsqueda más reciente
+
+  const avisar = (texto, esError = false) => {
+    estado.textContent = texto;
+    estado.classList.toggle("is-error", esError);
+  };
+
+  formulario.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    const consulta = campo.value.trim();
+    if (!consulta) {
+      avisar("Escribe un título, un autor o una palabra clave.", true);
+      campo.focus();
+      return;
+    }
+
+    const esta = ++ultima;
+    boton.setAttribute("aria-disabled", "true");
+    avisar(`Buscando «${consulta}» en Project Gutenberg…`);
+    try {
+      const libros = await buscarLibros(consulta);
+      if (esta !== ultima) return;
+      if (libros === null) {
+        resultados.replaceChildren();
+        avisar(mensajeDeBusqueda({}), true);
+      } else if (libros.length === 0) {
+        resultados.replaceChildren();
+        avisar(`No se encontraron libros para «${consulta}». Prueba con otro título o autor.`);
+      } else {
+        resultados.replaceChildren(...libros.map(crearTarjeta));
+        avisar(`${numero(libros.length)} ${libros.length === 1 ? "libro encontrado" : "libros encontrados"} para «${consulta}».`);
+      }
+    } catch (error) {
+      if (esta !== ultima) return;
+      resultados.replaceChildren();
+      avisar(mensajeDeBusqueda(error), true);
+    } finally {
+      if (esta === ultima) boton.removeAttribute("aria-disabled");
+    }
+  });
+}
+
 // Subir un .txt propio: se elige o se suelta en la zona, se valida aquí y
 // se abre #/archivo, donde subida.js lo envía al backend.
 function iniciarSubida() {
@@ -179,6 +241,7 @@ function iniciarSubida() {
 export async function iniciarBiblioteca() {
   iniciarEnlace();
   iniciarSubida();
+  iniciarBusqueda();
   try {
     dibujarLibros(await obtenerLibros());
   } catch {
