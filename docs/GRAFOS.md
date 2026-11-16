@@ -24,7 +24,8 @@ Todo se calcula en el navegador. La pantalla no usa el backend y no comparte có
 5. El reproductor avanza, retrocede o reproduce los pasos (teclas `←`, `→` y `Espacio`). En cada paso se ve:
    - el **dibujo**, con el estado de cada nodo y arista y el valor de cada nodo;
    - el **pseudocódigo**, con la línea que se ejecuta y una frase que dice qué pasó;
-   - el **estado**: la cola de prioridad y la tabla por nodo o, en Kruskal, los conjuntos y las aristas ordenadas.
+   - el **estado**: la cola de prioridad y la tabla por nodo o, en Kruskal, los conjuntos y las aristas ordenadas;
+   - en Dijkstra, A\* y Prim, un **globo «¿Por qué?»** sobre el dibujo (ver abajo).
 6. **Resultado** dice qué se encontró y compara el algoritmo con el otro que resuelve el mismo problema.
 7. **Escribir o editar el grafo** permite cambiar pesos y aristas o escribir un grafo propio, una arista por línea (`A B 7`).
 
@@ -49,6 +50,20 @@ grafos.html#/prim?grafo=azar&semilla=7&nodos=14&origen=A
 | Arista gris punteada | Descartada: no es parte del árbol |
 
 Ningún estado depende solo del color: las aristas cambian también de grosor y de trazo, y la tabla de estado repite lo mismo con texto.
+
+### El globo «¿Por qué?»
+
+En Dijkstra, A\* y Prim, cada paso trae un globo que explica **por qué** el algoritmo hace lo que hace, con los números de ese paso:
+
+![Globo de Dijkstra en el grafo clásico](capturas/grafos-globo.png)
+
+- **Al sacar un nodo de la cola:** por qué es ese y no otro. Las barras comparan las prioridades de la cola (distancia, f = g + h o clave) y el elegido es la más corta. En Dijkstra dice además por qué su distancia ya no puede mejorar.
+- **Al revisar una arista:** si la ruta nueva mejora a la que se tenía o no, con la suma (`7 + 7 = 14`) y una barra contra la ruta actual.
+- **Al terminar:** la ruta o el árbol que salió y cuánto cuesta.
+
+La ruta de la que habla se marca en el dibujo con puntos blancos que avanzan desde el origen: sobre azul si mejora, sobre rojo si no conviene y sobre verde si ya quedó fija. En Prim solo se marca la arista, porque ahí no importa lo recorrido.
+
+El globo se acomoda solo: busca el hueco del dibujo que tape menos, sobre todo la ruta y los nodos de los que habla, y una línea punteada lo une con lo que explica. Con el puntero encima se vuelve casi transparente para ver lo que tapa. Si el dibujo es angosto (teléfonos), va debajo del dibujo. El botón **Explicar pasos** lo apaga y la página lo recuerda. Kruskal no lo tiene: su porqué ya está en cada paso (une dos conjuntos o cerraría un ciclo).
 
 ## Grafos de ejemplo
 
@@ -138,6 +153,8 @@ Los algoritmos son funciones puras, sin nada del navegador: reciben un grafo y d
 | `src/js/grafos/registro.js` | Registro de pasos y estados de nodos y aristas |
 | `src/js/grafos/algoritmos.js` | Catálogo: nombre, complejidad, qué datos pide cada uno y cómo ejecutarlo |
 | `src/js/grafos/descripciones.js` | La frase de cada paso |
+| `src/js/grafos/explicaciones.js` | El porqué de cada paso para el globo: textos, barras y ruta propuesta |
+| `src/js/grafos/globo.js` | Globo sobre el dibujo: lo llena y busca dónde colocarlo |
 | `src/js/grafos/ejemplos.js`, `generador.js`, `texto.js` | Grafos de ejemplo, al azar y escritos a mano |
 | `src/js/grafos/ruta.js` | Lee y arma la dirección (`#/algoritmo?grafo=…`) |
 | `src/js/grafos/lienzo.js` | Dibujo en SVG; coloca los pesos y las etiquetas donde no se enciman |
@@ -178,7 +195,7 @@ Para que cada ejecución dé los mismos pasos, los empates se resuelven siempre 
 pnpm test      # node --test, sin dependencias nuevas
 ```
 
-Son 121 pruebas en `pruebas/grafos/`. Las más importantes comparan cada algoritmo con una solución calculada de otra forma, sobre grafos al azar que incluyen pesos repetidos, pesos en cero y grafos no conexos:
+Son 127 pruebas en `pruebas/grafos/`. Las más importantes comparan cada algoritmo con una solución calculada de otra forma, sobre grafos al azar que incluyen pesos repetidos, pesos en cero y grafos no conexos:
 
 | Qué se comprueba | Contra qué | Casos |
 |---|---|---|
@@ -192,9 +209,11 @@ Son 121 pruebas en `pruebas/grafos/`. Las más importantes comparan cada algorit
 
 También se revisa que cada paso sea una foto completa y coherente con la anterior (un nodo cerrado no se vuelve a abrir, la cola tiene justo los nodos de la frontera y en orden, cada paso apunta a una línea que existe y tiene su frase), los grafos de ejemplo, el generador (500 semillas: siempre conexo y legible), el lector de grafos escritos a mano y la dirección de la página.
 
+Para el globo se revisa, en todos los pasos de Dijkstra, A\* y Prim sobre unos 90 grafos, que apunte a un nodo o a una arista que existen, que no le falte texto, que sus barras digan lo mismo que el paso (la ruta nueva es más barata cuando mejora y el nodo que sale es el menor de la cola) y que la ruta que marca sea un camino unido desde el origen hasta lo que se revisa.
+
 Como control, se introdujeron siete errores a propósito en los algoritmos y las estructuras (por ejemplo, ordenar las aristas al revés o comparar con la distancia acumulada en Prim), y las pruebas detectaron los siete.
 
-**En el navegador.** Con Chromium se recorrió la pantalla como lo haría una persona: 81 comprobaciones del reproductor, el teclado, las pestañas, la elección de origen y destino, los grafos de ejemplo, al azar y escritos a mano, las heurísticas y las direcciones. Pasan todas, sin errores en la consola, y no hay desplazamiento horizontal a 390, 768 ni 1040 px de ancho.
+**En el navegador.** Con Chromium se recorrió la pantalla como lo haría una persona: 81 comprobaciones del reproductor, el teclado, las pestañas, la elección de origen y destino, los grafos de ejemplo, al azar y escritos a mano, las heurísticas y las direcciones. Pasan todas, sin errores en la consola, y no hay desplazamiento horizontal a 390, 768 ni 1040 px de ancho. Para el globo hay otras 388: en cada paso de ocho recorridos queda visible y dentro del dibujo, marca la ruta correcta y en el sentido correcto, el botón lo apaga y se recuerda al recargar, Kruskal no lo muestra, deja pasar los clics a los nodos y a 390 px va debajo del dibujo. Colocarlo tarda menos de 25 ms por paso, incluso con 16 nodos.
 
 ## Limitaciones
 

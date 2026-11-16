@@ -1083,6 +1083,422 @@
   padding: 0 var(--s3) var(--s3);
 }
 
+/* Ruta que se está considerando en el paso (la que explica el globo) */
+// Puntos que avanzan del origen hacia el nodo al que se intenta llegar.
+.gr-arista-propuesta {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.5 13;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.gr-arista[data-propuesta] .gr-arista-propuesta {
+  stroke: var(--bg-surface);
+  opacity: 1;
+  animation: gr-hormigas 0.9s linear infinite;
+}
+
+.gr-arista[data-sentido="inverso"] .gr-arista-propuesta {
+  animation-direction: reverse;
+}
+
+// Debajo de los puntos, la ruta se resalta con el color de lo que pasa:
+// azul si mejora, rojo si no conviene, verde si queda fija.
+.gr-arista[data-propuesta] line:first-child {
+  stroke-width: 7;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+
+.gr-arista[data-propuesta="mejora"] line:first-child {
+  stroke: var(--gr-frontera);
+}
+
+.gr-arista[data-propuesta="descarta"] line:first-child {
+  stroke: var(--gr-rechazo);
+}
+
+.gr-arista[data-propuesta="elige"] line:first-child {
+  stroke: var(--gr-cerrado);
+}
+
+@keyframes gr-hormigas {
+  to {
+    stroke-dashoffset: -27;
+  }
+}
+
+/* Globo de "¿por qué?" sobre el dibujo (js/grafos/globo.js) */
+.gr-lienzo-contenido {
+  position: relative;
+  min-width: 560px;
+  // Mientras el globo se desliza a su lugar nuevo puede asomarse por el
+  // borde un instante (si cambió de tamaño); así no aparece una barra.
+  overflow: hidden;
+}
+
+.gr-panel-extra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 12px;
+}
+
+.gr-interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--gr-foco);
+    background: #fbf3df;
+    color: #7a5810;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.gr-globo {
+  // Color del tono: chip, borde y línea guía.
+  --tono: var(--text-secondary);
+  --tono-fondo: var(--bg-subtle);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 244px;
+  padding: 9px 12px 10px;
+  border: 1.5px solid color-mix(in srgb, var(--tono) 40%, var(--border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-surface) 96%, transparent);
+  box-shadow: var(--shadow-float);
+  // No estorba los clics sobre lo que tape.
+  pointer-events: none;
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.2s ease,
+    opacity 0.15s ease;
+
+  &[hidden] {
+    display: none;
+  }
+
+  &.is-sin-transicion {
+    transition: none;
+  }
+
+  &.is-transparente {
+    opacity: 0.12;
+  }
+
+  &[data-tono="inicio"] {
+    --tono: var(--text-primary);
+  }
+
+  &[data-tono="elige"],
+  &[data-tono="final"] {
+    --tono: var(--gr-cerrado);
+    --tono-fondo: var(--gr-cerrado-fondo);
+  }
+
+  &[data-tono="mejora"] {
+    --tono: var(--gr-frontera);
+    --tono-fondo: var(--gr-frontera-fondo);
+  }
+
+  &[data-tono="descarta"] {
+    --tono: var(--gr-rechazo);
+    --tono-fondo: #fbe9e7;
+  }
+
+  // Bajo el dibujo (pantallas angostas) ocupa todo el ancho y no flota.
+  &[data-modo="abajo"] {
+    position: static;
+    width: auto;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: none;
+  }
+}
+
+// Línea que une el globo con el nodo o la arista. Empieza en lo señalado
+// (con un punto) y llega al borde del globo.
+.gr-globo-guia {
+  --tono: var(--text-secondary);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  height: 0;
+  border-top: 2px dashed var(--tono);
+  transform-origin: 0 0;
+  pointer-events: none;
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
+    width 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tono);
+  }
+
+  &[hidden] {
+    display: none;
+  }
+
+  &.is-sin-transicion {
+    transition: none;
+  }
+
+  &[data-tono="elige"],
+  &[data-tono="final"] {
+    --tono: var(--gr-cerrado);
+  }
+
+  &[data-tono="mejora"] {
+    --tono: var(--gr-frontera);
+  }
+
+  &[data-tono="descarta"] {
+    --tono: var(--gr-rechazo);
+  }
+}
+
+.gr-globo-abajo {
+  margin-top: 12px;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.gr-globo-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+
+.gr-globo-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fbf3df;
+  color: #a87613;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+.gr-globo-chip {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--tono-fondo);
+  color: var(--tono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.gr-globo-pregunta {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.gr-globo-titulo {
+  margin: 0 0 3px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.gr-globo-texto {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.gr-globo-nota {
+  margin: 7px 0 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// Comparación con barras: más corta = más barata.
+.gr-globo-barras {
+  display: grid;
+  gap: 5px;
+  margin: 9px 0 0;
+  padding: 0;
+  list-style: none;
+
+  &[hidden] {
+    display: none;
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+}
+
+.gr-globo-barra-nombre {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+
+  b {
+    overflow: hidden;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.gr-globo-barra-pista {
+  height: 9px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.gr-globo-barra-relleno {
+  display: block;
+  width: calc(var(--fraccion, 0) * 100%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bar-idle);
+  transition: width 0.3s ease;
+
+  // ∞: todavía no hay ruta; la barra va rayada.
+  &.is-infinito {
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--border-strong) 0 4px,
+      transparent 4px 8px
+    );
+  }
+}
+
+.gr-globo-barra-valor {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.gr-globo-barras li {
+  &[data-marca="elegida"] .gr-globo-barra-relleno {
+    background: var(--gr-cerrado);
+  }
+
+  &[data-marca="nueva"] .gr-globo-barra-relleno {
+    background: var(--gr-frontera);
+  }
+
+  &[data-marca="descartada"] .gr-globo-barra-relleno {
+    background: var(--gr-rechazo);
+  }
+
+  &[data-marca="otra"] {
+    .gr-globo-barra-relleno {
+      opacity: 0.55;
+    }
+
+    b,
+    .gr-globo-barra-valor {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+  }
+}
+
+.gr-globo-resto {
+  margin: 5px 0 0;
+  font-size: 11.5px;
+  color: var(--text-muted);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-arista[data-propuesta] .gr-arista-propuesta {
+    animation: none;
+  }
+
+  .gr-globo,
+  .gr-globo-guia,
+  .gr-globo-barra-relleno {
+    transition: none;
+  }
+}
+
 /* Adaptación a pantallas pequeñas */
 // En una sola columna el orden es grafo, pseudocódigo, estado y resultado:
 // las columnas se "disuelven" para poder intercalar sus paneles.

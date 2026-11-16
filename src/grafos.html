@@ -120,7 +120,14 @@
             <section class="gr-panel" aria-labelledby="grafoTitulo">
               <header class="gr-panel-head">
                 <h2 id="grafoTitulo">Grafo</h2>
-                <span class="gr-panel-cuenta" data-cuenta></span>
+                <div class="gr-panel-extra">
+                  <span class="gr-panel-cuenta" data-cuenta></span>
+                  <!-- Globo que explica cada paso sobre el dibujo (js/grafos/globo.js) -->
+                  <button class="gr-interruptor" type="button" aria-pressed="true" data-globo-boton>
+                    <i data-icono="lightbulb"></i>
+                    Explicar pasos
+                  </button>
+                </div>
               </header>
 
               <!-- Qué hace un clic sobre un nodo -->
@@ -134,8 +141,12 @@
               </div>
 
               <div class="gr-lienzo" data-lienzo-marco>
-                <svg class="gr-svg" data-lienzo role="group" aria-labelledby="grafoTitulo"></svg>
+                <div class="gr-lienzo-contenido" data-lienzo-contenido>
+                  <svg class="gr-svg" data-lienzo role="group" aria-labelledby="grafoTitulo"></svg>
+                </div>
               </div>
+              <!-- Aquí va el globo cuando el dibujo es muy angosto para que flote -->
+              <div class="gr-globo-abajo" data-globo-abajo hidden></div>
 
               <!-- Lo que hace el paso actual, junto al dibujo (lo mismo que dice el panel de pseudocódigo) -->
               <p class="gr-pie" aria-hidden="true">
