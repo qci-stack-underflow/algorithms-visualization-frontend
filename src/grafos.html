@@ -55,7 +55,30 @@
           <span class="eyebrow">Grafos</span>
           <h1>Caminos más cortos y <em>árboles mínimos</em></h1>
         </div>
+        <!-- Abre la guía del algoritmo de la pestaña actual (js/grafos/guia-dialogo.js) -->
+        <button class="gr-guia-boton" type="button" aria-haspopup="dialog" data-guia-boton>
+          <i data-icono="book-open"></i>
+          <span>¿Cómo funciona <b data-guia-boton-nombre>Dijkstra</b>?</span>
+        </button>
       </div>
+
+      <!-- Guía del algoritmo: varias páginas con texto, tablas y el grafo de ejemplo -->
+      <dialog class="gr-guia" aria-labelledby="guiaTitulo" aria-describedby="guiaCuenta" data-guia>
+        <header class="gr-guia-cabeza">
+          <div>
+            <span class="eyebrow" data-guia-subtitulo></span>
+            <h2 id="guiaTitulo" data-guia-titulo></h2>
+          </div>
+          <button class="gr-boton-icono" type="button" aria-label="Cerrar" data-guia-cerrar></button>
+        </header>
+        <div class="gr-guia-cuerpo" data-guia-cuerpo></div>
+        <footer class="gr-guia-pie">
+          <button class="gr-boton-icono" type="button" aria-label="Página anterior" data-guia-anterior></button>
+          <div class="gr-guia-puntos" role="group" aria-label="Páginas" data-guia-puntos></div>
+          <button class="gr-boton-icono" type="button" aria-label="Página siguiente" data-guia-siguiente></button>
+        </footer>
+        <p class="gr-oculto" id="guiaCuenta" aria-live="polite" data-guia-cuenta></p>
+      </dialog>
 
       <!-- Algoritmo que se muestra. Cada pestaña es también una ruta: #/dijkstra, #/prim… -->
       <div class="gr-pestanas" role="tablist" aria-label="Algoritmo" data-pestanas>
@@ -120,7 +143,14 @@
             <section class="gr-panel" aria-labelledby="grafoTitulo">
               <header class="gr-panel-head">
                 <h2 id="grafoTitulo">Grafo</h2>
-                <span class="gr-panel-cuenta" data-cuenta></span>
+                <div class="gr-panel-extra">
+                  <span class="gr-panel-cuenta" data-cuenta></span>
+                  <!-- Globo que explica cada paso sobre el dibujo (js/grafos/globo.js) -->
+                  <button class="gr-interruptor" type="button" aria-pressed="true" data-globo-boton>
+                    <i data-icono="lightbulb"></i>
+                    Explicar pasos
+                  </button>
+                </div>
               </header>
 
               <!-- Qué hace un clic sobre un nodo -->
@@ -134,8 +164,12 @@
               </div>
 
               <div class="gr-lienzo" data-lienzo-marco>
-                <svg class="gr-svg" data-lienzo role="group" aria-labelledby="grafoTitulo"></svg>
+                <div class="gr-lienzo-contenido" data-lienzo-contenido>
+                  <svg class="gr-svg" data-lienzo role="group" aria-labelledby="grafoTitulo"></svg>
+                </div>
               </div>
+              <!-- Aquí va el globo cuando el dibujo es muy angosto para que flote -->
+              <div class="gr-globo-abajo" data-globo-abajo hidden></div>
 
               <!-- Lo que hace el paso actual, junto al dibujo (lo mismo que dice el panel de pseudocódigo) -->
               <p class="gr-pie" aria-hidden="true">

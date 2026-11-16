@@ -9,8 +9,11 @@
 import { ALGORITMOS, ejecutar } from "./algoritmos.js";
 import { describirPaso, formatoNumero } from "./descripciones.js";
 import { EJEMPLOS, ejemploPorId } from "./ejemplos.js";
+import { explicarPaso, tieneExplicacion } from "./explicaciones.js";
 import { MAX_NODOS, MIN_NODOS, grafoAleatorio } from "./generador.js";
 import { ErrorDeGrafo, tieneNodo } from "./grafo.js";
+import { crearGlobo } from "./globo.js";
+import { crearGuia } from "./guia-dialogo.js";
 import { HEURISTICAS } from "./heuristica.js";
 import { crearLienzo } from "./lienzo.js";
 import { crearReproductor } from "./reproductor.js";
@@ -40,6 +43,25 @@ const VALOR_POR_NODO = {
 };
 
 const ESTADO_EN_PALABRAS = { nuevo: "sin visitar", frontera: "en la cola", cerrado: "cerrado" };
+
+// Si el globo de explicaciones se apagó, queda apagado en la próxima visita.
+const CLAVE_GLOBO = "grafos.globo";
+
+function leerPreferenciaGlobo() {
+  try {
+    return localStorage.getItem(CLAVE_GLOBO) !== "no";
+  } catch {
+    return true; // sin acceso a localStorage (modo privado estricto)
+  }
+}
+
+function guardarPreferenciaGlobo(activo) {
+  try {
+    localStorage.setItem(CLAVE_GLOBO, activo ? "si" : "no");
+  } catch {
+    // Sin localStorage la preferencia dura solo esta visita.
+  }
+}
 
 export function iniciarPantalla() {
   const $ = (selector) => document.querySelector(selector);
@@ -84,6 +106,9 @@ export function iniciarPantalla() {
     propioForma: $("[data-propio-forma]"),
     propioTexto: $("[data-propio-texto]"),
     propioError: $("[data-propio-error]"),
+    globoBoton: $("[data-globo-boton]"),
+    guiaBoton: $("[data-guia-boton]"),
+    guiaBotonNombre: $("[data-guia-boton-nombre]"),
   };
   if (!ui.area) return;
 
@@ -97,13 +122,21 @@ export function iniciarPantalla() {
     heuristica: "euclidiana",
     modoDeClic: "origen",
     ejecucion: null,
+    globo: leerPreferenciaGlobo(),
   };
 
   const algoritmoActual = () => ALGORITMOS[estado.algoritmo];
   const ids = () => estado.grafo.nodos.map(({ id }) => id);
 
   const lienzo = crearLienzo($("[data-lienzo]"), { alElegirNodo: elegirNodo });
+  const globo = crearGlobo({
+    contenido: $("[data-lienzo-contenido]"),
+    svg: $("[data-lienzo]"),
+    abajo: $("[data-globo-abajo]"),
+    geometria: () => lienzo.geometria(),
+  });
   const reproductor = crearReproductor($("[data-reproductor]"), { alMostrar: mostrarPaso });
+  const guia = crearGuia($("[data-guia]"));
 
   /* Cargar un grafo */
 
@@ -179,6 +212,7 @@ export function iniciarPantalla() {
     ui.resumen.textContent = algoritmo.resumen;
     ui.complejidad.textContent = algoritmo.complejidad;
     document.title = `${algoritmo.nombre} · Grafos · StackUnderFlow`;
+    ui.guiaBotonNombre.textContent = algoritmo.nombre;
 
     const grafos = EJEMPLOS.map(({ id, nombre }) => [id, nombre]);
     grafos.push(["azar", estado.grafoId === "azar" ? estado.grafo.nombre : "Aleatorio"]);
@@ -221,6 +255,11 @@ export function iniciarPantalla() {
       boton.setAttribute("aria-checked", String(activo));
     }
     lienzo.permitirElegir(algoritmo.origen);
+
+    // Kruskal no tiene globo: su porqué ya está en cada paso (une dos
+    // conjuntos o cerraría un ciclo).
+    ui.globoBoton.hidden = !tieneExplicacion(estado.algoritmo);
+    ui.globoBoton.setAttribute("aria-pressed", String(estado.globo));
 
     // Leyenda: solo las entradas que usa este algoritmo.
     const esCamino = algoritmo.familia === "caminos";
@@ -296,8 +335,13 @@ export function iniciarPantalla() {
       }
     }
 
+    const explicacion = estado.globo
+      ? explicarPaso(estado.algoritmo, estado.grafo, pasos, indice)
+      : null;
+
     lienzo.pintar(paso, {
       papeles,
+      propuesta: explicacion?.propuesta ?? null,
       valores:
         valor && Object.fromEntries(ids().map((id) => [id, formatoNumero(paso[valor.campo][id])])),
       describir: (id) => {
@@ -308,6 +352,7 @@ export function iniciarPantalla() {
         return partes.join(", ");
       },
     });
+    globo.mostrar(explicacion);
 
     ui.codigoLineas.querySelector(".is-active")?.classList.remove("is-active");
     ui.codigoLineas.children[paso.linea]?.classList.add("is-active");
@@ -442,6 +487,18 @@ export function iniciarPantalla() {
       mostrarPaso(reproductor.indice, { reproduciendo: false });
     })
   );
+
+  ui.guiaBoton.addEventListener("click", () => {
+    reproductor.pausar();
+    guia.abrir(estado.algoritmo);
+  });
+
+  ui.globoBoton.addEventListener("click", () => {
+    estado.globo = !estado.globo;
+    guardarPreferenciaGlobo(estado.globo);
+    ui.globoBoton.setAttribute("aria-pressed", String(estado.globo));
+    mostrarPaso(reproductor.indice, { reproduciendo: false });
+  });
 
   ui.propioForma.addEventListener("submit", (evento) => {
     evento.preventDefault();

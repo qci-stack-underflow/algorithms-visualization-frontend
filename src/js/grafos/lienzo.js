@@ -130,7 +130,7 @@ function ubicarPesos(grafo, posicion, direcciones) {
 
 export function crearLienzo(svg, { alElegirNodo }) {
   let nodos = new Map(); // id → { grupo, valor, papel }
-  let aristas = new Map(); // id → { grupo, peso }
+  let aristas = new Map(); // id → { grupo, peso, a, b, lugar }
   let seleccionable = false;
 
   svg.setAttribute("viewBox", `0 0 ${ANCHO_LIENZO} ${ALTO_VISTA}`);
@@ -164,10 +164,13 @@ export function crearLienzo(svg, { alElegirNodo }) {
       const [p, q] = [posicion.get(a), posicion.get(b)];
       const grupo = crear("g", { class: "gr-arista", "data-arista": id }, capaAristas);
       crear("line", { x1: p.x, y1: p.y, x2: q.x, y2: q.y }, grupo);
+      // Puntos que avanzan por la arista cuando es parte de la ruta que se
+      // está considerando (ver `propuesta` en pintar).
+      crear("line", { class: "gr-arista-propuesta", x1: p.x, y1: p.y, x2: q.x, y2: q.y }, grupo);
 
       const etiqueta = crearEtiqueta(capaPesos, "gr-peso", String(peso), lugares[i].ancho);
       etiqueta.grupo.setAttribute("transform", `translate(${lugares[i].x} ${lugares[i].y})`);
-      aristas.set(id, { grupo, peso: etiqueta.grupo });
+      aristas.set(id, { grupo, peso: etiqueta.grupo, a, b, lugar: lugares[i] });
     });
 
     for (const nodo of grafo.nodos) {
@@ -225,7 +228,12 @@ export function crearLienzo(svg, { alElegirNodo }) {
   // valores   { idNodo: texto } para el recuadro bajo cada nodo, o null si
   //           el algoritmo no tiene un valor por nodo
   // describir (id) → texto para lectores de pantalla
-  function pintar(paso, { papeles = {}, valores = null, describir = (id) => id } = {}) {
+  // propuesta ruta que se está considerando, { tono, tramos: [{ arista,
+  //           desde, hacia }] } (ver explicaciones.js), o null
+  function pintar(
+    paso,
+    { papeles = {}, valores = null, describir = (id) => id, propuesta = null } = {}
+  ) {
     svg.dataset.tipo = paso.tipo;
     const enRuta = new Set(paso.ruta ?? []);
     const aristasEnRuta = new Set(paso.aristasRuta ?? []);
@@ -250,14 +258,62 @@ export function crearLienzo(svg, { alElegirNodo }) {
       }
     }
 
-    for (const [id, { grupo, peso }] of aristas) {
+    const tramos = new Map((propuesta?.tramos ?? []).map((tramo) => [tramo.arista, tramo]));
+    for (const [id, { grupo, peso, a }] of aristas) {
       for (const elemento of [grupo, peso]) {
         elemento.dataset.estado = paso.aristas[id];
         elemento.classList.toggle("is-foco", id === paso.arista);
         elemento.classList.toggle("is-ruta", aristasEnRuta.has(id));
       }
+      const tramo = tramos.get(id);
+      if (tramo) {
+        grupo.dataset.propuesta = propuesta.tono;
+        // Los puntos avanzan de `desde` a `hacia`; la línea va de a a b.
+        grupo.dataset.sentido = tramo.desde === a ? "directo" : "inverso";
+      } else {
+        delete grupo.dataset.propuesta;
+        delete grupo.dataset.sentido;
+      }
     }
   }
 
-  return { dibujar, pintar, permitirElegir };
+  // Posiciones en unidades del dibujo (viewBox) para colocar el globo.
+  //   nodos    [{ id, x, y, valor: { x, y, ancho } }] (valor: su recuadro)
+  //   aristas  [{ id, x1, y1, x2, y2, peso: { x, y, ancho } }]
+  //   punto(ancla)  a dónde apunta el globo y a qué distancia empieza lo
+  //                 que no se debe tapar (el radio del nodo, medio peso…)
+  function geometria() {
+    const listaNodos = [...nodos].map(([id, { nodo, direcciones }]) => ({
+      id,
+      x: nodo.x,
+      y: nodo.y,
+      valor: lugarJuntoAlNodo(nodo, direcciones.valor, ANCHO_VALOR),
+    }));
+    const posicion = new Map(listaNodos.map((nodo) => [nodo.id, nodo]));
+    const listaAristas = [...aristas].map(([id, { a, b, lugar }]) => {
+      const [p, q] = [posicion.get(a), posicion.get(b)];
+      return { id, x1: p.x, y1: p.y, x2: q.x, y2: q.y, peso: lugar };
+    });
+
+    function punto(ancla) {
+      if (ancla?.tipo === "arista" && aristas.has(ancla.id)) {
+        const { lugar } = aristas.get(ancla.id);
+        return { x: lugar.x, y: lugar.y, radio: ALTO_ETIQUETA / 2 };
+      }
+      const nodo = posicion.get(ancla?.id);
+      return nodo ? { x: nodo.x, y: nodo.y, radio: RADIO } : null;
+    }
+
+    return {
+      ancho: ANCHO_LIENZO,
+      alto: ALTO_VISTA,
+      radio: RADIO,
+      altoEtiqueta: ALTO_ETIQUETA,
+      nodos: listaNodos,
+      aristas: listaAristas,
+      punto,
+    };
+  }
+
+  return { dibujar, pintar, permitirElegir, geometria };
 }
