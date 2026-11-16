@@ -1499,6 +1499,483 @@
   }
 }
 
+/* Guía «¿Cómo funciona?» (js/grafos/guia-dialogo.js) */
+.gr-guia-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 10px 16px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-pill);
+  background: var(--accent-light);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  &:hover {
+    background: var(--accent);
+    box-shadow: 0 6px 20px var(--accent-glow);
+    color: var(--accent-fg);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--accent-ring);
+    outline-offset: 2px;
+  }
+}
+
+.gr-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.gr-guia {
+  // Alto fijo: al cambiar de página el cuadro no cambia de tamaño y las
+  // flechas no se mueven. Si una página no cabe, se desplaza su contenido.
+  width: min(760px, calc(100vw - 32px));
+  height: min(680px, calc(100dvh - 32px));
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-float);
+  color: var(--text-primary);
+
+  &[open] {
+    display: flex;
+    flex-direction: column;
+    animation: gr-guia-aparece 0.22s ease;
+  }
+
+  &::backdrop {
+    background: rgba(28, 27, 25, 0.45);
+    backdrop-filter: blur(3px);
+  }
+}
+
+@keyframes gr-guia-aparece {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+.gr-guia-cabeza {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: var(--s3) var(--s3) var(--s2);
+  border-bottom: 1px solid var(--border);
+
+  h2 {
+    margin-top: 2px;
+    font-family: var(--font-display);
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+}
+
+.gr-guia-cuerpo {
+  flex: 1;
+  min-height: 0;
+  padding: var(--s3);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.gr-guia-pagina {
+  display: grid;
+  gap: 14px;
+
+  &[data-entrada="derecha"] {
+    animation: gr-guia-desde-derecha 0.25s ease;
+  }
+
+  &[data-entrada="izquierda"] {
+    animation: gr-guia-desde-izquierda 0.25s ease;
+  }
+}
+
+@keyframes gr-guia-desde-derecha {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@keyframes gr-guia-desde-izquierda {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+.gr-guia-parrafo {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+
+  strong {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.gr-guia-lista {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+
+  li::marker {
+    color: var(--accent);
+  }
+
+  strong {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+}
+
+.gr-guia-formula {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.gr-guia-nota {
+  padding: 11px 14px;
+  border: 1px solid #ecd9a8;
+  border-radius: var(--radius-md);
+  background: #fbf3df;
+  color: #6b4f12;
+  font-size: 13.5px;
+  line-height: 1.55;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.gr-guia-tabla {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    padding: 8px 12px;
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    line-height: 1.45;
+    vertical-align: top;
+
+    &:first-child {
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--accent);
+  }
+}
+
+.gr-guia-fila {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+// Grafo de ejemplo de la guía: mismos colores que el dibujo grande.
+.gr-guia-diagrama {
+  margin: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--gr-lienzo);
+
+  svg {
+    display: block;
+    width: 100%;
+    max-width: 370px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  figcaption {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+}
+
+.gr-guia-arista {
+  stroke: var(--gr-arista);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+
+  &[data-estado="arbol"] {
+    stroke: var(--gr-cerrado);
+    stroke-width: 4.5;
+  }
+
+  &[data-estado="ruta"] {
+    stroke: var(--accent);
+    stroke-width: 5.5;
+  }
+
+  &[data-estado="candidata"] {
+    stroke: var(--gr-frontera);
+    stroke-width: 3;
+    stroke-dasharray: 2 6;
+  }
+
+  &[data-estado="descartada"] {
+    stroke-width: 2;
+    stroke-dasharray: 4 5;
+    opacity: 0.55;
+  }
+}
+
+.gr-guia-peso {
+  rect {
+    fill: var(--bg-surface);
+    stroke: var(--border-strong);
+  }
+
+  text {
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  &[data-estado="descartada"] {
+    opacity: 0.55;
+  }
+}
+
+.gr-guia-nodo {
+  circle {
+    fill: var(--gr-nodo);
+    stroke: var(--gr-nodo-borde);
+    stroke-width: 2;
+  }
+
+  > text {
+    fill: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  &[data-estado="frontera"] circle {
+    fill: var(--gr-frontera-fondo);
+    stroke: var(--gr-frontera);
+  }
+
+  &[data-estado="cerrado"] {
+    circle {
+      fill: var(--gr-cerrado-fondo);
+      stroke: var(--gr-cerrado);
+    }
+
+    > text {
+      fill: var(--gr-cerrado-texto);
+    }
+  }
+
+  &[data-estado="ruta"] {
+    circle {
+      fill: var(--accent);
+      stroke: var(--accent);
+    }
+
+    > text {
+      fill: var(--accent-fg);
+    }
+  }
+}
+
+.gr-guia-valor {
+  rect {
+    fill: var(--bg-surface);
+    stroke: var(--border-strong);
+  }
+
+  text {
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}
+
+.gr-guia-papel {
+  rect {
+    fill: var(--text-primary);
+  }
+
+  text {
+    fill: var(--bg-surface);
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}
+
+// Pie: flechas a los lados y un círculo por página.
+.gr-guia-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: 14px var(--s3);
+  border-top: 1px solid var(--border);
+
+  .gr-boton-icono {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+}
+
+.gr-guia-puntos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gr-guia-punto {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--border-strong);
+  cursor: pointer;
+  transition:
+    width 0.25s ease,
+    height 0.25s ease,
+    background 0.25s ease;
+
+  // Área de clic más grande que el punto.
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+
+  &:hover {
+    background: var(--text-muted);
+  }
+
+  &.is-actual {
+    width: 15px;
+    height: 15px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-ring);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 720px) {
+  .gr-guia-boton {
+    margin-left: 0;
+  }
+
+  .gr-guia-cabeza,
+  .gr-guia-cuerpo {
+    padding-inline: var(--s2);
+  }
+
+  .gr-guia-pie {
+    padding-inline: var(--s2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-guia[open],
+  .gr-guia-pagina[data-entrada] {
+    animation: none;
+  }
+
+  .gr-guia-boton,
+  .gr-guia-punto {
+    transition: none;
+  }
+}
+
 /* Adaptación a pantallas pequeñas */
 // En una sola columna el orden es grafo, pseudocódigo, estado y resultado:
 // las columnas se "disuelven" para poder intercalar sus paneles.

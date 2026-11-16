@@ -175,7 +175,8 @@ En cada paso se ve el grafo con el estado de sus nodos y aristas, la línea del 
 - **Comparación:** sobre el mismo grafo, Dijkstra se compara con A\* y Prim con Kruskal. En el mapa de ejemplo, A\* cierra 7 nodos y Dijkstra 12 para llegar al mismo costo.
 - **Heurística de A\*:** distancia en línea recta o Manhattan en el dibujo, llevada a las unidades de los pesos con una escala que la hace consistente, así que A\* siempre da el camino más corto.
 - **Globo «¿Por qué?»:** en Dijkstra, A\* y Prim, un globo sobre el dibujo explica cada paso con sus números (por qué sale ese nodo de la cola, por qué una ruta mejora o no) y la ruta de la que habla se marca con puntos que avanzan.
-- **Pruebas:** `pnpm test` ejecuta 127 pruebas con el ejecutor de Node, que comparan los cuatro algoritmos contra Floyd–Warshall y fuerza bruta en cientos de grafos al azar.
+- **Guía «¿Cómo funciona?»:** el botón junto al título abre una explicación en cinco páginas del algoritmo actual (idea, memoria, ejemplo paso a paso, por qué funciona, costo y usos), con flechas y un círculo por página.
+- **Pruebas:** `pnpm test` ejecuta 133 pruebas con el ejecutor de Node, que comparan los cuatro algoritmos contra Floyd–Warshall y fuerza bruta en cientos de grafos al azar.
 
 El detalle (uso, heurística, formato de los pasos, comprobación a mano y pruebas) está en [`docs/GRAFOS.md`](docs/GRAFOS.md).
 

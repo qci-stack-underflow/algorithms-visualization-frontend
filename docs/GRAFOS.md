@@ -18,7 +18,7 @@ Todo se calcula en el navegador. La pantalla no usa el backend y no comparte có
 1. Se entra desde el inicio, con las tarjetas **Caminos más cortos** y **Árbol de expansión mínima** del bloque «Más allá de ordenar», o directo en `grafos.html`.
    ![Tarjetas de grafos en el inicio](capturas/grafos-tarjetas.png)
 
-2. Las pestañas eligen el algoritmo. Cada una es también una dirección (`#/dijkstra`, `#/a-estrella`, `#/prim`, `#/kruskal`).
+2. Las pestañas eligen el algoritmo. Cada una es también una dirección (`#/dijkstra`, `#/a-estrella`, `#/prim`, `#/kruskal`). El botón **¿Cómo funciona…?**, a la derecha del título, abre la guía del algoritmo actual (ver abajo).
 3. En **Grafo** se elige uno de los ejemplos o se genera uno al azar (de 4 a 14 nodos).
 4. **Origen** y **Destino** se eligen en las listas o tocando un nodo del dibujo. En Dijkstra el destino puede ser «Todos los nodos»; A\* siempre necesita uno; Prim solo pide el nodo inicial y Kruskal ninguno.
 5. El reproductor avanza, retrocede o reproduce los pasos (teclas `←`, `→` y `Espacio`). En cada paso se ve:
@@ -50,6 +50,17 @@ grafos.html#/prim?grafo=azar&semilla=7&nodos=14&origen=A
 | Arista gris punteada | Descartada: no es parte del árbol |
 
 Ningún estado depende solo del color: las aristas cambian también de grosor y de trazo, y la tabla de estado repite lo mismo con texto.
+
+### La guía «¿Cómo funciona?»
+
+El botón de la barra superior abre, encima de la pantalla, una guía de cinco páginas del algoritmo de la pestaña actual: la idea, lo que lleva en memoria, el ejemplo paso a paso, por qué funciona y su costo y usos. Las cuatro guías usan el mismo grafo chico de cinco nodos, así que se pueden comparar: Dijkstra y A\* llegan a la misma ruta (A\* sin cerrar E), y Prim y Kruskal al mismo árbol de peso 7.
+
+![Guía de Dijkstra](capturas/grafos-guia.png)
+
+- Las flechas de los lados y las teclas `←` `→` cambian de página; abajo hay un círculo por página y el de la actual es más grande. Un clic en un círculo lleva a esa página.
+- `Escape`, la ✕ o un clic fuera del cuadro la cierran. Al abrirla se pausa la reproducción, y mientras está abierta las flechas no mueven el reproductor de atrás.
+- Al volver a abrir la guía del mismo algoritmo sigue en la página donde se quedó.
+- El cuadro tiene alto fijo: si una página no cabe, se desplaza su contenido y las flechas no se mueven.
 
 ### El globo «¿Por qué?»
 
@@ -155,6 +166,8 @@ Los algoritmos son funciones puras, sin nada del navegador: reciben un grafo y d
 | `src/js/grafos/descripciones.js` | La frase de cada paso |
 | `src/js/grafos/explicaciones.js` | El porqué de cada paso para el globo: textos, barras y ruta propuesta |
 | `src/js/grafos/globo.js` | Globo sobre el dibujo: lo llena y busca dónde colocarlo |
+| `src/js/grafos/guia.js` | Contenido de la guía de cada algoritmo y su grafo de ejemplo (solo datos) |
+| `src/js/grafos/guia-dialogo.js` | Cuadro de la guía: dibuja las páginas, los círculos y las flechas |
 | `src/js/grafos/ejemplos.js`, `generador.js`, `texto.js` | Grafos de ejemplo, al azar y escritos a mano |
 | `src/js/grafos/ruta.js` | Lee y arma la dirección (`#/algoritmo?grafo=…`) |
 | `src/js/grafos/lienzo.js` | Dibujo en SVG; coloca los pesos y las etiquetas donde no se enciman |
@@ -195,7 +208,7 @@ Para que cada ejecución dé los mismos pasos, los empates se resuelven siempre 
 pnpm test      # node --test, sin dependencias nuevas
 ```
 
-Son 127 pruebas en `pruebas/grafos/`. Las más importantes comparan cada algoritmo con una solución calculada de otra forma, sobre grafos al azar que incluyen pesos repetidos, pesos en cero y grafos no conexos:
+Son 133 pruebas en `pruebas/grafos/`. Las más importantes comparan cada algoritmo con una solución calculada de otra forma, sobre grafos al azar que incluyen pesos repetidos, pesos en cero y grafos no conexos:
 
 | Qué se comprueba | Contra qué | Casos |
 |---|---|---|
@@ -211,9 +224,11 @@ También se revisa que cada paso sea una foto completa y coherente con la anteri
 
 Para el globo se revisa, en todos los pasos de Dijkstra, A\* y Prim sobre unos 90 grafos, que apunte a un nodo o a una arista que existen, que no le falte texto, que sus barras digan lo mismo que el paso (la ruta nueva es más barata cuando mejora y el nodo que sale es el menor de la cola) y que la ruta que marca sea un camino unido desde el origen hasta lo que se revisa.
 
+Para la guía se ejecutan los cuatro algoritmos sobre su grafo de ejemplo y se comparan con lo que dicen las tablas: el orden en que salen los nodos, la cola después de cada uno, la ruta, el costo, el árbol y su peso. Si alguien cambia el ejemplo o un algoritmo, la prueba avisa que la guía quedó desactualizada.
+
 Como control, se introdujeron siete errores a propósito en los algoritmos y las estructuras (por ejemplo, ordenar las aristas al revés o comparar con la distancia acumulada en Prim), y las pruebas detectaron los siete.
 
-**En el navegador.** Con Chromium se recorrió la pantalla como lo haría una persona: 81 comprobaciones del reproductor, el teclado, las pestañas, la elección de origen y destino, los grafos de ejemplo, al azar y escritos a mano, las heurísticas y las direcciones. Pasan todas, sin errores en la consola, y no hay desplazamiento horizontal a 390, 768 ni 1040 px de ancho. Para el globo hay otras 388: en cada paso de ocho recorridos queda visible y dentro del dibujo, marca la ruta correcta y en el sentido correcto, el botón lo apaga y se recuerda al recargar, Kruskal no lo muestra, deja pasar los clics a los nodos y a 390 px va debajo del dibujo. Colocarlo tarda menos de 25 ms por paso, incluso con 16 nodos.
+**En el navegador.** Con Chromium se recorrió la pantalla como lo haría una persona: 81 comprobaciones del reproductor, el teclado, las pestañas, la elección de origen y destino, los grafos de ejemplo, al azar y escritos a mano, las heurísticas y las direcciones. Pasan todas, sin errores en la consola, y no hay desplazamiento horizontal a 390, 768 ni 1040 px de ancho. Para el globo hay otras 388: en cada paso de ocho recorridos queda visible y dentro del dibujo, marca la ruta correcta y en el sentido correcto, el botón lo apaga y se recuerda al recargar, Kruskal no lo muestra, deja pasar los clics a los nodos y a 390 px va debajo del dibujo. Colocarlo tarda menos de 25 ms por paso, incluso con 16 nodos. La guía tiene otras 105: en los cuatro algoritmos recorre todas las páginas con las flechas, los círculos y el teclado, revisa que el círculo actual sea el más grande, que el cuadro no cambie de alto, que el foco no se salga, que se cierre con Escape y con un clic afuera, y que quepa en un teléfono de 390 px.
 
 ## Limitaciones
 

@@ -13,6 +13,7 @@ import { explicarPaso, tieneExplicacion } from "./explicaciones.js";
 import { MAX_NODOS, MIN_NODOS, grafoAleatorio } from "./generador.js";
 import { ErrorDeGrafo, tieneNodo } from "./grafo.js";
 import { crearGlobo } from "./globo.js";
+import { crearGuia } from "./guia-dialogo.js";
 import { HEURISTICAS } from "./heuristica.js";
 import { crearLienzo } from "./lienzo.js";
 import { crearReproductor } from "./reproductor.js";
@@ -106,6 +107,8 @@ export function iniciarPantalla() {
     propioTexto: $("[data-propio-texto]"),
     propioError: $("[data-propio-error]"),
     globoBoton: $("[data-globo-boton]"),
+    guiaBoton: $("[data-guia-boton]"),
+    guiaBotonNombre: $("[data-guia-boton-nombre]"),
   };
   if (!ui.area) return;
 
@@ -133,6 +136,7 @@ export function iniciarPantalla() {
     geometria: () => lienzo.geometria(),
   });
   const reproductor = crearReproductor($("[data-reproductor]"), { alMostrar: mostrarPaso });
+  const guia = crearGuia($("[data-guia]"));
 
   /* Cargar un grafo */
 
@@ -208,6 +212,7 @@ export function iniciarPantalla() {
     ui.resumen.textContent = algoritmo.resumen;
     ui.complejidad.textContent = algoritmo.complejidad;
     document.title = `${algoritmo.nombre} · Grafos · StackUnderFlow`;
+    ui.guiaBotonNombre.textContent = algoritmo.nombre;
 
     const grafos = EJEMPLOS.map(({ id, nombre }) => [id, nombre]);
     grafos.push(["azar", estado.grafoId === "azar" ? estado.grafo.nombre : "Aleatorio"]);
@@ -482,6 +487,11 @@ export function iniciarPantalla() {
       mostrarPaso(reproductor.indice, { reproduciendo: false });
     })
   );
+
+  ui.guiaBoton.addEventListener("click", () => {
+    reproductor.pausar();
+    guia.abrir(estado.algoritmo);
+  });
 
   ui.globoBoton.addEventListener("click", () => {
     estado.globo = !estado.globo;
