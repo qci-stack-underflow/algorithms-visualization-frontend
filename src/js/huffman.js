@@ -4,7 +4,9 @@
 // biblioteca y el campo de enlace están en huffman/biblioteca.js; las cifras
 // y la tabla de letras del proceso, en huffman/proceso.js y huffman/tabla.js;
 // la descarga del .suf, en huffman/descarga.js; la vista binaria, en
-// huffman/binario.js, y el inspector de archivos .suf, en huffman/inspector.js.
+// huffman/binario.js; el inspector de archivos .suf, en huffman/inspector.js, y
+// el árbol, la cola de prioridad y el pseudocódigo (bloque D), en
+// huffman/main.js.
 import "@sass/huffman.scss";
 import { iniciarDetallesVisuales } from "./inicio.js";
 import { iniciarNavegacion } from "./huffman/navegacion.js";
@@ -13,14 +15,16 @@ import { iniciarTabla } from "./huffman/tabla.js";
 import { iniciarDescargas } from "./huffman/descarga.js";
 import { iniciarBinario } from "./huffman/binario.js";
 import { iniciarInspector } from "./huffman/inspector.js";
+import { iniciarHuffmanProceso } from "./huffman/main.js";
 
 // Un script type="module" se ejecuta con el HTML ya leído, así que no hace
 // falta esperar a DOMContentLoaded: mostrar la vista correcta cuanto antes
 // evita que se vea otra por un momento.
-// La tabla de letras se prepara antes que la navegación para que los datos
-// del libro abierto caigan sobre ella. Los detalles visuales van aparte: si
+// La tabla de letras y el árbol se preparan antes que la navegación para que
+// los datos del libro abierto caigan sobre ellos. Los detalles visuales van aparte: si
 // falla alguno (íconos, animaciones), las vistas siguen funcionando.
 iniciarTabla();
+iniciarHuffmanProceso();
 iniciarNavegacion();
 iniciarBiblioteca();
 iniciarDescargas();
