@@ -28,6 +28,14 @@ const ERRORES = {
     texto: "Supera el tamaño máximo que se puede comprimir aquí. Elige un libro más corto.",
     reintentar: false,
   },
+  // El backend responde 502 cuando Gutenberg no está disponible (desde Vercel
+  // suele contestar 503) y el libro no tiene copia local.
+  502: {
+    titulo: "Project Gutenberg no está disponible",
+    texto:
+      "No pudimos descargar este libro ahora. Don Quijote, Frankenstein y Los pazos de Ulloa siempre funcionan: elige uno de ellos o intenta de nuevo más tarde.",
+    reintentar: true,
+  },
   504: {
     titulo: "Project Gutenberg tardó demasiado",
     texto: "No respondió a tiempo. Puede ser algo momentáneo: intenta de nuevo o elige otro libro.",
