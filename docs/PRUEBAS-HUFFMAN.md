@@ -2,10 +2,9 @@
 
 Evidencias de las pruebas mínimas de la sección 12 de los requerimientos y de la comprobación de integridad de la sección 8, en la parte que hace el frontend: leer un archivo `.suf`, inspeccionarlo, descomprimirlo y comprobar que el texto recuperado es idéntico al original.
 
-> **Estado al 9 de noviembre de 2026.** El compresor del backend ya existe, pero en ramas que todavía no se publican; la aplicación publicada sigue en modo ejemplo.
-> - **Pruebas 1 a 3:** los archivos `.suf` se generaron con un script de prueba que sigue el formato SUF1 de `docs/FORMATO-HUFFMAN.md` del backend. Se comprobó que los dos compresores del backend (ramas `arcamp0130/feature/huffman-compressor` y `alesspiz/feature/huffman-endpoints`) generan esos mismos archivos **byte a byte**, así que las cifras son las que da la aplicación.
-> - **[Flujo completo](#flujo-completo-con-el-compresor-del-backend):** se probó en local con el backend real.
-> - **Prueba 4:** se hizo con la subida en modo ejemplo, que comprime en el navegador con una copia del compresor del backend que da los mismos bytes.
+> **Estado al 18 de noviembre de 2026.** El backend publicó `/huffman` en producción y la aplicación ya trabaja con sus rutas: catálogo, proceso, binario y subida. El [flujo completo en producción](#flujo-completo-en-producción) está al final de las pruebas.
+> - **Pruebas 1 a 3:** los archivos `.suf` se generaron con un script de prueba que sigue el formato SUF1 de `docs/FORMATO-HUFFMAN.md` del backend. Los compresores del backend generan esos mismos archivos **byte a byte**, así que las cifras son las que da la aplicación.
+> - **Prueba 4:** se hizo primero con la subida en modo ejemplo (compresión en el navegador) y después se repitió en producción con otro archivo: el backend y el navegador dan el mismo `.suf` byte a byte.
 
 Todas las pruebas se hicieron en la aplicación publicada (https://stack-underflow-frontend-algviz.vercel.app/huffman.html#/inspector), con Chromium.
 
@@ -110,9 +109,43 @@ Se subió en la biblioteca, en la zona **Sube un archivo .txt**, con la aplicaci
 
 **Mismo resultado que el backend.** `compresor.js` es una copia del compresor del bloque A (rama `arcamp0130/feature/huffman-compressor`, `99a4e31`). Se compararon los dos con seis textos: `aabccc`, un solo símbolo, dos símbolos, emojis con BOM y `\r\n`, 200,000 caracteres con 84 símbolos de varios alfabetos y `pg2000.txt` completo. En los seis, el `.suf` es idéntico byte a byte y el `HuffmanResult` también (nodos, pasos, códigos, tabla y métricas, menos el tiempo de ejecución). Así, el resultado de la prueba 4 es el mismo que dará el backend cuando publique la ruta.
 
-## Pendiente
+## Flujo completo en producción
 
-Cuando el backend esté publicado, se repite el flujo completo en producción, con libros y con un `.txt` subido, para comprobar que se usan sus rutas (sin el aviso de modo ejemplo).
+El 18 de noviembre de 2026, con el backend publicado (`https://stack-underflow-backend-algviz.vercel.app`, rama `main` con backend#63 y #64) y la aplicación en Chromium. Gutenberg respondía `503` a Vercel, así que los libros salieron del respaldo completo del backend.
+
+| Paso | Resultado |
+|---|---|
+| Biblioteca | Las 7 tarjetas salen de `GET /huffman/books`, incluido *Los pazos de Ulloa*, que solo existe en el backend |
+| Proceso de Don Quijote | Sin el aviso de modo ejemplo: 2,168,287 → 1,166,906 bytes, 1,001,381 ahorrados (46.2 %, razón 1.86 : 1), 4.42 bits por letra con entropía 4.38, 92 símbolos, 183 nodos, 274 pasos |
+| Proceso de Frankenstein (#84) | 83 símbolos, 247 pasos (3 × 83 − 2) y el árbol completo de 165 nodos |
+| Binario | `don-quijote.suf` de 1,166,906 bytes, 9,321,383 bits de datos |
+| Inspector con ese `.suf` | Texto recuperado en 180 ms: 2,110,704 caracteres y 2,168,287 bytes, las apariciones coinciden con el diccionario y el SHA-256 es `70bec2fa…a5606c8aa`, **el mismo del flujo en local del 9 de noviembre** |
+| Árbol en el inspector | 183 nodos (92 hojas) y 21 niveles; al elegir un símbolo del diccionario se resalta su camino (el espacio: `1 → 1 → 1`) y se acerca a él |
+| Libro fuera del catálogo (#1080) | `502`: la pantalla explica que Gutenberg no está disponible y ofrece reintentar |
+
+![Árbol de Don Quijote con datos del backend](capturas/huffman-produccion-arbol.png)
+
+![Árbol reconstruido en el inspector](capturas/huffman-inspector-arbol.png)
+
+### Prueba 4 en producción: archivo nuevo subido al backend
+
+Archivo: `docs/FORMATO-HUFFMAN.md` del backend con extensión `.txt`, un texto técnico con tablas y código que no se había comprimido nunca: 18,905 bytes, SHA-256 `f04ede2d7459a3dfd000fa708bc835b7612c97f21f4f7e882393db3c58c53f01`.
+
+| Dato | Valor |
+|---|---|
+| Ruta | `POST /huffman/compress/file` respondió 200; la vista no muestra el aviso de compresión en el navegador |
+| Archivo `.suf` | 13,472 bytes: 5,433 ahorrados, **28.7 %**, razón 1.40 : 1 |
+| Bits por letra | 5.08, con una entropía de 5.03 |
+| Árbol | 99 símbolos, 197 nodos y 295 pasos |
+| Integridad | "el .suf se descomprimió en tu navegador y es idéntico a formato-huffman.txt, byte a byte (18,905 bytes)" |
+
+![Subida de un archivo nuevo en producción](capturas/huffman-produccion-subida.png)
+
+**Mismos bytes en el backend y en el navegador.** Se subieron tres archivos a `POST /huffman/compress/file?metadata=false` y se compararon con `src/js/huffman/compresor.js`: un texto con `ñ`, comillas y `\r\n` (576 bytes), `abracadabra alakazam zzzzzzzzzzzzzzz` (143 bytes) y `aaaa`, de un solo símbolo (25 bytes). Los tres `.suf` son idénticos byte a byte, así que el modo ejemplo da el mismo resultado que el backend.
+
+### Pendiente
+
+- **Búsqueda:** `GET /huffman/books/search` responde, pero devuelve los mismos 32 libros para cualquier consulta (también para `zzzzqq`): el parámetro no llega a filtrar en RapidAPI. Está reportado en backend#62.
 
 ## Cómo repetir las pruebas
 

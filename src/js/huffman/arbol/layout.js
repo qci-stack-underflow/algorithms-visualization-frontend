@@ -67,3 +67,21 @@ export function calcularLayoutArbol(nodesMap, rootId, config = {}) {
   traverseInorder(rootId, 0);
   return positions;
 }
+
+/**
+ * Caja que ocupan todos los nodos, para ajustar el zoom al árbol completo.
+ *
+ * @param {Map} positions - Resultado de calcularLayoutArbol.
+ * @returns {{xMin: number, xMax: number, yMin: number, yMax: number} | null} null si no hay nodos.
+ */
+export function limitesDePosiciones(positions) {
+  if (positions.size === 0) return null;
+  let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+  positions.forEach((pos) => {
+    if (pos.x < xMin) xMin = pos.x;
+    if (pos.x > xMax) xMax = pos.x;
+    if (pos.y < yMin) yMin = pos.y;
+    if (pos.y > yMax) yMax = pos.y;
+  });
+  return { xMin, xMax, yMin, yMax };
+}
