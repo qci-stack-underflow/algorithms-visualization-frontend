@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
-import { calcularLayoutArbol } from "../../src/js/huffman/arbol/layout.js";
+import { calcularLayoutArbol, limitesDePosiciones } from "../../src/js/huffman/arbol/layout.js";
 import { comprimirEnNavegador } from "../../src/js/huffman/compresor.js";
 
 const porId = (nodes) => Object.fromEntries(nodes.map((nodo) => [nodo.id, nodo]));
@@ -62,5 +62,20 @@ describe("calcularLayoutArbol", () => {
   it("no falla sin raíz ni nodos", () => {
     assert.equal(calcularLayoutArbol({}, null).size, 0);
     assert.equal(calcularLayoutArbol(null, 0).size, 0);
+  });
+});
+
+describe("limitesDePosiciones", () => {
+  it("da la caja que ocupan todos los nodos", () => {
+    const posiciones = new Map([
+      [0, { x: 20, y: 100 }],
+      [1, { x: 80, y: 100 }],
+      [2, { x: 50, y: 20 }],
+    ]);
+    assert.deepEqual(limitesDePosiciones(posiciones), { xMin: 20, xMax: 80, yMin: 20, yMax: 100 });
+  });
+
+  it("devuelve null sin nodos", () => {
+    assert.equal(limitesDePosiciones(new Map()), null);
   });
 });

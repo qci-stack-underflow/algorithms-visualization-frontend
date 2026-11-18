@@ -1542,19 +1542,39 @@ th[aria-sort="ascending"] .orden::after {
 
 .insp-columnas {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   align-items: start;
   gap: var(--s3);
 }
 
-// En el inspector la tabla solo se lee: los símbolos no son botones.
+// En el inspector cada símbolo es un botón que resalta su camino en el árbol.
 .insp-diccionario {
   tbody tr {
     cursor: default;
   }
+}
 
-  .simbolo {
-    cursor: default;
+// El árbol reconstruido ocupa la columna más ancha. El lienzo tiene alto
+// fijo: el SVG se ajusta con su viewBox (zoom-pan.js), sin scroll propio.
+.insp-panel--arbol {
+  .panel-head {
+    margin-bottom: var(--s2);
+
+    h2 {
+      margin-bottom: 0;
+    }
+  }
+
+  .arbol-lienzo {
+    overflow: hidden;
+  }
+
+  .arbol-svg {
+    min-width: 0;
+    height: 380px;
+    padding: 0;
+    cursor: grab;
+    touch-action: none;
   }
 }
 

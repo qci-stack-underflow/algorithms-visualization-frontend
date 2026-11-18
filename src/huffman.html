@@ -716,9 +716,22 @@
               </div>
             </section>
 
-            <section class="panel insp-panel" aria-labelledby="inspArbolTitulo">
-              <h2 id="inspArbolTitulo">Árbol reconstruido</h2>
+            <section class="panel insp-panel insp-panel--arbol" aria-labelledby="inspArbolTitulo">
+              <header class="panel-head">
+                <h2 id="inspArbolTitulo">Árbol reconstruido</h2>
+                <div class="panel-acciones">
+                  <button class="icono-btn" type="button" aria-label="Acercar el árbol" data-insp-zoom="acercar"><i data-lucide="zoom-in"></i></button>
+                  <button class="icono-btn" type="button" aria-label="Alejar el árbol" data-insp-zoom="alejar"><i data-lucide="zoom-out"></i></button>
+                  <button class="icono-btn" type="button" aria-label="Ajustar el árbol a la pantalla" data-insp-zoom="ajustar"><i data-lucide="maximize-2"></i></button>
+                </div>
+              </header>
               <p class="insp-texto" data-insp-arbol></p>
+              <div class="arbol-lienzo" data-insp-lienzo>
+                <svg class="arbol-svg" viewBox="0 0 760 330" role="img" aria-labelledby="inspArbolSvgTitulo" data-insp-svg>
+                  <title id="inspArbolSvgTitulo">Árbol de Huffman reconstruido con el diccionario del archivo</title>
+                </svg>
+              </div>
+              <p class="arbol-nota" data-insp-arbol-nota aria-live="polite">Elige un símbolo del diccionario para ver su camino en el árbol.</p>
             </section>
           </div>
 

@@ -18,6 +18,7 @@ import {
 import { guardarArchivo } from "./descarga.js";
 import { describirAhorro, formatearBytes, mostrarSimbolo, nombrarSimbolo, numero } from "./formato.js";
 import { prefiereMenosMovimiento } from "../inicio.js";
+import { crearArbolDelInspector } from "./arbol/arbol-inspector.js";
 
 const BYTES_POR_FILA = 8;
 const FILAS_DE_MUESTRA = 16; // 128 bytes de datos
@@ -38,6 +39,21 @@ const en = (selector) => document.querySelector(`#inspector ${selector}`);
 // El archivo abierto y, después de descomprimir, su texto.
 let abierto = null; // { nombre, suf, arbol }
 let recuperado = null; // texto
+
+// El dibujo del árbol se crea al primer archivo abierto y se reutiliza.
+let dibujo = null;
+let simboloElegido = null; // índice del diccionario cuyo camino se resalta
+
+function dibujoDelArbol() {
+  dibujo ??= crearArbolDelInspector({
+    svg: en("[data-insp-svg]"),
+    contenedor: en("[data-insp-lienzo]"),
+    acercar: en('[data-insp-zoom="acercar"]'),
+    alejar: en('[data-insp-zoom="alejar"]'),
+    ajustar: en('[data-insp-zoom="ajustar"]'),
+  });
+  return dibujo;
+}
 
 function elemento(etiqueta, clase, texto) {
   const nodo = document.createElement(etiqueta);
@@ -95,11 +111,18 @@ function llenarEstructura(suf) {
 
 function llenarDiccionario(encabezado) {
   const total = encabezado.totalCharacters || 1;
-  const ordenado = [...encabezado.dictionary].sort((a, b) => b.frequency - a.frequency);
-  const filas = ordenado.map(({ symbol, frequency, code }) => {
-    const simbolo = elemento("span", "simbolo", mostrarSimbolo(symbol));
-    const nombre = nombrarSimbolo(symbol);
-    if (nombre) simbolo.setAttribute("aria-label", nombre);
+  // El id de cada símbolo en el árbol es su posición en el diccionario (ver
+  // reconstruirArbol en suf.js), así que se guarda antes de ordenar.
+  const ordenado = encabezado.dictionary
+    .map((entrada, id) => ({ ...entrada, id }))
+    .sort((a, b) => b.frequency - a.frequency);
+  simboloElegido = null;
+  const filas = ordenado.map(({ symbol, frequency, code, id }) => {
+    const simbolo = elemento("button", "simbolo", mostrarSimbolo(symbol));
+    simbolo.type = "button";
+    simbolo.dataset.nodo = String(id);
+    simbolo.setAttribute("aria-pressed", "false");
+    simbolo.setAttribute("aria-label", `${nombrarSimbolo(symbol) || mostrarSimbolo(symbol)}, código ${code}: ver su camino en el árbol`);
     const celdaSimbolo = document.createElement("td");
     celdaSimbolo.append(simbolo);
 
@@ -114,7 +137,31 @@ function llenarDiccionario(encabezado) {
   en("[data-insp-diccionario]").replaceChildren(...filas);
 }
 
-function llenarArbol({ nodes, niveles }, k) {
+// Elegir un símbolo resalta su camino desde la raíz; elegirlo otra vez lo quita.
+function alElegirSimbolo(evento) {
+  const boton = evento.target.closest("button.simbolo");
+  if (!boton || !abierto) return;
+  const id = Number(boton.dataset.nodo);
+  simboloElegido = simboloElegido === id ? null : id;
+  en("[data-insp-diccionario]")
+    .querySelectorAll("button.simbolo")
+    .forEach((otro) => {
+      const elegido = Number(otro.dataset.nodo) === simboloElegido;
+      otro.setAttribute("aria-pressed", String(elegido));
+      otro.closest("tr").classList.toggle("is-seleccionada", elegido);
+    });
+  dibujoDelArbol().resaltar(simboloElegido);
+  const entrada = abierto.suf.encabezado.dictionary[id];
+  en("[data-insp-arbol-nota]").textContent =
+    simboloElegido === null
+      ? "Elige un símbolo del diccionario para ver su camino en el árbol."
+      : `Camino de ${nombrarSimbolo(entrada.symbol) || `«${mostrarSimbolo(entrada.symbol)}»`}: ` +
+        `${[...entrada.code].join(" → ")} = ${entrada.code} (0 a la izquierda, 1 a la derecha).`;
+}
+
+function llenarArbol({ nodes, rootId, niveles }, k) {
+  dibujoDelArbol().mostrar(nodes, rootId);
+  en("[data-insp-arbol-nota]").textContent = "Elige un símbolo del diccionario para ver su camino en el árbol.";
   en("[data-insp-arbol]").textContent =
     `Con los códigos del diccionario se reconstruyó un árbol de ${plural(nodes.length, "nodo", "nodos")} ` +
     `(${plural(k, "hoja", "hojas")}) y ${plural(niveles, "nivel", "niveles")}. Ningún código es prefijo ` +
@@ -309,6 +356,7 @@ export function iniciarInspector() {
   if (!zona) return;
   en("[data-insp-descomprimir]").addEventListener("click", alDescomprimir);
   en("[data-insp-descargar-txt]").addEventListener("click", alDescargarTexto);
+  en("[data-insp-diccionario]").addEventListener("click", alElegirSimbolo);
   const original = en("[data-insp-original]");
   original.addEventListener("change", () => {
     alCompararOriginal(original.files[0]);
