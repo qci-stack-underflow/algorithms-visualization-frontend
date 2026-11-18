@@ -8,6 +8,10 @@ import { renderizarPseudocodigo } from './componentes/pseudocodigo.js';
 import { actualizarIndicadorFases, verificarMovimientoReducido, actualizarDescripcionLectorPantalla } from './componentes/accesibilidad-fases.js';
 import { Pause, Play, createElement } from 'lucide';
 
+// Ancho (en unidades del layout) que se ve al empezar la animación de un árbol
+// grande: unas 20 hojas, con símbolos y pesos legibles.
+const ANCHO_LEGIBLE = 1200;
+
 export function iniciarHuffmanProceso() {
   const svgEl = document.querySelector('#proceso .arbol-svg');
   const canvasContainer = document.getElementById('canvas-container');
@@ -17,6 +21,7 @@ export function iniciarHuffmanProceso() {
   if (!svgEl) return;
 
   let nodesMap = {};
+  let limitesDelArbol = null;
   let rawSteps = [];
   let resultadoActual = null;
   let rootId = null;
@@ -125,8 +130,18 @@ export function iniciarHuffmanProceso() {
       }
     }
 
-    const limites = limitesDePosiciones(positions);
-    if (zoomPanController && limites) zoomPanController.fitToContent(limites);
+    limitesDelArbol = limitesDePosiciones(positions);
+    if (zoomPanController && limitesDelArbol) {
+      zoomPanController.fitToContent(limitesDelArbol);
+      // En un árbol grande (el Quijote mide más de 5,000 de ancho) los nodos
+      // se ven diminutos: la animación empieza acercada y sigue al nodo
+      // activo; el botón de ajustar muestra el árbol completo. Con menos
+      // movimiento se muestra completo, ya construido.
+      const ancho = limitesDelArbol.xMax - limitesDelArbol.xMin;
+      if (ancho > ANCHO_LEGIBLE && !verificarMovimientoReducido()) {
+        zoomPanController.zoomToWidth(ANCHO_LEGIBLE);
+      }
+    }
 
     if (!reproductor) {
       reproductor = new ReproductorPasos({
@@ -139,9 +154,14 @@ export function iniciarHuffmanProceso() {
           renderizarArbolSVG(svgEl, nodesMap, positions, state.visibleNodes, state.highlightedPair);
           
           // 2. Enfoque automático síncrono sobre el nodo activo
-          if (zoomPanController && state.highlightedPair && state.highlightedPair.length > 0) {
+          // Solo cuando la vista está acercada: con el árbol completo a la
+          // vista, centrar un nodo lo sacaría del encuadre. Las posiciones
+          // usan el id numérico y highlightedPair trae texto.
+          const acercado = limitesDelArbol && zoomPanController &&
+            zoomPanController.viewBox.w < limitesDelArbol.xMax - limitesDelArbol.xMin;
+          if (acercado && state.highlightedPair && state.highlightedPair.length > 0) {
             const targetId = state.highlightedPair[state.highlightedPair.length - 1];
-            const pos = positions.get(String(targetId)) || positions.get(targetId);
+            const pos = positions.get(Number(targetId)) ?? positions.get(String(targetId));
             if (pos) {
               zoomPanController.centerOn(pos.x, pos.y);
             }
