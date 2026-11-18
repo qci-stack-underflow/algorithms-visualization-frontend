@@ -100,12 +100,19 @@ export class ControllerZoomPan {
     this.updateViewBox();
   }
 
+  // Los botones acercan y alejan hacia el centro del árbol que se ve (antes
+  // era el centro de la ventana, que casi nunca cae sobre el árbol).
   zoomIn() {
-    this.zoomAt(window.innerWidth / 2, window.innerHeight / 2, 0.8);
+    this.zoomAtCenter(0.8);
   }
 
   zoomOut() {
-    this.zoomAt(window.innerWidth / 2, window.innerHeight / 2, 1.25);
+    this.zoomAtCenter(1.25);
+  }
+
+  zoomAtCenter(factor) {
+    const rect = this.svg.getBoundingClientRect();
+    this.zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, factor);
   }
 
   fitToContent(bounds) {

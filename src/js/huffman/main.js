@@ -1,5 +1,5 @@
 // src/js/huffman/main.js
-import { calcularLayoutArbol } from './arbol/layout.js';
+import { calcularLayoutArbol, limitesDePosiciones } from './arbol/layout.js';
 import { renderizarArbolSVG } from './arbol/render-svg.js';
 import { ControllerZoomPan } from './arbol/zoom-pan.js';
 import { ReproductorPasos } from './reproductor/reproductor-pasos.js';
@@ -9,10 +9,10 @@ import { actualizarIndicadorFases, verificarMovimientoReducido, actualizarDescri
 import { Pause, Play, createElement } from 'lucide';
 
 export function iniciarHuffmanProceso() {
-  const svgEl = document.querySelector('.arbol-svg');
+  const svgEl = document.querySelector('#proceso .arbol-svg');
   const canvasContainer = document.getElementById('canvas-container');
   const srAnnouncer = document.getElementById('sr-announcer');
-  const arbolNotaEl = document.querySelector('.arbol-nota');
+  const arbolNotaEl = document.querySelector('#proceso .arbol-nota');
 
   if (!svgEl) return;
 
@@ -125,16 +125,8 @@ export function iniciarHuffmanProceso() {
       }
     }
 
-    if (zoomPanController && positions.size > 0) {
-      let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-      positions.forEach(pos => {
-        if (pos.x < xMin) xMin = pos.x;
-        if (pos.x > xMax) xMax = pos.x;
-        if (pos.y < yMin) yMin = pos.y;
-        if (pos.y > yMax) yMax = pos.y;
-      });
-      zoomPanController.fitToContent({ xMin, xMax, yMin, yMax });
-    }
+    const limites = limitesDePosiciones(positions);
+    if (zoomPanController && limites) zoomPanController.fitToContent(limites);
 
     if (!reproductor) {
       reproductor = new ReproductorPasos({
@@ -195,7 +187,7 @@ export function iniciarHuffmanProceso() {
 
           const contador = `${pasoIdx + 1} / ${pasosProgresivos.length}`;
           if (srAnnouncer) srAnnouncer.textContent = contador;
-          const contadorCodigo = document.querySelector('.code-panel-counter');
+          const contadorCodigo = document.querySelector('#proceso .code-panel-counter');
           if (contadorCodigo) contadorCodigo.textContent = contador;
 
           const progressBar = document.getElementById('progress-bar');
