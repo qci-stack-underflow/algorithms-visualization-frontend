@@ -122,7 +122,7 @@ function textoDeIntegridad({ identico, normalizado, primeraDiferencia, bytes, er
       ok: true,
       texto:
         `Integridad: el .suf se descomprimió en tu navegador y es idéntico a ${nombre} después de quitar el BOM ` +
-        "y cambiar \\r\\n por \\n, la limpieza que hace el servidor antes de comprimir.",
+        "y cambiar \\r\\n por \\n.",
     };
   }
   return {

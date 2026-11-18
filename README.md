@@ -145,7 +145,7 @@ Pantalla aparte (`huffman.html`, **Compresión** en la barra de navegación o **
 
 Muestra además el SHA-256 del texto, y si se tiene el `.txt` original, lo compara byte a byte.
 
-**Modo ejemplo.** Mientras el backend no publique las rutas de `/huffman` (responde 404, 405 o 501, o una ruta que todavía es un esqueleto), la pantalla sigue funcionando:
+**Modo ejemplo.** El backend publica las rutas de `/huffman` desde el 18 de noviembre de 2026. Si alguna deja de estar disponible (responde 404, 405 o 501, o una ruta que todavía es un esqueleto), la pantalla sigue funcionando:
 - **Libros:** el proceso y el binario usan el resultado de ejemplo de Don Quijote (`src/js/huffman/ejemplo-quijote.json`, copia de `docs/ejemplos/huffman-quijote.json` del backend) y, con otro libro, avisan que es una vista de ejemplo.
 - **Búsqueda:** se busca en una lista de 30 libros de Gutenberg (`src/js/huffman/ejemplo-libros.js`), sin acentos ni mayúsculas, y el mensaje lo indica.
 - **Subida:** el `.txt` se comprime en el navegador con `src/js/huffman/compresor.js`, una copia fiel del compresor del backend (bloque A): con los mismos textos genera el mismo `HuffmanResult` y el mismo `.suf` byte a byte. La vista lo avisa.
@@ -176,7 +176,7 @@ En cada paso se ve el grafo con el estado de sus nodos y aristas, la línea del 
 - **Heurística de A\*:** distancia en línea recta o Manhattan en el dibujo, llevada a las unidades de los pesos con una escala que la hace consistente, así que A\* siempre da el camino más corto.
 - **Globo «¿Por qué?»:** en Dijkstra, A\* y Prim, un globo sobre el dibujo explica cada paso con sus números (por qué sale ese nodo de la cola, por qué una ruta mejora o no) y la ruta de la que habla se marca con puntos que avanzan.
 - **Guía «¿Cómo funciona?»:** el botón junto al título abre una explicación en cinco páginas del algoritmo actual (idea, memoria, ejemplo paso a paso, por qué funciona, costo y usos), con flechas y un círculo por página.
-- **Pruebas:** `pnpm test` ejecuta 133 pruebas con el ejecutor de Node, que comparan los cuatro algoritmos contra Floyd–Warshall y fuerza bruta en cientos de grafos al azar.
+- **Pruebas:** `pnpm test` ejecuta 133 pruebas de grafos (de 143 en total) con el ejecutor de Node, que comparan los cuatro algoritmos contra Floyd–Warshall y fuerza bruta en cientos de grafos al azar.
 
 El detalle (uso, heurística, formato de los pasos, comprobación a mano y pruebas) está en [`docs/GRAFOS.md`](docs/GRAFOS.md).
 
@@ -290,7 +290,8 @@ Eventos para el árbol (bloque D): `huffman-resultado` (`{ libro, resultado, eje
 
 ## Limitaciones conocidas
 
-- **Compresión de libros:** el backend todavía no publica las rutas de `/huffman`. Los libros se muestran en modo ejemplo (Don Quijote) y la descarga del `.suf` de un libro espera a esos endpoints; un `.txt` subido sí se comprime, en el navegador (ver *Modo ejemplo*).
-- **Búsqueda en Gutenberg:** hasta que exista `GET /huffman/books/search` ([backend#52](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/52)) solo encuentra los 30 libros de la lista de ejemplo.
-- **Árbol:** el dibujo animado del árbol (bloque D) está en desarrollo. El inspector reconstruye el árbol y lo resume, pero aún no lo dibuja.
+- **Libros desde Vercel:** Project Gutenberg responde `503` a las peticiones de Vercel. Don Quijote, Frankenstein y Los pazos de Ulloa funcionan siempre porque el backend tiene su copia completa; los demás libros, y los que se abren por enlace, muestran que Gutenberg no está disponible y permiten reintentar.
+- **Búsqueda en Gutenberg:** `GET /huffman/books/search` responde, pero hoy devuelve los mismos 32 libros para cualquier consulta ([backend#62](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/62)).
+- **Archivos subidos:** deben estar en UTF-8. Un archivo en Latin-1 u otra codificación se rechaza antes de enviarlo, porque sus acentos se perderían.
+- **Stooge Sort con muchos elementos:** con 50 elementos en orden inverso son 30,570 pasos: unos 15 minutos de animación a la velocidad máxima.
 - **Despliegues de prueba de Vercel:** no tienen `VITE_API_URL`, así que los ordenamientos solo funcionan en producción y en local.

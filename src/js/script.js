@@ -101,6 +101,10 @@ let algoritmosSeleccionados = ["Bubble Sort"];
 let chartInstance = null;
 let metricasData = {};
 let motores = []; // un MotorAnimacion por algoritmo seleccionado
+// Cambia cada vez que se redibujan las barras (otro arreglo, otra selección,
+// volver al inicio). Una respuesta del backend que llega después de un cambio
+// ya no corresponde a lo que se ve y se descarta.
+let turnoSimulacion = 0;
 
 // Vista previa animada de cada tarjeta del inicio (en lugar de un GIF):
 // se pide al backend la ordenación de un arreglo pequeño y se repite en bucle.
@@ -174,6 +178,7 @@ function resetMetricas() {
     metricasData[nombre] = {
       comparaciones: 0,
       intercambios: 0,
+      escrituras: 0,
       tiempoMs: "0.00",
       pasos: 0,
       complejidad: algObj ? algObj.complejidad : "N/A",
@@ -439,6 +444,7 @@ function dibujarBarras() {
   const container = document.getElementById("multiChartsContainer");
   if (!container) return;
 
+  turnoSimulacion += 1;
   motores.forEach((motor) => motor.detener());
   motores = [];
   container.innerHTML = "";
@@ -489,6 +495,7 @@ function renderizarTarjetasMetricas() {
     const m = metricasData[nombre] || {
       comparaciones: 0,
       intercambios: 0,
+      escrituras: 0,
       tiempoMs: "0.00",
       pasos: 0,
       complejidad: "N/A",
@@ -509,6 +516,10 @@ function renderizarTarjetasMetricas() {
       <div class="metric-item">
         <span>Intercambios:</span>
         <span class="val">${m.intercambios}</span>
+      </div>
+      <div class="metric-item">
+        <span>Escrituras:</span>
+        <span class="val">${m.escrituras}</span>
       </div>
       <div class="metric-item">
         <span>Tiempo ejecución:</span>
@@ -653,26 +664,34 @@ export async function ejecutarSimulacion() {
   const boton = document.getElementById("btnSimulate");
   if (boton) boton.disabled = true;
 
+  // Lo que se pide es lo que se ve ahora; si mientras llega la respuesta se
+  // cambia el arreglo o la selección, el turno cambia y la respuesta se
+  // descarta (antes se animaba el arreglo anterior sobre el nuevo, o fallaba
+  // con "Cannot read properties of undefined (reading 'cargarPasos')").
+  const turno = turnoSimulacion;
+  const seleccion = [...algoritmosSeleccionados];
   let resultados;
   try {
-    const ids = algoritmosSeleccionados.map(nombreAId);
+    const ids = seleccion.map(nombreAId);
     resultados =
       ids.length === 1
         ? [await ejecutarAlgoritmo(ids[0], valoresActuales)]
         : await compararAlgoritmos(ids, valoresActuales);
   } catch (error) {
-    alert(error.message);
+    if (turno === turnoSimulacion) alert(error.message);
     return;
   } finally {
     if (boton) boton.disabled = false;
   }
+  if (turno !== turnoSimulacion) return;
 
   resultados.forEach((resultado, indice) => {
-    const nombre = algoritmosSeleccionados[indice];
+    const nombre = seleccion[indice];
     const algoritmo = algoritmos.find((item) => item.nombre === nombre);
     metricasData[nombre] = {
       comparaciones: resultado.metrics.comparisons,
       intercambios: resultado.metrics.swaps,
+      escrituras: resultado.metrics.writes ?? 0,
       tiempoMs: resultado.metrics.executionTimeMs.toFixed(3),
       pasos: resultado.metrics.steps,
       complejidad: algoritmo ? algoritmo.complejidad : "N/A",
@@ -682,10 +701,10 @@ export async function ejecutarSimulacion() {
 
   if (chartInstance) {
     const colores = coloresSeries();
-    chartInstance.data.labels = ["Comparaciones", "Intercambios", "Pasos"];
+    chartInstance.data.labels = ["Comparaciones", "Intercambios", "Escrituras", "Pasos"];
     chartInstance.data.datasets = resultados.map(({ metrics }, indice) => ({
-      label: algoritmosSeleccionados[indice],
-      data: [metrics.comparisons, metrics.swaps, metrics.steps],
+      label: seleccion[indice],
+      data: [metrics.comparisons, metrics.swaps, metrics.writes ?? 0, metrics.steps],
       backgroundColor: colores[indice % colores.length],
       borderRadius: 4,
       maxBarThickness: 36,

@@ -77,6 +77,9 @@ export class MotorAnimacion {
 
     const { arrayState, indices, tipo } = paso;
     const maxVal = Math.max(...arrayState, 1);
+    // Con negativos, la altura se mide desde el menor valor; si no, -50 y 1
+    // se verían iguales (las dos con la altura mínima).
+    const minVal = Math.min(...arrayState, 0);
 
     // Solo se reconstruye si cambia el número de elementos o si alguien
     // vació el contenedor desde fuera.
@@ -97,7 +100,7 @@ export class MotorAnimacion {
       if (indices && indices.includes(idx)) color = colores[tipo] ?? colores.base;
       else if (tipo === "completado") color = colores.completado;
 
-      barra.style.height = `${Math.max((valor / maxVal) * 80, 8)}%`;
+      barra.style.height = `${Math.max(((valor - minVal) / (maxVal - minVal)) * 80, 8)}%`;
       barra.style.backgroundColor = color;
       if (etiqueta) etiqueta.textContent = valor;
     });
