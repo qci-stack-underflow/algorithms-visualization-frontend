@@ -732,6 +732,10 @@ function reiniciarSimulacion() {
   motores.forEach((motor) => motor.reiniciar());
 }
 
+function irAlFinal() {
+  motores.forEach((motor) => motor.irAlFinal());
+}
+
 function cambiarVelocidad(evento) {
   motores.forEach((motor) => motor.fijarVelocidad(evento.target.value));
 }
@@ -751,5 +755,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnCustom")?.addEventListener("click", insertarElementosPersonalizados);
   document.getElementById("btnSimulate")?.addEventListener("click", ejecutarSimulacion);
   document.getElementById("btnReiniciar")?.addEventListener("click", reiniciarSimulacion);
+  document.getElementById("btnFinal")?.addEventListener("click", irAlFinal);
   document.getElementById("selectVelocidad")?.addEventListener("change", cambiarVelocidad);
 });
