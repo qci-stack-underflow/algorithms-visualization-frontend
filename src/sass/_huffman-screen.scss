@@ -870,6 +870,19 @@
     border-radius: inherit;
     background: var(--accent);
   }
+
+  // Barra interactiva del reproductor del árbol (bloque D)
+  &:has(input[type="range"]) {
+    height: auto;
+    background: none;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
 }
 
 .reproductor-paso {
@@ -1749,6 +1762,7 @@ th[aria-sort="ascending"] .orden::after {
 .cola-prioridad-contenedor, 
 #cola-prioridad-container {
   max-height: 140px; /* Limita la altura vertical para que no ocupe demasiado espacio */
+  margin-top: var(--s2);
   overflow-y: auto;  /* Permite scroll vertical si hay muchas filas */
   overflow-x: auto;  /* Permite scroll horizontal fluido */
   padding: 8px;

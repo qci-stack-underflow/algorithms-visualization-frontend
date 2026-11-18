@@ -17,7 +17,8 @@ export function calcularLayoutArbol(nodesMap, rootId, config = {}) {
   const { nodeRadius = 20, levelHeight = 80, leafSpacing = 60 } = config;
   const positions = new Map();
 
-  if (!rootId || !nodesMap || !nodesMap[rootId]) {
+  // El id 0 es válido (la primera hoja), por eso se compara con null.
+  if (rootId == null || !nodesMap || !nodesMap[rootId]) {
     return positions;
   }
 
@@ -30,7 +31,7 @@ export function calcularLayoutArbol(nodesMap, rootId, config = {}) {
 
     let xPosition = 0;
 
-    if (node.isLeaf || (!node.left && !node.right)) {
+    if (node.isLeaf || (node.left == null && node.right == null)) {
       xPosition = leafCounter * leafSpacing + nodeRadius;
       leafCounter++;
       positions.set(nodeId, {
@@ -42,8 +43,8 @@ export function calcularLayoutArbol(nodesMap, rootId, config = {}) {
       return xPosition;
     }
 
-    const leftX = node.left ? traverseInorder(node.left, depth + 1) : null;
-    const rightX = node.right ? traverseInorder(node.right, depth + 1) : null;
+    const leftX = node.left != null ? traverseInorder(node.left, depth + 1) : null;
+    const rightX = node.right != null ? traverseInorder(node.right, depth + 1) : null;
 
     if (leftX !== null && rightX !== null) {
       xPosition = (leftX + rightX) / 2;

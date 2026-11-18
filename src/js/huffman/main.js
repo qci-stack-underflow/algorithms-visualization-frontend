@@ -6,8 +6,7 @@ import { ReproductorPasos } from './reproductor/reproductor-pasos.js';
 import { renderizarColaPrioridad } from './componentes/cola-prioridad.js';
 import { renderizarPseudocodigo } from './componentes/pseudocodigo.js';
 import { actualizarIndicadorFases, verificarMovimientoReducido, actualizarDescripcionLectorPantalla } from './componentes/accesibilidad-fases.js';
-import { obtenerHuffman } from '../api.js';
-import ejemploQuijote from './ejemplo-quijote.json';
+import { Pause, Play, createElement } from 'lucide';
 
 export function iniciarHuffmanProceso() {
   const svgEl = document.querySelector('.arbol-svg');
@@ -18,6 +17,8 @@ export function iniciarHuffmanProceso() {
   if (!svgEl) return;
 
   let nodesMap = {};
+  let rawSteps = [];
+  let resultadoActual = null;
   let rootId = null;
   let pasosProgresivos = [];
   let positions = new Map();
@@ -33,7 +34,7 @@ export function iniciarHuffmanProceso() {
       nodesMap[node.id] = node;
     });
 
-    const rawSteps = datosLibro?.steps || [];
+    rawSteps = datosLibro?.steps || [];
     
     let nodosAcumulados = new Set();
     pasosProgresivos = rawSteps.map((step, index) => {
@@ -90,18 +91,10 @@ export function iniciarHuffmanProceso() {
 
     positions = calcularLayoutArbol(nodesMap, rootId);
 
-    // Inicializar controlador de Zoom y Pan y ajustar al contenido total
+    // Inicializar controlador de Zoom y Pan una sola vez, y ajustar al árbol
+    // de cada libro (cada árbol tiene otro tamaño)
     if (svgEl && canvasContainer && !zoomPanController) {
       zoomPanController = new ControllerZoomPan(svgEl, canvasContainer);
-
-      let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-      positions.forEach(pos => {
-        if (pos.x < xMin) xMin = pos.x;
-        if (pos.x > xMax) xMax = pos.x;
-        if (pos.y < yMin) yMin = pos.y;
-        if (pos.y > yMax) yMax = pos.y;
-      });
-      zoomPanController.fitToContent({ xMin, xMax, yMin, yMax });
 
       const btnZoomIn = document.getElementById('btn-zoom-in');
       const btnZoomOut = document.getElementById('btn-zoom-out');
@@ -130,6 +123,17 @@ export function iniciarHuffmanProceso() {
           zoomPanController.fitToContent();
         });
       }
+    }
+
+    if (zoomPanController && positions.size > 0) {
+      let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+      positions.forEach(pos => {
+        if (pos.x < xMin) xMin = pos.x;
+        if (pos.x > xMax) xMax = pos.x;
+        if (pos.y < yMin) yMin = pos.y;
+        if (pos.y > yMax) yMax = pos.y;
+      });
+      zoomPanController.fitToContent({ xMin, xMax, yMin, yMax });
     }
 
     if (!reproductor) {
@@ -185,14 +189,14 @@ export function iniciarHuffmanProceso() {
             renderizarColaPrioridad(contenedorCola, colaSimulada, state.highlightedPair);
           }
 
-          actualizarDescripcionLectorPantalla(srAnnouncer, state, pasosProgresivos.length);
+          // textContent y no innerHTML: la descripción trae símbolos del
+          // texto (por ejemplo "<" o "&") que no deben leerse como HTML
+          actualizarDescripcionLectorPantalla(arbolNotaEl, state, pasosProgresivos.length, pasoIdx);
 
-          if (srAnnouncer) {
-            srAnnouncer.textContent = `${pasoIdx + 1} / ${pasosProgresivos.length}`;
-          }
-          if (arbolNotaEl) {
-            arbolNotaEl.innerHTML = `Construcción dinámica · Paso ${pasoIdx + 1} de ${pasosProgresivos.length} · ${state.descripcion}`;
-          }
+          const contador = `${pasoIdx + 1} / ${pasosProgresivos.length}`;
+          if (srAnnouncer) srAnnouncer.textContent = contador;
+          const contadorCodigo = document.querySelector('.code-panel-counter');
+          if (contadorCodigo) contadorCodigo.textContent = contador;
 
           const progressBar = document.getElementById('progress-bar');
           if (progressBar) {
@@ -202,7 +206,9 @@ export function iniciarHuffmanProceso() {
         },
         onPlayStateChange: (isPlaying) => {
           const btnPlay = document.getElementById('btn-play');
-          if (btnPlay) btnPlay.textContent = isPlaying ? '⏸' : '▶';
+          if (!btnPlay) return;
+          btnPlay.replaceChildren(createElement(isPlaying ? Pause : Play));
+          btnPlay.setAttribute('aria-label', isPlaying ? 'Pausar' : 'Reproducir');
         }
       });
 
@@ -211,26 +217,45 @@ export function iniciarHuffmanProceso() {
         progressBar.addEventListener('input', (e) => reproductor.goToPaso(parseInt(e.target.value, 10)));
       }
 
-      if (verificarMovimientoReducido()) {
-        reproductor.goToEnd();
-      } else {
-        reproductor.goToStart();
-      }
-
       document.getElementById('btn-play')?.addEventListener('click', () => reproductor.togglePlay());
       document.getElementById('btn-prev')?.addEventListener('click', () => reproductor.previousStep());
       document.getElementById('btn-next')?.addEventListener('click', () => reproductor.nextStep());
       document.getElementById('btn-start')?.addEventListener('click', () => reproductor.goToStart());
       document.getElementById('btn-end')?.addEventListener('click', () => reproductor.goToEnd());
-      document.getElementById('speed-select')?.addEventListener('change', (e) => reproductor.setSpeed(parseFloat(e.target.value)));
+
+      const velocidades = document.querySelectorAll('.velocidades [data-velocidad]');
+      velocidades.forEach((boton) => {
+        boton.addEventListener('click', () => {
+          reproductor.setSpeed(parseFloat(boton.dataset.velocidad));
+          velocidades.forEach((otro) => {
+            const activa = otro === boton;
+            otro.classList.toggle('is-activa', activa);
+            otro.setAttribute('aria-checked', String(activa));
+          });
+        });
+      });
     } else {
+      reproductor.pause();
       reproductor.setTotalPasos(pasosProgresivos.length);
+    }
+
+    // Cada libro empieza desde el primer paso, o ya construido si se pidió
+    // menos movimiento
+    if (verificarMovimientoReducido()) {
+      reproductor.goToEnd();
+    } else {
+      reproductor.goToStart();
     }
   }
 
+  // navegacion.js avisa cada vez que se abre el proceso o el binario de un
+  // libro, con datos del backend o de ejemplo. Si el resultado es el mismo
+  // objeto de antes, se conserva el paso en el que iba.
   document.addEventListener('huffman-resultado', (evento) => {
-    const { resultado, ejemplo } = evento.detail;
-    procesarDatosHuffman(resultado || ejemplo || {});
+    const { resultado } = evento.detail;
+    if (!resultado || resultado === resultadoActual) return;
+    resultadoActual = resultado;
+    procesarDatosHuffman(resultado);
   });
 
   document.addEventListener('simbolo-seleccionado', (evento) => {
@@ -238,13 +263,13 @@ export function iniciarHuffmanProceso() {
     if (!svgEl || !nodesMap || positions.size === 0) return;
 
     let targetNodeId = detalle?.nodeId;
-    if (!targetNodeId && detalle?.symbol) {
+    if (targetNodeId == null && detalle?.symbol) {
       targetNodeId = Object.values(nodesMap).find(n => n.isLeaf && n.symbol === detalle.symbol)?.id;
     }
 
     const path = [];
     let curr = targetNodeId;
-    while (curr) {
+    while (curr != null) {
       path.push(curr);
       const parent = Object.values(nodesMap).find(n => n.left === curr || n.right === curr);
       curr = parent ? parent.id : null;
@@ -254,9 +279,4 @@ export function iniciarHuffmanProceso() {
     renderizarArbolSVG(svgEl, nodesMap, positions, currentState.visibleNodes, path);
   });
 
-  procesarDatosHuffman(ejemploQuijote);
-
-  obtenerHuffman(2000).then((resultado) => {
-    if (resultado) procesarDatosHuffman(resultado);
-  }).catch(() => {});
 }

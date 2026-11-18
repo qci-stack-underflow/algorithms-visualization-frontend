@@ -335,8 +335,8 @@
                   <g class="arbol-nodos"></g>
                 </svg>
               </div>
-              <p class="arbol-nota">
-                Primeros 4 de 22 niveles · camino de <b>e</b>: 0 → 1 → 0 = <code>010</code>
+              <p class="arbol-nota" aria-live="polite">
+                Abre un libro para ver cómo se construye su árbol.
               </p>
 
               <div class="reproductor">
@@ -348,16 +348,14 @@
                   <button class="icono-btn" id="btn-end" type="button" aria-label="Ir al final"><i data-lucide="skip-forward"></i></button>
                 </div>
                 <div class="reproductor-progreso">
-                  <input type="range" id="progress-bar" min="0" value="0" style="width: 100%; cursor: pointer;" />
+                  <input type="range" id="progress-bar" min="0" max="0" value="0" aria-label="Paso del reproductor" />
                 </div>
-                <span class="reproductor-paso" id="sr-announcer">1 / 277</span>
+                <span class="reproductor-paso" id="sr-announcer">0 / 0</span>
                 <div class="velocidades" role="radiogroup" aria-label="Velocidad">
-                  <select id="speed-select" style="background: transparent; border: none; color: inherit; font: inherit;">
-                    <option value="0.5">0.5x</option>
-                    <option value="1" selected>1x</option>
-                    <option value="2">2x</option>
-                    <option value="8">8x</option>
-                  </select>
+                  <button type="button" role="radio" aria-checked="false" data-velocidad="0.5">0.5x</button>
+                  <button class="is-activa" type="button" role="radio" aria-checked="true" data-velocidad="1">1x</button>
+                  <button type="button" role="radio" aria-checked="false" data-velocidad="2">2x</button>
+                  <button type="button" role="radio" aria-checked="false" data-velocidad="8">8x</button>
                 </div>
               </div>
             </section>
@@ -367,7 +365,7 @@
                 <h2 id="colaTitulo">Cola de Prioridad (Q)</h2>
                 <span class="panel-cuenta" data-cola-cuenta>Dinámica</span>
               </header>
-              <div id="cola-prioridad-container" class="cola-prioridad-contenedor" style="overflow-x: auto; padding: 10px 0;">
+              <div id="cola-prioridad-container" class="cola-prioridad-contenedor">
                 <!-- Se llena dinámicamente con renderizarColaPrioridad -->
               </div>
             </section>

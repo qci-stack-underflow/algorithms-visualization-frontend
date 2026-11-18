@@ -111,10 +111,16 @@ export class ControllerZoomPan {
   fitToContent(bounds) {
     if (bounds) this.contentBounds = bounds;
     const padding = 40;
-    this.viewBox.x = this.contentBounds.xMin - padding;
-    this.viewBox.y = this.contentBounds.yMin - padding;
-    this.viewBox.w = (this.contentBounds.xMax - this.contentBounds.xMin) + padding * 2;
-    this.viewBox.h = (this.contentBounds.yMax - this.contentBounds.yMin) + padding * 2;
+    // Un árbol de pocos símbolos no se amplía más allá de este tamaño mínimo,
+    // para que sus nodos no se vean gigantes; queda centrado.
+    const anchoMinimo = 600;
+    const altoMinimo = 300;
+    const ancho = (this.contentBounds.xMax - this.contentBounds.xMin) + padding * 2;
+    const alto = (this.contentBounds.yMax - this.contentBounds.yMin) + padding * 2;
+    this.viewBox.w = Math.max(ancho, anchoMinimo);
+    this.viewBox.h = Math.max(alto, altoMinimo);
+    this.viewBox.x = this.contentBounds.xMin - padding - (this.viewBox.w - ancho) / 2;
+    this.viewBox.y = this.contentBounds.yMin - padding - (this.viewBox.h - alto) / 2;
     this.updateViewBox();
   }
 

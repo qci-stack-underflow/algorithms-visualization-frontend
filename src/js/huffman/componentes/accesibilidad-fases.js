@@ -31,7 +31,7 @@ export function verificarMovimientoReducido() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export function actualizarDescripcionLectorPantalla(srContainer, pasoState, totalPasos) {
+export function actualizarDescripcionLectorPantalla(srContainer, pasoState, totalPasos, pasoIndex) {
   if (!srContainer) return;
-  srContainer.textContent = `Paso ${pasoState.pasoIndex + 1} de ${totalPasos}: ${pasoState.descripcion}`;
+  srContainer.textContent = `Paso ${pasoIndex + 1} de ${totalPasos} · ${pasoState.descripcion}`;
 }
