@@ -61,6 +61,16 @@ export class MotorAnimacion {
     if (this.enEjecucion) this.reproducir();
   }
 
+  // Detiene la animación y dibuja el último paso (el arreglo ordenado).
+  irAlFinal() {
+    if (this.pasos.length === 0) return;
+    this.pausar();
+    const indice = this.pasos.length - 1;
+    this.renderizarBarraEstado(this.pasos[indice]);
+    if (this.onPasoCallback) this.onPasoCallback(this.pasos[indice], indice);
+    this.pasoActual = this.pasos.length;
+  }
+
   // Detiene y vuelve a dibujar el estado inicial.
   reiniciar() {
     this.detener();

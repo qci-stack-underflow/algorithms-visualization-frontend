@@ -291,7 +291,7 @@ Eventos para el árbol (bloque D): `huffman-resultado` (`{ libro, resultado, eje
 ## Limitaciones conocidas
 
 - **Libros desde Vercel:** Project Gutenberg responde `503` a las peticiones de Vercel. Don Quijote, Frankenstein y Los pazos de Ulloa funcionan siempre porque el backend tiene su copia completa; los demás libros, y los que se abren por enlace, muestran que Gutenberg no está disponible y permiten reintentar.
-- **Búsqueda en Gutenberg:** `GET /huffman/books/search` responde, pero hoy devuelve los mismos 32 libros para cualquier consulta ([backend#62](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/62)).
+- **Búsqueda en Gutenberg:** RapidAPI devuelve los mismos 32 libros populares para cualquier consulta ([backend#62](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/62)). El backend conserva solo los que coinciden con el título o el autor buscado y agrega los del catálogo ([backend#69](https://github.com/qci-stack-underflow/algorithms-visualization-backend/pull/69)), así que un libro que no está entre esos 32 ni en el catálogo no aparece.
 - **Archivos subidos:** deben estar en UTF-8. Un archivo en Latin-1 u otra codificación se rechaza antes de enviarlo, porque sus acentos se perderían.
-- **Stooge Sort con muchos elementos:** con 50 elementos en orden inverso son 30,570 pasos: unos 15 minutos de animación a la velocidad máxima.
+- **Stooge Sort con muchos elementos:** con 50 elementos en orden inverso son 30,570 pasos, unos 15 minutos de animación a la velocidad máxima. El botón **Ir al final** muestra el arreglo ordenado sin esperar.
 - **Despliegues de prueba de Vercel:** no tienen `VITE_API_URL`, así que los ordenamientos solo funcionan en producción y en local.

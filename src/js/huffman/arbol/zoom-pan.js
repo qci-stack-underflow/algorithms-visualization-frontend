@@ -131,6 +131,25 @@ export class ControllerZoomPan {
     this.updateViewBox();
   }
 
+  // Mueve la vista para que (x, y) quede al centro, sin cambiar el zoom.
+  centerOn(x, y) {
+    this.viewBox.x = x - this.viewBox.w / 2;
+    this.viewBox.y = y - this.viewBox.h / 2;
+    this.updateViewBox();
+  }
+
+  // Acerca hasta que se vean `ancho` unidades de lado a lado, con la misma
+  // proporción y el mismo centro.
+  zoomToWidth(ancho) {
+    if (ancho >= this.viewBox.w) return;
+    const factor = ancho / this.viewBox.w;
+    const centroX = this.viewBox.x + this.viewBox.w / 2;
+    const centroY = this.viewBox.y + this.viewBox.h / 2;
+    this.viewBox.w *= factor;
+    this.viewBox.h *= factor;
+    this.centerOn(centroX, centroY);
+  }
+
   updateViewBox() {
     this.svg.setAttribute('viewBox', `${this.viewBox.x} ${this.viewBox.y} ${this.viewBox.w} ${this.viewBox.h}`);
   }
