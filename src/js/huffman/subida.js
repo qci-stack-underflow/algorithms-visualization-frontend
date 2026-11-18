@@ -87,6 +87,10 @@ export async function cargarArchivo(vista, alCargar) {
   mostrarCarga(vista, `Subiendo ${archivo.name} y comprimiéndolo…`);
   try {
     const original = await archivo.arrayBuffer();
+    // Huffman cuenta caracteres Unicode: un archivo que no está en UTF-8 (por
+    // ejemplo, Latin-1) perdería sus acentos al decodificarse. Se rechaza
+    // antes de enviarlo, con el mensaje del error 400 de archivo.
+    leerTexto(original);
     const { resultado, bytesSuf, local } = await comprimir(archivo, original);
     subido = {
       nombre: archivo.name,

@@ -343,7 +343,7 @@ async function alCompararOriginal(archivo) {
   } else if (r.identico) {
     salida.textContent =
       `Idéntico a ${archivo.name} después de quitar el BOM y cambiar \\r\\n por \\n, ` +
-      "la misma limpieza que hace el backend antes de comprimir.";
+      "la limpieza que hace el backend con los libros de Gutenberg.";
   } else {
     salida.textContent =
       `No es igual a ${archivo.name}: la primera diferencia está en el byte ${numero(r.primeraDiferencia)}. ` +
