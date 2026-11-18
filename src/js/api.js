@@ -1,8 +1,10 @@
-// Comunicación con el backend o uso de respaldo local en desarrollo
-import ejemploQuijote from "./huffman/ejemplo-quijote.json";
-
+// Comunicación con el backend (algorithms-visualization-backend).
+// En desarrollo se usa el proxy de Vite (/api → localhost:3000); en
+// producción se define VITE_API_URL con la URL pública del backend.
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
+// Error de la API con el estado HTTP, para que la interfaz elija qué mensaje
+// mostrar (ver huffman/carga.js). `estado` es 0 si no hubo respuesta.
 export class ErrorApi extends Error {
   constructor(mensaje, estado) {
     super(mensaje);
@@ -11,6 +13,8 @@ export class ErrorApi extends Error {
   }
 }
 
+// Sin `cuerpo` hace un GET; con `cuerpo`, un POST con JSON.
+// Con formato "bytes" devuelve un ArrayBuffer en lugar de JSON.
 async function solicitar(ruta, cuerpo, formato = "json") {
   const opciones =
     cuerpo === undefined
@@ -29,6 +33,7 @@ async function solicitar(ruta, cuerpo, formato = "json") {
   }
 
   if (!respuesta.ok) {
+    // Nest responde los errores como JSON con `message`, también en /file.
     const datos = await respuesta.json().catch(() => null);
     throw new ErrorApi(datos?.message || `Error ${respuesta.status} del backend.`, respuesta.status);
   }
@@ -39,42 +44,40 @@ async function solicitar(ruta, cuerpo, formato = "json") {
 // Ordenamientos
 // ---------------------------------------------------------------------------
 
+// "Bubble Sort" → "bubble-sort" (id que usa el backend)
 export function nombreAId(nombre) {
   return nombre.toLowerCase().replace(/\s+/g, "-");
 }
 
+// GET /algorithms/:id → AlgorithmInfo (nombre, complejidad, pseudocódigo)
 export function obtenerAlgoritmo(id) {
   return solicitar(`/algorithms/${id}`);
 }
 
+// POST /algorithms/:id/run → AlgorithmResult
 export function ejecutarAlgoritmo(id, input) {
   return solicitar(`/algorithms/${id}/run`, { input });
 }
 
+// POST /algorithms/compare → AlgorithmResult[] (mínimo dos algoritmos)
 export function compararAlgoritmos(ids, input) {
   return solicitar("/algorithms/compare", { algorithms: ids, input });
 }
 
 // ---------------------------------------------------------------------------
-// Huffman & Gestión de Estado Local / Respaldo
+// Huffman (contrato: src/types/huffman.types.ts del backend)
 // ---------------------------------------------------------------------------
 
+// Cada respuesta se guarda: ir del proceso al binario y volver, o abrir dos
+// veces el mismo libro, no la vuelve a pedir. Si una petición falla se
+// olvida, para que "Reintentar" pueda pedirla de nuevo.
 const guardados = {
-  libros: new Map(),
-  huffman: new Map(),
-  suf: new Map(),
+  libros: new Map(), // una sola entrada: el catálogo
+  huffman: new Map(), // número de libro → Promise<HuffmanResult>
+  suf: new Map(), // número de libro → Promise<ArrayBuffer>
 };
-
-const huffmanListos = new Set();
-const sufListos = new Set();
-
-export function huffmanListo(id) {
-  return huffmanListos.has(Number(id));
-}
-
-export function sufListo(id) {
-  return sufListos.has(Number(id));
-}
+const huffmanListos = new Set(); // libros cuyo resultado ya llegó
+const sufListos = new Set(); // libros cuyo .suf ya llegó
 
 function recordar(mapa, clave, pedir) {
   if (!mapa.has(clave)) {
@@ -87,6 +90,8 @@ function recordar(mapa, clave, pedir) {
   return mapa.get(clave);
 }
 
+// El backend solo acepta el número del libro (nunca una URL); se valida
+// aquí también para no hacer una petición que de todos modos daría 400.
 function numeroDeLibro(id) {
   const numero = Number(id);
   if (!Number.isInteger(numero) || numero <= 0) {
@@ -95,63 +100,91 @@ function numeroDeLibro(id) {
   return numero;
 }
 
-// Catálogo simulado de libros para la biblioteca
+// GET /huffman/books → BookInfo[] (catálogo)
 export async function obtenerLibros() {
-  return recordar(guardados.libros, "catalogo", async () => {
-    try {
-      return await solicitar("/huffman/books");
-    } catch {
-      // Catálogo de respaldo local
-      return [
-        { id: 2000, title: "Don Quijote", author: "Miguel de Cervantes Saavedra", language: "Español", size: "2.2 MB" },
-        { id: 1342, title: "Pride and Prejudice", author: "Jane Austen", language: "Inglés", size: "772 KB" },
-        { id: 2701, title: "Moby Dick; Or, The Whale", author: "Herman Melville", language: "Inglés", size: "1.3 MB" },
-        { id: 84, title: "Frankenstein", author: "Mary Wollstonecraft Shelley", language: "Inglés", size: "449 KB" },
-        { id: 1661, title: "The Adventures of Sherlock Holmes", author: "Arthur Conan Doyle", language: "Inglés", size: "608 KB" },
-        { id: 11, title: "Alice's Adventures in Wonderland", author: "Lewis Carroll", language: "Inglés", size: "174 KB" }
-      ];
-    }
+  return recordar(guardados.libros, "catalogo", () => solicitar("/huffman/books"));
+}
+
+// GET /huffman/books/search?q=… → BookInfo[] (backend#52). Se acepta también
+// { result: BookInfo[] }; cualquier otra respuesta da null, como si la
+// búsqueda no estuviera disponible. Cada búsqueda se guarda.
+const busquedas = new Map();
+export async function buscarLibros(consulta) {
+  const q = consulta.trim();
+  return recordar(busquedas, q.toLowerCase(), async () => {
+    const respuesta = await solicitar(`/huffman/books/search?q=${encodeURIComponent(q)}`);
+    if (Array.isArray(respuesta)) return respuesta;
+    if (Array.isArray(respuesta?.result)) return respuesta.result;
+    return null;
   });
 }
 
-// Obtener datos de Huffman (usa el JSON de Don Quijote como respaldo local si no hay backend)
+// GET /huffman/books/:id → HuffmanResult (frecuencias, árbol, pasos, códigos y métricas)
 export async function obtenerHuffman(id) {
   const numero = numeroDeLibro(id);
   return recordar(guardados.huffman, numero, async () => {
-    try {
-      const resultado = await solicitar(`/huffman/books/${numero}`);
-      huffmanListos.add(numero);
-      return resultado;
-    } catch {
-      console.warn("Backend no disponible. Usando datos locales de respaldo (ejemplo-quijote.json).");
-      huffmanListos.add(numero);
-      return ejemploQuijote;
-    }
+    const resultado = await solicitar(`/huffman/books/${numero}`);
+    huffmanListos.add(numero);
+    return resultado;
   });
 }
 
-// Descarga o genera un búfer simulado para el archivo .suf en local
+// true si el resultado de ese libro ya llegó (se puede usar sin esperar).
+export function huffmanListo(id) {
+  return huffmanListos.has(Number(id));
+}
+
+// Separa la respuesta binaria de POST /huffman/compress/file (opción B de
+// backend#53): uint32 big-endian con el largo n del JSON, n bytes del
+// HuffmanResult en UTF-8 y después el archivo .suf completo.
+export function separarRespuestaDeArchivo(buffer) {
+  const incompleta = () => new ErrorApi("La respuesta del backend está incompleta.", -1);
+  if (buffer.byteLength < 4) throw incompleta();
+  const largo = new DataView(buffer).getUint32(0);
+  if (4 + largo > buffer.byteLength) throw incompleta();
+  let resultado;
+  try {
+    resultado = JSON.parse(new TextDecoder().decode(new Uint8Array(buffer, 4, largo)));
+  } catch {
+    throw new ErrorApi("La respuesta del backend no trae un resultado válido.", -1);
+  }
+  return { resultado, bytesSuf: buffer.slice(4 + largo) };
+}
+
+// POST /huffman/compress/file (multipart, campo "file") → { resultado, bytesSuf }
+export async function comprimirArchivo(archivo) {
+  const formulario = new FormData();
+  formulario.append("file", archivo);
+  formulario.append("title", archivo.name.replace(/\.txt$/i, ""));
+
+  let respuesta;
+  try {
+    respuesta = await fetch(`${API_URL}/huffman/compress/file`, { method: "POST", body: formulario });
+  } catch {
+    throw new ErrorApi("No se pudo conectar con el backend.", 0);
+  }
+  if (!respuesta.ok) {
+    const datos = await respuesta.json().catch(() => null);
+    throw new ErrorApi(datos?.message || `Error ${respuesta.status} del backend.`, respuesta.status);
+  }
+  // Una ruta que todavía es un esqueleto responde texto: se trata como 501.
+  if (!respuesta.headers.get("Content-Type")?.includes("application/octet-stream")) {
+    throw new ErrorApi("El backend todavía no comprime archivos.", 501);
+  }
+  return separarRespuestaDeArchivo(await respuesta.arrayBuffer());
+}
+
+// GET /huffman/books/:id/file → ArrayBuffer con el archivo .suf
 export async function descargarSuf(id) {
   const numero = numeroDeLibro(id);
   return recordar(guardados.suf, numero, async () => {
-    try {
-      const bytes = await solicitar(`/huffman/books/${numero}/file`, undefined, "bytes");
-      sufListos.add(numero);
-      return bytes;
-    } catch {
-      console.warn("Backend no disponible. Generando archivo .suf simulado con tamaño real.");
-      sufListos.add(numero);
-      
-      // Tamaño real aproximado del comprimido de Don Quijote (1.16 MB)
-      const tamanoSimulado = ejemploQuijote.metrics?.fileSizeBytes || 1166923;
-      const bufferSimulado = new ArrayBuffer(tamanoSimulado);
-      const vistaBytes = new Uint8Array(bufferSimulado);
-      
-      // Escribir la firma "SUF1" al inicio del archivo binario
-      const encoder = new TextEncoder();
-      vistaBytes.set(encoder.encode("SUF1"), 0);
-      
-      return bufferSimulado;
-    }
+    const bytes = await solicitar(`/huffman/books/${numero}/file`, undefined, "bytes");
+    sufListos.add(numero);
+    return bytes;
   });
+}
+
+// true si el .suf de ese libro ya llegó.
+export function sufListo(id) {
+  return sufListos.has(Number(id));
 }

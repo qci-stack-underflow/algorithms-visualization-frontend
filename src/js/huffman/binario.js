@@ -4,6 +4,7 @@
 // millón de bytes, unas 146 mil filas).
 import { mostrarSimbolo, nombrarSimbolo, numero } from "./formato.js";
 import { ErrorSuf, FIRMA_SUF, leerSuf } from "./suf.js";
+import { origenDe } from "./datos.js";
 
 const BYTES_POR_FILA = 8;
 // Filas de más arriba y abajo de las visibles, para que al recorrer rápido
@@ -201,7 +202,7 @@ export function llenarBinarioDeEjemplo(resultado) {
       totalCharacters: resultado.totalCharacters,
       symbolCount: resultado.distinctSymbols,
       paddingBits: m.paddingBits,
-      title: resultado.book?.title ?? "",
+      title: origenDe(resultado).titulo ?? "",
     },
   });
   en("[data-bits-pie]").textContent =

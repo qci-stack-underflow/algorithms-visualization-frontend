@@ -6,6 +6,8 @@ import { dibujarIconos, iniciarDetallesVisuales } from "./inicio.js";
 import { convertirPasos } from "./pasos.js";
 import { mostrarPseudocodigo, resaltarPaso } from "./pseudocodigo.js";
 import { coloresSeries, leerVariable } from "./tema.js";
+import { iniciarCarrusel } from "./carrusel-inicio.js";
+import { crearVistaPreviaArbol, crearVistaPreviaCamino } from "./vista-grafos.js";
 import { crearVistaPreviaHuffman } from "./vista-huffman.js";
 // Lista de algoritmos
 export const algoritmos = [
@@ -69,6 +71,25 @@ export const otrosAlgoritmos = [
     etiquetas: ["Voraz", "Compresión"],
     enlace: "huffman.html",
     vistaPrevia: crearVistaPreviaHuffman,
+  },
+  // Las dos tarjetas abren la misma pantalla (grafos.html) en pestañas distintas.
+  {
+    nombre: "Caminos más cortos",
+    complejidad: "O((V + E) log V)",
+    descripcion:
+      "Dijkstra y A* buscan la ruta de menor costo entre dos nodos de un grafo.",
+    etiquetas: ["Grafos", "Dijkstra", "A*"],
+    enlace: "grafos.html#/dijkstra?grafo=mapa",
+    vistaPrevia: crearVistaPreviaCamino,
+  },
+  {
+    nombre: "Árbol de expansión mínima",
+    complejidad: "O(E log V)",
+    descripcion:
+      "Prim y Kruskal conectan todos los nodos de un grafo con el menor peso total.",
+    etiquetas: ["Grafos", "Prim", "Kruskal"],
+    enlace: "grafos.html#/prim?grafo=clasico",
+    vistaPrevia: crearVistaPreviaArbol,
   },
 ];
 
@@ -699,6 +720,7 @@ function cambiarVelocidad(evento) {
 // Inicialización de Event Listeners e inicio de interfaz
 document.addEventListener("DOMContentLoaded", () => {
   iniciarDetallesVisuales();
+  iniciarCarrusel();
   filtrarAlgoritmos(); // dibuja los dos bloques de tarjetas
 
   // Vincular eventos a inputs/botones del DOM para evitar inline 'onclick' u 'onchange'

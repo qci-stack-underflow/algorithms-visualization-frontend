@@ -1,6 +1,6 @@
-# Stack Underflow — Visualizador web de algoritmos de ordenamiento
+# Stack Underflow — Visualizador web de algoritmos
 
-Aplicación web para visualizar, ejecutar y comparar ocho algoritmos de ordenamiento paso a paso.
+Aplicación web para visualizar, ejecutar y comparar ocho algoritmos de ordenamiento paso a paso, y para comprimir libros con el **algoritmo de Huffman**, inspeccionar el archivo comprimido (`.suf`) y descomprimirlo (ver [Compresor Huffman](#compresor-huffman)). También muestra paso a paso cuatro algoritmos de grafos: Dijkstra, A\*, Prim y Kruskal (ver [Algoritmos de grafos](#algoritmos-de-grafos)).
 
 Este repositorio contiene el **frontend** (página web). El backend está en [algorithms-visualization-backend](https://github.com/qci-stack-underflow/algorithms-visualization-backend).
 
@@ -93,7 +93,7 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 
 ## Uso de la aplicación
 
-1. En la pantalla de inicio, cada tarjeta muestra una animación corta de su algoritmo. Se puede **buscar** por nombre o **filtrar** por complejidad.
+1. La pantalla de inicio presenta las tres familias de algoritmos (ordenar, grafos y compresión); **Ver ordenamientos** lleva al catálogo, donde cada tarjeta muestra una animación corta de su algoritmo. Se puede **buscar** por nombre o **filtrar** por complejidad.
 2. Al hacer clic en una tarjeta se abre el **visualizador**.
 3. En el panel **Options** se genera un arreglo aleatorio (**Elements**, máximo 50) o se escribe uno propio (**Custom Elements** + **Insert**).
 4. Se elige la velocidad (**Speed**).
@@ -120,6 +120,67 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 **Comparación de cuatro algoritmos** sobre el mismo arreglo, con la gráfica y las métricas:
 
 ![Comparación](docs/capturas/comparacion.png)
+
+## Compresor Huffman
+
+Pantalla aparte (`huffman.html`, **Compresión** en la barra de navegación o **Comprimir un libro** en el inicio) para la actividad integradora *Huffman Web Compressor*: elegir un libro de Project Gutenberg, ver cómo Huffman cuenta las letras, construye el árbol y asigna los códigos, y obtener un archivo comprimido con formato propio, `.suf` (Stack Under Flow).
+
+**Flujo:** elegir un libro (catálogo, búsqueda o enlace) o subir un `.txt` → proceso (cifras, tabla de letras, árbol) → archivo `.suf` (ver los bits o descargarlo) → inspector (examinar, descomprimir y comprobar la integridad).
+
+| Vista | Ruta | Qué muestra |
+|---|---|---|
+| Biblioteca | `#/` | Catálogo de libros, búsqueda en Project Gutenberg, campo para pegar un enlace (`/ebooks/2000`, `/cache/epub/2000/…`) y zona para subir un `.txt` (hasta 4 MB) |
+| Archivo subido | `#/archivo`, `#/archivo/binario` | Lo mismo que el proceso y el binario, para el `.txt` subido, más la comprobación de integridad: el `.suf` recibido se descomprime en el navegador y se compara byte a byte con el archivo |
+| Proceso | `#/libro/2000` | Tamaño original y comprimido, bytes ahorrados, reducción y razón de compresión, bits por letra con la entropía, tabla de todos los símbolos (ordenable, con búsqueda y los invisibles visibles: ␣ ↵ ⇥), árbol y pseudocódigo |
+| Binario | `#/libro/2000/binario` | Encabezado del `.suf`, cómo se codifica una frase de ejemplo y todos los bits de los datos en una lista virtualizada (solo se dibujan las filas visibles), con los bits de relleno marcados |
+| Inspector | `#/inspector` | Se carga solo un `.suf`, sin el texto original, y se ve su estructura byte a byte, el diccionario, el árbol reconstruido y una muestra de los bits. **Descomprimir** recupera el texto en el navegador, comprueba la integridad y permite descargarlo como `.txt` |
+
+**Formato `.suf`.** Firma `SUF1`, total de caracteres, bits de relleno, número de símbolos, título, un diccionario con el símbolo, sus apariciones y su código, y los datos comprimidos. Está documentado byte a byte en `docs/FORMATO-HUFFMAN.md` del backend.
+
+**Integridad.** Al descomprimir, el inspector comprueba, sin el original:
+- que los caracteres recuperados sean los que dice el encabezado;
+- que las apariciones de cada símbolo coincidan con el diccionario;
+- que el tamaño en UTF-8 sea el original;
+- que los datos terminen justo al final de un código.
+
+Muestra además el SHA-256 del texto, y si se tiene el `.txt` original, lo compara byte a byte.
+
+**Modo ejemplo.** Mientras el backend no publique las rutas de `/huffman` (responde 404, 405 o 501, o una ruta que todavía es un esqueleto), la pantalla sigue funcionando:
+- **Libros:** el proceso y el binario usan el resultado de ejemplo de Don Quijote (`src/js/huffman/ejemplo-quijote.json`, copia de `docs/ejemplos/huffman-quijote.json` del backend) y, con otro libro, avisan que es una vista de ejemplo.
+- **Búsqueda:** se busca en una lista de 30 libros de Gutenberg (`src/js/huffman/ejemplo-libros.js`), sin acentos ni mayúsculas, y el mensaje lo indica.
+- **Subida:** el `.txt` se comprime en el navegador con `src/js/huffman/compresor.js`, una copia fiel del compresor del backend (bloque A): con los mismos textos genera el mismo `HuffmanResult` y el mismo `.suf` byte a byte. La vista lo avisa.
+
+Cuando el backend tenga las rutas, se usan sus datos sin cambiar nada en el frontend. El inspector y la descompresión no dependen del backend.
+
+**Pruebas:** [`docs/PRUEBAS-HUFFMAN.md`](docs/PRUEBAS-HUFFMAN.md) tiene las cuatro pruebas mínimas (texto pequeño, libro de Gutenberg, integridad y un archivo no usado durante el desarrollo), con capturas.
+
+![Proceso de Huffman con Don Quijote](docs/capturas/huffman-proceso.png)
+
+![Inspector de archivos .suf](docs/capturas/huffman-inspector.png)
+
+## Algoritmos de grafos
+
+Pantalla aparte (`grafos.html`, **Grafos** en la barra de navegación, **Recorrer un grafo** en el inicio o las tarjetas **Caminos más cortos** y **Árbol de expansión mínima**) con cuatro algoritmos sobre un grafo ponderado no dirigido. Se calcula todo en el navegador: no usa el backend ni comparte código con las otras pantallas.
+
+| Algoritmo | Ruta | Problema | Complejidad |
+|---|---|---|---|
+| Dijkstra | `#/dijkstra` | Camino más corto desde un origen | O((V + E) log V) |
+| A\* | `#/a-estrella` | Camino más corto entre dos nodos, guiado por una heurística | O((V + E) log V) |
+| Prim | `#/prim` | Árbol de expansión mínima, haciendo crecer un árbol | O(E log V) |
+| Kruskal | `#/kruskal` | Árbol de expansión mínima, eligiendo aristas | O(E log E) |
+
+En cada paso se ve el grafo con el estado de sus nodos y aristas, la línea del pseudocódigo que se ejecuta y lo que el algoritmo tiene en memoria (cola de prioridad y tabla por nodo, o conjuntos y aristas ordenadas). El reproductor avanza y retrocede, también con el teclado.
+
+- **Grafos:** cuatro ejemplos (clásico, mapa, cuadrícula y uno no conexo), grafos al azar de 4 a 14 nodos y grafos escritos a mano, una arista por línea.
+- **Comparación:** sobre el mismo grafo, Dijkstra se compara con A\* y Prim con Kruskal. En el mapa de ejemplo, A\* cierra 7 nodos y Dijkstra 12 para llegar al mismo costo.
+- **Heurística de A\*:** distancia en línea recta o Manhattan en el dibujo, llevada a las unidades de los pesos con una escala que la hace consistente, así que A\* siempre da el camino más corto.
+- **Globo «¿Por qué?»:** en Dijkstra, A\* y Prim, un globo sobre el dibujo explica cada paso con sus números (por qué sale ese nodo de la cola, por qué una ruta mejora o no) y la ruta de la que habla se marca con puntos que avanzan.
+- **Guía «¿Cómo funciona?»:** el botón junto al título abre una explicación en cinco páginas del algoritmo actual (idea, memoria, ejemplo paso a paso, por qué funciona, costo y usos), con flechas y un círculo por página.
+- **Pruebas:** `pnpm test` ejecuta 133 pruebas con el ejecutor de Node, que comparan los cuatro algoritmos contra Floyd–Warshall y fuerza bruta en cientos de grafos al azar.
+
+El detalle (uso, heurística, formato de los pasos, comprobación a mano y pruebas) está en [`docs/GRAFOS.md`](docs/GRAFOS.md).
+
+![A* en el mapa de ejemplo](docs/capturas/grafos-a-estrella.png)
 
 ## Deployment
 
@@ -148,6 +209,17 @@ Las instrucciones están en el [README del backend](https://github.com/qci-stack
 | Edwin | Motor de animación (reproducción de pasos, velocidad, reinicio y colores de las barras) |
 | Alessandra | Diseño de la interfaz: pantalla de inicio, búsqueda y filtro, tarjetas, visualizador, panel de opciones, modo comparar, gráfica y tarjetas de métricas |
 
+### Responsabilidades en el compresor Huffman
+
+El trabajo se dividió en cuatro bloques en el [tablero](https://github.com/orgs/qci-stack-underflow/projects/1), cada uno con sus tareas:
+
+| Bloque | Responsable | Contenido |
+|---|---|---|
+| A · Algoritmo y formato `.suf` | Arath | Contrato y JSON de ejemplo, frecuencias, min-heap, árbol con sus pasos, códigos y empaquetado de bits, escritura y lectura del `.suf`, métricas y pruebas del algoritmo |
+| B · Libros, endpoints y despliegue | Alessandra | Catálogo, cliente de Project Gutenberg, limpieza del texto, copias locales, endpoints de `/huffman`, errores, límites de Vercel, pruebas e2e y documentación del backend |
+| C · Datos, biblioteca y vista binaria | Salvador | Rutas y navegación de la pantalla, cliente de la API, carga y errores, biblioteca y enlace de Gutenberg, búsqueda, subida de `.txt`, cifras y tabla de letras, descarga y vista binaria del `.suf`, inspector, descompresión e integridad, documentación del frontend |
+| D · Árbol, animación y pseudocódigo | Edwin | Posición y dibujo del árbol, zoom, reproductor de pasos, cola de prioridad, pseudocódigo sincronizado y fases |
+
 ## Uso de IA
 
 | Herramienta | Para qué se usó |
@@ -175,6 +247,7 @@ Todo el código generado con apoyo de IA fue revisado y probado por el equipo, q
 | `src/index.html` | Estructura de la pantalla de inicio y del visualizador |
 | `src/sass/` | Estilos (SASS) |
 | `src/js/script.js` | Lógica de la interfaz: tarjetas, búsqueda y filtro, panel de opciones, modo comparar, gráfica y tarjetas de métricas, vista previa de las tarjetas |
+| `src/js/carrusel-inicio.js` | Carrusel de las tarjetas de la presentación: cambia una tarjeta cada 3.5 s; la del centro siempre es de grafos o de Huffman y las de los lados pueden ser cualquiera de las siete (en `<template data-tarjeta>` dentro de `index.html`) |
 | `src/js/api.js` | Cliente de la API: `POST /algorithms/:id/run` (un algoritmo) y `POST /algorithms/compare` (dos o más) |
 | `src/js/pasos.js` | Adaptador: convierte los pasos del backend (`compare`, `swap`, `write`, `pivot`, `sorted`) al formato `{ tipo, indices, arrayState }` del motor, reconstruyendo el arreglo a partir de `input` |
 | `src/js/animador.js` | `MotorAnimacion`: reproduce los pasos con `setInterval`, permite cambiar la velocidad y reiniciar, y colorea las barras |
@@ -190,3 +263,34 @@ Todo el código generado con apoyo de IA fue revisado y probado por el equipo, q
 6. Las métricas se muestran en las tarjetas y en la gráfica de Chart.js.
 
 La dirección del backend se toma de `VITE_API_URL`; si no está definida, se usa `/api` (el proxy de desarrollo).
+
+### Pantalla de Huffman
+
+| Archivo | Contenido |
+|---|---|
+| `src/huffman.html` | Las cuatro vistas: biblioteca, proceso, binario e inspector |
+| `src/js/huffman.js` | Punto de entrada: inicia la tabla, la navegación, la biblioteca, las descargas, el binario y el inspector |
+| `src/js/huffman/rutas.js` | Lee y arma las rutas del hash (`#/`, `#/libro/N`, `#/libro/N/binario`, `#/inspector`, `#/archivo`, `#/archivo/binario`) |
+| `src/js/huffman/navegacion.js` | Muestra la vista de la ruta, cuida el scroll, el foco y el historial, y pide los datos del libro |
+| `src/js/huffman/datos.js` | `cargarLibro`: pide el resultado (y el `.suf` en el binario) mostrando la carga y los errores; modo ejemplo si el backend no tiene `/huffman` |
+| `src/js/huffman/carga.js` | Fases de la carga y un mensaje para cada error del backend (400, 404, 413, 501, 504, sin conexión), de un libro o de un archivo subido |
+| `src/js/huffman/biblioteca.js` | Tarjetas desde `GET /huffman/books`, búsqueda (`GET /huffman/books/search`), lectura del enlace de Gutenberg y zona de subida |
+| `src/js/huffman/subida.js` | Valida el `.txt`, lo envía a `POST /huffman/compress/file` (o lo comprime en el navegador en modo ejemplo) y comprueba la integridad del `.suf` recibido |
+| `src/js/huffman/compresor.js` | Compresor de Huffman en el navegador para el modo ejemplo de la subida, idéntico al del backend |
+| `src/js/huffman/ejemplo-libros.js` | Lista de 30 libros de Gutenberg para la búsqueda en modo ejemplo |
+| `src/js/huffman/proceso.js`, `tabla.js` | Cifras de la compresión y tabla de letras (orden, búsqueda y evento `simbolo-seleccionado` para el árbol) |
+| `src/js/huffman/descarga.js` | Descarga del `.suf` con un `Blob` |
+| `src/js/huffman/suf.js` | Lectura del `.suf` (`leerSuf`), tamaño original, árbol reconstruido, `descomprimir` y comprobaciones de integridad |
+| `src/js/huffman/binario.js` | Vista binaria con la lista virtualizada de bits |
+| `src/js/huffman/inspector.js` | Inspector: cargar, examinar, descomprimir, descargar y comparar |
+| `src/js/huffman/formato.js` | Números, tamaños (KB/MB), ahorro y símbolos invisibles |
+| `src/js/api.js` | También `obtenerLibros`, `buscarLibros`, `obtenerHuffman`, `descargarSuf` (con caché por libro) y `comprimirArchivo` |
+
+Eventos para el árbol (bloque D): `huffman-resultado` (`{ libro, resultado, ejemplo }`, cada vez que se llena el proceso o el binario), `simbolo-seleccionado` (`{ symbol, code, nodeId }` o `null`) y `suf-inspeccionado` (`{ nombre, encabezado, nodes, rootId }` desde el inspector).
+
+## Limitaciones conocidas
+
+- **Compresión de libros:** el backend todavía no publica las rutas de `/huffman`. Los libros se muestran en modo ejemplo (Don Quijote) y la descarga del `.suf` de un libro espera a esos endpoints; un `.txt` subido sí se comprime, en el navegador (ver *Modo ejemplo*).
+- **Búsqueda en Gutenberg:** hasta que exista `GET /huffman/books/search` ([backend#52](https://github.com/qci-stack-underflow/algorithms-visualization-backend/issues/52)) solo encuentra los 30 libros de la lista de ejemplo.
+- **Árbol:** el dibujo animado del árbol (bloque D) está en desarrollo. El inspector reconstruye el árbol y lo resume, pero aún no lo dibuja.
+- **Despliegues de prueba de Vercel:** no tienen `VITE_API_URL`, así que los ordenamientos solo funcionan en producción y en local.

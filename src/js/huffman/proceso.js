@@ -1,6 +1,6 @@
 // Cifras, tabla de letras y tarjeta "Archivo listo" de la vista de proceso,
 // con el HuffmanResult del backend (contrato: src/types/huffman.types.ts).
-import { formatearBytes, numero } from "./formato.js";
+import { describirAhorro, formatearBytes, numero } from "./formato.js";
 import { mostrarTabla } from "./tabla.js";
 
 function ponerCifra(clave, valor, detalle) {
@@ -23,11 +23,10 @@ export function llenarProceso(resultado) {
   // Comprimido es el archivo .suf completo (encabezado + datos), el mismo
   // tamaño con el que el backend calcula el ahorro.
   ponerCifra("comprimido", formatearBytes(m.fileSizeBytes), `${numero(m.fileSizeBytes)} bytes`);
-  ponerCifra(
-    "ahorro",
-    `${m.savingsPercentage.toFixed(1)} %`,
-    `queda en ${(100 - m.savingsPercentage).toFixed(1)} %`
-  );
+  // Ahorro en bytes y KB/MB, reducción y razón (requerimientos, sección 5)
+  const { ahorro, reduccion } = describirAhorro(m.originalBytes, m.fileSizeBytes);
+  ponerCifra("ahorro", ...ahorro);
+  ponerCifra("reduccion", ...reduccion);
   ponerCifra("bits", m.bitsPerSymbol.toFixed(2), `entropía ${m.entropy.toFixed(2)} · ASCII 8`);
   ponerCifra(
     "simbolos",

@@ -15,13 +15,15 @@
   <title>Huffman · StackUnderFlow</title>
   <script>
     // Antes de pintar: si se abre directo un libro (#/libro/2000 o
-    // #/libro/2000/binario), marca su vista para que no se vea primero la
-    // biblioteca mientras carga js/huffman.js. Es la misma ruta que lee
-    // js/huffman/rutas.js; navegacion.js quita la marca al mostrar la vista.
+    // #/libro/2000/binario) o el inspector (#/inspector), marca su vista para
+    // que no se vea primero la biblioteca mientras carga js/huffman.js. Es la
+    // misma ruta que lee js/huffman/rutas.js; navegacion.js quita la marca al
+    // mostrar la vista.
     (function () {
-      var ruta = /^#\/libro\/\d+(\/binario)?\/?$/.exec(location.hash);
+      var ruta = /^#\/(?:libro\/\d+(\/binario)?|(inspector)|archivo(\/binario)?)\/?$/.exec(location.hash);
       if (ruta) {
-        document.documentElement.setAttribute("data-ruta-inicial", ruta[1] ? "binario" : "proceso");
+        var vista = ruta[2] ? "inspector" : ruta[1] || ruta[3] ? "binario" : "proceso";
+        document.documentElement.setAttribute("data-ruta-inicial", vista);
       }
     })();
   </script>
@@ -42,10 +44,11 @@
 
       <ul class="nav-links">
         <li><a href="index.html#ordenamientos">Ordenamientos</a></li>
-        <li><a href="index.html#algoritmos">Algoritmos</a></li>
+        <li><a href="grafos.html">Grafos</a></li>
+        <li><a href="huffman.html" aria-current="page">Compresión</a></li>
       </ul>
 
-      <a class="btn btn--dark btn--sm" href="#/" aria-current="page">Comprimir archivo</a>
+      <a class="btn btn--dark btn--sm" href="index.html#explorar">Explorar</a>
     </nav>
   </header>
 
@@ -96,6 +99,30 @@
         </form>
         <p class="enlace-nota" id="enlaceNota" data-enlace-nota>Acepta libros de Project Gutenberg en texto plano (UTF-8).</p>
         <p class="enlace-error" id="enlaceError" role="alert" data-enlace-error hidden></p>
+        <!-- Subir un .txt propio (js/huffman/subida.js) -->
+        <label class="subir-zona" data-subir-zona>
+          <input class="visually-hidden" type="file" accept=".txt,text/plain" data-subir-archivo>
+          <span class="subir-titulo">¿Tienes tu propio texto? Sube un archivo .txt</span>
+          <span class="subir-nota">Texto plano en UTF-8, hasta 4 MB. Se comprime en el servidor y se comprueba en tu navegador.</span>
+        </label>
+        <p class="enlace-error" role="alert" data-subir-error hidden></p>
+        <p class="enlace-nota">¿Ya tienes un archivo .suf? <a href="#/inspector">Ábrelo en el inspector</a>.</p>
+
+        <!-- Buscar en Project Gutenberg (js/huffman/biblioteca.js) -->
+        <section class="buscar" aria-labelledby="buscarTitulo">
+          <h2 class="buscar-titulo" id="buscarTitulo">Busca cualquier libro de Project Gutenberg</h2>
+          <form class="enlace-libro" role="search" data-buscar-libro novalidate>
+            <label class="campo">
+              <i data-lucide="search"></i>
+              <span class="visually-hidden">Título, autor o palabra clave</span>
+              <input type="search" name="q" placeholder="Título, autor o palabra clave" autocomplete="off"
+                aria-describedby="busquedaEstado">
+            </label>
+            <button class="btn btn--primary" type="submit">Buscar</button>
+          </form>
+          <p class="buscar-estado" id="busquedaEstado" role="status" data-busqueda-estado></p>
+          <div class="libros buscar-resultados" data-busqueda-resultados></div>
+        </section>
 
         <div class="biblioteca-head">
           <h2>O elige uno de la biblioteca</h2>
@@ -213,11 +240,15 @@
           </a>
           <div class="vista-libro">
             <h1 id="procesoTitulo" tabindex="-1" data-libro-titulo>Don Quijote</h1>
-            <span><span data-libro-autor>Miguel de Cervantes Saavedra</span> · Project Gutenberg #<span data-libro-numero>2000</span></span>
+            <span><span data-libro-autor>Miguel de Cervantes Saavedra</span><span data-origen-gutenberg> · Project Gutenberg #<span data-libro-numero>2000</span></span></span>
           </div>
         </div>
         <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
           Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
+        </p>
+        <p class="aviso-ejemplo" data-aviso-local hidden>
+          Modo ejemplo: el servidor todavía no recibe archivos, así que este texto se comprimió en tu navegador
+          con el mismo algoritmo y el mismo formato .suf.
         </p>
 
         <!-- Fases y errores: js/huffman/carga.js cambia su estado mientras se espera al backend -->
@@ -262,8 +293,13 @@
           </div>
           <div data-cifra="ahorro">
             <dt>Ahorro</dt>
+            <dd>1.0 MB</dd>
+            <span>1,005,823 bytes</span>
+          </div>
+          <div data-cifra="reduccion">
+            <dt>Reducción</dt>
             <dd>45.6 %</dd>
-            <span>queda en 54.4 %</span>
+            <span>razón 1.84 : 1</span>
           </div>
           <div data-cifra="bits">
             <dt>Bits por letra</dt>
@@ -460,6 +496,7 @@
               <div class="archivo-texto">
                 <h2 id="archivoTitulo">Archivo listo</h2>
                 <p><code data-libro-archivo>don-quijote.suf</code> · <span data-archivo-tamano>1.2 MB</span></p>
+                <p class="archivo-integridad" data-integridad hidden></p>
               </div>
               <div class="archivo-acciones">
                 <a class="btn btn--ghost" href="#/libro/2000/binario" data-ir="binario">
@@ -498,6 +535,10 @@
         <p class="descarga-estado descarga-estado--barra" id="descargaBinario" role="status" data-descarga-estado></p>
         <p class="aviso-ejemplo" data-aviso-ejemplo hidden>
           Vista de ejemplo: las cifras, el árbol y los bits son de Don Quijote hasta que se conecte el backend.
+        </p>
+        <p class="aviso-ejemplo" data-aviso-local hidden>
+          Modo ejemplo: el servidor todavía no recibe archivos, así que este texto se comprimió en tu navegador
+          con el mismo algoritmo y el mismo formato .suf.
         </p>
 
         <!-- Carga y errores: js/huffman/carga.js, igual que en el proceso -->
@@ -606,6 +647,121 @@
         </section>
       </div>
     </section>
+
+    <!-- Vista 4: inspector de archivos .suf (js/huffman/inspector.js) -->
+    <section class="vista" id="inspector" aria-labelledby="inspectorTitulo" hidden>
+      <div class="container">
+        <div class="vista-barra">
+          <a class="btn-volver" href="#/">
+            <i data-lucide="arrow-left"></i>
+            Biblioteca
+          </a>
+          <div class="vista-libro">
+            <h1 id="inspectorTitulo" tabindex="-1">Inspector de archivos .suf</h1>
+            <span>Examina un archivo comprimido sin tener el texto original.</span>
+          </div>
+        </div>
+
+        <label class="insp-zona" data-insp-zona>
+          <input class="visually-hidden" type="file" accept=".suf" data-insp-archivo>
+          <span class="archivo-icono" aria-hidden="true"><i data-lucide="file-archive"></i></span>
+          <span class="insp-zona-titulo">Elige un archivo .suf o suéltalo aquí</span>
+          <span class="insp-zona-nota" data-insp-estado>Se lee en tu navegador; no se sube a ningún servidor.</span>
+        </label>
+        <p class="insp-error" role="alert" data-insp-error hidden></p>
+
+        <div class="insp-resultado" data-insp-resultado hidden>
+          <header class="insp-archivo">
+            <h2 tabindex="-1" data-insp-nombre></h2>
+            <span data-insp-formato></span>
+          </header>
+
+          <dl class="huff-metricas">
+            <div data-insp-cifra="original"><dt>Tamaño original</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="comprimido"><dt>Comprimido</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="ahorro"><dt>Ahorro</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="reduccion"><dt>Reducción</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="simbolos"><dt>Símbolos distintos</dt><dd></dd><span></span></div>
+            <div data-insp-cifra="bits"><dt>Bits codificados</dt><dd></dd><span></span></div>
+          </dl>
+
+          <section class="panel insp-panel" aria-labelledby="inspEstructuraTitulo">
+            <h2 id="inspEstructuraTitulo">Estructura del archivo</h2>
+            <div class="insp-tabla-marco">
+              <table class="insp-estructura">
+                <thead>
+                  <tr>
+                    <th scope="col">Sección</th>
+                    <th scope="col">Empieza en el byte</th>
+                    <th scope="col">Bytes</th>
+                  </tr>
+                </thead>
+                <tbody data-insp-estructura></tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="insp-columnas">
+            <section class="panel insp-panel" aria-labelledby="inspDiccionarioTitulo">
+              <h2 id="inspDiccionarioTitulo">Diccionario: apariciones y códigos</h2>
+              <div class="tabla-letras-marco">
+                <table class="tabla-letras insp-diccionario">
+                  <thead>
+                    <tr>
+                      <th scope="col">Símbolo</th>
+                      <th scope="col">Apariciones</th>
+                      <th scope="col">Código</th>
+                    </tr>
+                  </thead>
+                  <tbody data-insp-diccionario></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel insp-panel" aria-labelledby="inspArbolTitulo">
+              <h2 id="inspArbolTitulo">Árbol reconstruido</h2>
+              <p class="insp-texto" data-insp-arbol></p>
+            </section>
+          </div>
+
+          <section class="panel insp-panel" aria-labelledby="inspBitsTitulo">
+            <h2 id="inspBitsTitulo">Datos comprimidos</h2>
+            <ol class="bits-lista insp-bits" data-insp-bits></ol>
+            <p class="bits-pie" data-insp-bits-pie></p>
+          </section>
+
+          <!-- Descomprimir y comprobar la integridad (requerimientos, sección 8) -->
+          <section class="panel insp-panel" aria-labelledby="inspDescomprimirTitulo">
+            <h2 id="inspDescomprimirTitulo">Descomprimir</h2>
+            <p class="insp-texto">
+              Recupera el texto con el diccionario y los datos, y comprueba que coincide con lo que dice el
+              encabezado: caracteres, apariciones de cada símbolo y tamaño.
+            </p>
+            <div class="insp-acciones">
+              <button class="btn btn--primary" type="button" data-insp-descomprimir>Descomprimir</button>
+            </div>
+            <p class="insp-estado" role="status" data-insp-descomprimir-estado></p>
+
+            <div class="insp-recuperado" data-insp-recuperado hidden>
+              <ul class="insp-comprobaciones" data-insp-comprobaciones></ul>
+              <label class="insp-etiqueta" for="inspTexto">Texto recuperado</label>
+              <textarea class="insp-texto-recuperado" id="inspTexto" readonly spellcheck="false" data-insp-texto></textarea>
+              <div class="insp-acciones">
+                <button class="btn btn--ghost" type="button" data-insp-descargar-txt>
+                  <i data-lucide="download"></i>
+                  Descargar .txt
+                </button>
+                <label class="btn btn--ghost insp-comparar">
+                  <input class="visually-hidden" type="file" accept=".txt,text/plain" data-insp-original>
+                  Comparar con el .txt original
+                </label>
+              </div>
+              <p class="insp-estado" role="status" data-insp-comparacion></p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -626,7 +782,8 @@
         <h3>Explorar</h3>
         <ul>
           <li><a href="index.html#ordenamientos">Ordenamientos</a></li>
-          <li><a href="index.html#algoritmos">Algoritmos</a></li>
+          <li><a href="grafos.html">Grafos</a></li>
+          <li><a href="huffman.html">Compresión</a></li>
         </ul>
       </div>
 
