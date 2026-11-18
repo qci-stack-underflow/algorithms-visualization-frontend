@@ -225,9 +225,15 @@ export function compararConOriginal(texto, bytesOriginal) {
   const exacta = primeraDiferente(recuperado, original);
   if (exacta === -1) return { identico: true, normalizado: false, primeraDiferencia: -1, bytes: original.length };
 
-  const limpio = new TextEncoder().encode(
-    new TextDecoder().decode(original).replace(/^﻿/, "").replace(/\r\n/g, "\n")
-  );
+  // Con un original que no es UTF-8 válido, decodificarlo cambiaría sus bytes
+  // por U+FFFD y la comparación normalizada daría un falso "idéntico".
+  let textoOriginal;
+  try {
+    textoOriginal = new TextDecoder("utf-8", { fatal: true }).decode(original);
+  } catch {
+    return { identico: false, normalizado: false, primeraDiferencia: exacta, bytes: original.length };
+  }
+  const limpio = new TextEncoder().encode(textoOriginal.replace(/^﻿/, "").replace(/\r\n/g, "\n"));
   const normalizada = primeraDiferente(recuperado, limpio);
   return {
     identico: normalizada === -1,
